@@ -1,0 +1,73 @@
+import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
+import adminInstance from "../Axios/adminInstance";
+import Cookies from "js-cookie";
+import { AxiosError } from "axios";
+
+export const adminLogin=createAsyncThunk<any,{email:string,password:string},{rejectValue: string}>("admin/login",async(data,thunkAPI)=>{
+    try{
+        const response=await adminInstance.post("/login",data)
+        console.log("admin response",response)
+        Cookies.set("adminAccessToken",response.data.adminAccessToken,{ expires: 1 / 24 })
+        Cookies.set("adminRefreshToken",response.data.adminRefreshToken,{ expires: 1 })
+        return response.data
+
+    }
+    catch(error){
+         console.log("error",error)
+        if(error instanceof AxiosError){
+             return thunkAPI.rejectWithValue(error.response?.data?.message||"an error occured")
+        }else if(error instanceof Error){
+            return thunkAPI.rejectWithValue(error.message)
+        }else{
+            return thunkAPI.rejectWithValue("an unknown error occured")
+        }
+
+    }
+
+})
+
+
+
+const initialState={
+    loading:false,
+    error:"",
+    message:""
+}
+const adminSlice=createSlice({
+    name:"admin",
+    initialState,
+    reducers:{
+        clearErrorMessageAdmin:(state)=>{
+            state.error=""
+            state.message=""
+
+        }
+    },
+    extraReducers:(builder)=>{
+        builder.addCase(adminLogin.pending,(state)=>{
+            state.loading=true
+            state.error=""
+
+        }).addCase(adminLogin.fulfilled,(state,action)=>{
+         
+            state.loading=false
+            state.message=action.payload.message
+
+        }).addCase(adminLogin.rejected,(state,action)=>{
+
+            state.loading=false
+            state.error=action.payload as string
+            state.message=""
+
+
+        })
+       
+
+    }
+
+
+})
+
+ const adminReducer=adminSlice.reducer
+ export default adminReducer
+export const {clearErrorMessageAdmin}=adminSlice.actions
