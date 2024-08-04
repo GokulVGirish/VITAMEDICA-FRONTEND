@@ -8,6 +8,8 @@ const adminInstance=axios.create({
     }
     
 })
+adminInstance.defaults.withCredentials=true
+
 adminInstance.interceptors.request.use(
     (request)=>{
           const accessToken=Cookies.get("adminAccessToken")

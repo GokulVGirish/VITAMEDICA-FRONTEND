@@ -2,6 +2,10 @@ import { useEffect,useRef,useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import instance from "../../Axios/doctorInstance";
 import { AxiosError } from "axios";
+import ProfileModal from "../extra/ProfileModal";
+import SyncLoader from "react-spinners/SyncLoader";
+import "react-image-crop/dist/ReactCrop.css";
+import {toast} from "sonner"
 export type Doctor ={
     _id:string
   name: string;
@@ -37,6 +41,12 @@ const DoctorProfile = () => {
       const [imageURL, setImageURL] = useState<string>();
       const [image, setImage] = useState<File>();
        const [myErrors, setMyErrors] = useState<any>({});
+       const [modalOpen,setModalOpen]=useState(false)
+       const [loading,setLoading]=useState(false)
+        const override = {
+          display: "flex",
+          justifyContent: "center",
+        };
 
     useEffect(()=>{
 
@@ -63,18 +73,7 @@ const DoctorProfile = () => {
 
 
     },[])
-    const handleImage=()=>{
-        if (
-          inputRef.current &&
-          inputRef.current.files &&
-          inputRef.current.files[0]
-        ) {
-          setImageURL(URL.createObjectURL(inputRef.current.files[0]));
-          setImage(inputRef.current.files[0]);
-        }
-
-    }
-    const handleSubmit=(e:React.FormEvent)=>{
+    const handleSubmit=async(e:React.FormEvent)=>{
         setMyErrors({})
         e.preventDefault()
         const validationErrors:any={}
@@ -90,19 +89,33 @@ const DoctorProfile = () => {
          } else if (!phoneRegex.test(userData.phone)) {
            validationErrors.phone = "Phone number must be 10 digits";
          }
-           if (!image) {
-             validationErrors.image = "Profile picture is required";
-           } else {
-             const validFormats = ["image/jpeg", "image/png", "image/gif"];
-             if (!validFormats.includes(image.type)) {
-               validationErrors.image =
-                 "Profile picture must be in JPEG, PNG, or GIF format";
-             }
-           }
            if(Object.keys(validationErrors).length>0){
             setMyErrors(validationErrors)
             return
            }
+          try{
+            setLoading(true)
+             const response = await instance.put("/profileUpdate",userData);
+             setLoading(false)
+             if (response.data.success) {
+               toast.success(response.data.message, {
+                 richColors: true,
+                 duration: 1500,
+               });
+             }
+
+          }
+          catch(error){
+            if(error instanceof AxiosError){
+              toast.error(error.response?.data.message, {
+                richColors: true,
+                duration: 1500,
+              });
+            }
+
+          }
+
+          
 
 
     }
@@ -120,9 +133,8 @@ const DoctorProfile = () => {
               alt=""
             />
 
-            <input ref={inputRef} onChange={handleImage} type="file" hidden />
             <FaEdit
-              onClick={() => inputRef.current?.click()}
+              onClick={() => setModalOpen(true)}
               className="absolute top-44 h-8 w-6 right-48 cursor-pointer"
             />
           </div>
@@ -170,7 +182,7 @@ const DoctorProfile = () => {
                 name="phone"
                 value={userData.phone}
                 onChange={(e) =>
-                  setUserData({ ...userData, name: e.target.value })
+                  setUserData({ ...userData, phone: e.target.value })
                 }
                 id="phone"
                 placeholder="Enter your phone number"
@@ -242,13 +254,22 @@ const DoctorProfile = () => {
             <div>
               <button
                 type="submit"
+                disabled={loading}
                 className="hover:shadow-form w-full rounded-md bg-[#05acb4] py-3 px-8 text-center text-base font-semibold text-white outline-none"
               >
                 Update
               </button>
+              <SyncLoader cssOverride={override} loading={loading} />
             </div>
           </form>
         </div>
+        {modalOpen && (
+          <ProfileModal
+            setAvatar={(url: string) => setImageURL(url)}
+            closeModal={() => setModalOpen(false)}
+            side={"doctor"}
+          />
+        )}
       </div>
     </>
   );

@@ -7,10 +7,8 @@ export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: stri
         const response = await instance.post("/verifyOtpSignup",otp);
         console.log("hellosss")
         console.log("data response", response.data);
-        Cookies.set("accessToken", response.data.accessToken, {
-          expires: 1 / 24,
-        });
-        Cookies.set("refreshToken", response.data.refreshToken, { expires: 1 });
+        Cookies.set("accessToken", response.data.accessToken);
+        Cookies.set("refreshToken", response.data.refreshToken);
         
         return response.data
 
@@ -33,12 +31,9 @@ export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: stri
 export const doctorLogin=createAsyncThunk<any,{email:string,password:string},{rejectValue: string}>("doctor/login",async(data,thunkAPI)=>{
     try{
         const response=await instance.post("/login",data)
-         Cookies.set("accessToken", response.data.accessToken, {
-           expires: 1 / 24,
-         });
-         Cookies.set("refreshToken", response.data.refreshToken, {
-           expires: 1,
-         });
+        console.log("frrgfergfff",response.data.accessToken)
+         Cookies.set("accessToken", response.data.accessToken);
+         Cookies.set("refreshToken", response.data.refreshToken);
          return response.data
 
     }
@@ -99,6 +94,7 @@ const doctorSlice=createSlice({
 
             state.error=""
             state.message=""
+            state.loading=false
 
         },
         clearDoctor:(state,action)=>{

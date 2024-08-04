@@ -6,10 +6,12 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "./UserListing";
+import DoctorRejectModal from "../extra/DoctorRejectModal";
 
 const DoctorVerify = () => {
     const {id}=useParams()
     const [doctor,setDoctor]=useState<any>()
+      const [isOpen, setIsOpen] = useState(false);
     const navigate=useNavigate()
      useEffect(()=>{
         const getDoctorDocs=async()=>{
@@ -65,6 +67,7 @@ const DoctorVerify = () => {
         
       }
       }
+    
       
 
     return (
@@ -153,13 +156,22 @@ const DoctorVerify = () => {
                 style={{ color: "transparent" }}
               />
             </div>
-            <button
-              onClick={handleVerify}
-              className={`mr-2 font-bold  bg-green-500 hover:bg-green-700 text-white py-4 px-16 rounded-full`}
-            >
-              Verify Doctor
-            </button>
+            <div className=" flex justify-around">
+              <button
+                onClick={handleVerify}
+                className={`mr-2 font-bold  bg-green-500 hover:bg-green-700  text-white py-1 px-4  md:py-4 md:px-16 rounded-full`}
+              >
+                Verify Doctor
+              </button>
+              <button
+                onClick={()=>setIsOpen(true)}
+                className={`mr-2 font-bold  bg-red-500 hover:bg-red-700 text-white py-1 px-4  md:py-4 md:px-16 rounded-full`}
+              >
+                Reject Doctor
+              </button>
+            </div>
           </div>
+          {isOpen && <DoctorRejectModal id={id as string} closeModal={()=>setIsOpen(false)}/>}
         </div>
       </section>
     );

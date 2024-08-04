@@ -7,8 +7,8 @@ export const adminLogin=createAsyncThunk<any,{email:string,password:string},{rej
     try{
         const response=await adminInstance.post("/login",data)
         console.log("admin response",response)
-        Cookies.set("adminAccessToken",response.data.adminAccessToken,{ expires: 1 / 24 })
-        Cookies.set("adminRefreshToken",response.data.adminRefreshToken,{ expires: 1 })
+        Cookies.set("adminAccessToken",response.data.adminAccessToken)
+        Cookies.set("adminRefreshToken",response.data.adminRefreshToken)
         return response.data
 
     }

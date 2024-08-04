@@ -71,8 +71,8 @@ const DoctorRoute=()=>{
       const location = useLocation();
   const validPaths = [
     "/doctor",
-    "/doctor/uploadDocs",
     "/doctor/addSlot",
+    
  
   ];
 

@@ -5,6 +5,8 @@ import { AxiosError } from "axios";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SyncLoader from "react-spinners/SyncLoader";
+import ProfileModal from "../extra/ProfileModal";
+import EmailChangeModal from "../extra/PasswordChangeMoadal";
 export type InitialStateType = {
   name: string;
   email: string;
@@ -43,9 +45,10 @@ const UserProfile = () => {
     bloodGroup: null,
   });
   const [imageURL, setImageURL] = useState<string>();
-  const [image,setImage]=useState<File>()
   const [myErrors, setMyErrors] = useState<any>({});
   const [loading,setLoading]=useState(false)
+  const [modalOpen, setModalOpen] = useState(false);
+  const [passwordModalOpen,setPasswordModalOpen]=useState(false)
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -127,15 +130,7 @@ const UserProfile = () => {
         validationErrors.dob = `You must be less than ${maxAge} years old`;
       }
     }
-    if (!image) {
-      validationErrors.image = "Profile picture is required";
-    } else {
-      const validFormats = ["image/jpeg", "image/png", "image/gif"];
-      if (!validFormats.includes(image.type)) {
-        validationErrors.image =
-          "Profile picture must be in JPEG, PNG, or GIF format";
-      }
-    }
+ 
     if (!userData.address) {
       validationErrors.addressError = "fill in the address field";
     } else {
@@ -191,7 +186,6 @@ const UserProfile = () => {
     formData.append("name",userData.name)
     formData.append("phone",userData.phone as string)
     formData.append("dob",userData.dob as string)
-    formData.append('image',image as Blob)
     formData.append("gender",userData.gender as string)
     formData.append("bloodGroup",userData.bloodGroup as string);
     formData.append("street", userData.address.street as string);
@@ -199,7 +193,7 @@ const UserProfile = () => {
     formData.append("state", userData.address.state as string);
     formData.append("zip", userData.address.postalCode.toString());
  try{
-     const response = await instance.post("/profileUpdate",formData,{headers:{"Content-Type":"multipart/form-data"}});
+     const response = await instance.post("/profileUpdate",formData);
      if(response.data.success){
         toast.success(response.data.message, {
           position: "top-right",
@@ -213,7 +207,8 @@ const UserProfile = () => {
           transition: Zoom,
         });
      }
-     console.log(response.data)
+
+     console.log("response",response.data)
      setLoading(false)
      setUserData(response.data.data)
 
@@ -225,16 +220,18 @@ const UserProfile = () => {
 
  }
   };
-  const handleImage = () => {
-    if (
-      inputRef.current &&
-      inputRef.current.files &&
-      inputRef.current.files[0]
-    ) {
-      setImageURL(URL.createObjectURL(inputRef.current.files[0]));
-     setImage(inputRef.current.files[0])
+  const handleChangePassword=async()=>{
+    try{
+      setPasswordModalOpen(true);
+      const response = await instance.post("/request-password-reset",{email:userData.email});
+
+
     }
-  };
+    catch(error){
+    
+    }
+  }
+
 
   return (
     <>
@@ -263,9 +260,8 @@ const UserProfile = () => {
               alt=""
             />
 
-            <input type="file" ref={inputRef} hidden onChange={handleImage} />
             <FaEdit
-              onClick={() => inputRef.current?.click()}
+              onClick={() => setModalOpen(true)}
               className="absolute top-44 h-8 w-6 right-48 cursor-pointer"
             />
           </div>
@@ -335,7 +331,6 @@ const UserProfile = () => {
                   readOnly
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 />
-                <FaEdit className="absolute top-4 right-4 cursor-pointer" />
               </div>
             </div>
             <div className="mb-5">
@@ -356,7 +351,10 @@ const UserProfile = () => {
                   readOnly
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 />
-                <FaEdit className="absolute top-4 right-4 cursor-pointer" />
+                <FaEdit
+                  onClick={handleChangePassword}
+                  className="absolute top-4 right-4 cursor-pointer"
+                />
               </div>
             </div>
 
@@ -530,6 +528,18 @@ const UserProfile = () => {
             </div>
           </form>
         </div>
+        {passwordModalOpen && (
+          <EmailChangeModal
+            modalOpen={(status: boolean) => setPasswordModalOpen(status)}
+          />
+        )}
+        {modalOpen && (
+          <ProfileModal
+            setAvatar={(url: string) => setImageURL(url)}
+            closeModal={() => setModalOpen(false)}
+            side={"user"}
+          />
+        )}
       </div>
     </>
   );

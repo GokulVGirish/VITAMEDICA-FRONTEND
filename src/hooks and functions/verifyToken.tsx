@@ -2,8 +2,8 @@
 
 import { useNavigate } from 'react-router-dom';
 import instance from '../Axios/axios';
-import adminInstance from '../Axios/adminInstance';
 import doctorInstance from '../Axios/doctorInstance';
+import adminInstance from '../Axios/adminInstance';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
@@ -18,10 +18,11 @@ const useVerifyToken = (userType="") => {
           
            response=await adminInstance.get("/verify-token")
              if (response.status === 401) {
-                navigate("/admin/login");
+                // navigate("/admin/login");
         }
         
        }else if (userType === "doctor") {
+        console.log("called")
         response=await doctorInstance.get("/verify-token")
            if (response.status === 401) {
             
@@ -38,7 +39,7 @@ const useVerifyToken = (userType="") => {
       }else {
          response = await instance.get("/verify-token");
          if (response.status === 401) {
-           navigate("/login");
+          //  navigate("/login");
          }
        }
 

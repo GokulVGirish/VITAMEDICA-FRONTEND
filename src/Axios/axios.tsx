@@ -9,9 +9,14 @@ const instance=axios.create({
         'Content-Type': 'application/json',
     }
 })
+instance.defaults.withCredentials=true
 instance.interceptors.request.use(
     (request)=>{
+        console.log("called myy")
+   
         const accessToken=Cookies.get("accessToken")
+             console.log("aaeffefccxxx",accessToken);
+        console.log("called as")
         if(accessToken){
             request.headers.Authorization=`Bearer ${accessToken}`
         }
@@ -29,7 +34,7 @@ instance.interceptors.response.use(
                  richColors:true,
                  duration:1500,
                  onAutoClose:()=>{
-                    return window.location.href = "/login";
+                    // return window.location.href = "/login";
                  }
             })
         }

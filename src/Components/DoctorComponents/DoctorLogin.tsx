@@ -24,6 +24,7 @@ const DoctorLogin=()=>{
           display: "flex",
           justifyContent: "center",
         };
+        
         useEffect(()=>{
                if (error) {
                  toast.error(error, {

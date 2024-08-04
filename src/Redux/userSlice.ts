@@ -7,8 +7,8 @@ import { AxiosError } from "axios";
 export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: string}>("user/verifyOtp",async(otp,thunkAPI)=>{
     try{
         const response=await instance.post("/verifyOtpSignup",otp)
-        Cookie.set("accessToken",response.data.accessToken, { expires: 1 / 24 })
-        Cookie.set("refreshToken",response.data.refreshToken,{expires:1})
+        Cookie.set("accessToken",response.data.accessToken)
+        Cookie.set("refreshToken",response.data.refreshToken)
         console.log("response of signup",response.data)
     
         return response.data
@@ -32,10 +32,10 @@ export const loginUser=createAsyncThunk<any,{email:string,password:string},{reje
 
     try{
         const response=await instance.post("/login",data)
-       Cookie.set("accessToken", response.data.accessToken, { expires: 1 / 24 }); 
+       Cookie.set("accessToken", response.data.accessToken); 
 
 
-      Cookie.set("refreshToken", response.data.refreshToken, { expires: 1 }); 
+      Cookie.set("refreshToken", response.data.refreshToken); 
         return response.data
 
     }
@@ -55,11 +55,9 @@ export const loginUser=createAsyncThunk<any,{email:string,password:string},{reje
 export const googleLogin=createAsyncThunk<any,{email:string;name:string,sub:string},{rejectValue: string}>("user/googleLogin",async(data,thunkAPI)=>{
     try{
         const response = await instance.post("/googleLogin", data);
-         Cookie.set("accessToken", response.data.accessToken, {
-           expires: 1 / 24,
-         });
+         Cookie.set("accessToken", response.data.accessToken);
 
-         Cookie.set("refreshToken", response.data.refreshToken, { expires: 1 });
+         Cookie.set("refreshToken", response.data.refreshToken);
          return response.data;
 
     }
