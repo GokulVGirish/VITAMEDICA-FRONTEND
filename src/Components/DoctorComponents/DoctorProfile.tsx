@@ -14,6 +14,7 @@ export type Doctor ={
   gender: string;
   department: string;
   password: string;
+  description:string|null
   image:string|null
   documentsUploaded?: boolean;
   documents?: {
@@ -25,6 +26,8 @@ export type Doctor ={
   } | null;
   isBlocked?: boolean;
   status?: "Pending" | "Submitted" | "Verified";
+  fees:string|null;
+  degree:string|null
 }
 const DoctorProfile = () => {
     const [userData, setUserData] = useState<Doctor>({
@@ -36,6 +39,9 @@ const DoctorProfile = () => {
       department: "",
       password: "",
       image:"",
+      description:"",
+      fees:"",
+      degree:""
     });
     const inputRef = useRef<HTMLInputElement>(null);
       const [imageURL, setImageURL] = useState<string>();
@@ -89,6 +95,36 @@ const DoctorProfile = () => {
          } else if (!phoneRegex.test(userData.phone)) {
            validationErrors.phone = "Phone number must be 10 digits";
          }
+         if(!userData.degree?.trim()){
+          return toast.error("Degree Field Is Missing",{richColors:true,duration:1500})
+         }
+          
+         
+
+  if (userData.fees == null || (userData?.fees as String).trim() === "") {
+   return toast.error("Fees are required", {
+     richColors: true,
+     duration: 1500,
+   });
+  } else if (isNaN(Number(userData.fees))) {
+  
+              return toast.error("Fees must be a number", {
+                richColors: true,
+                duration: 1500,
+              });
+  } else {
+    const feesNumber = Number(userData.fees);
+    if (feesNumber < 300 || feesNumber > 3000) {
+      validationErrors.fees = "Fees should be between 300 and 3000";
+      return toast.error("Fees should be between 300 and 3000", {
+        richColors: true,
+        duration: 1500,
+      });
+    }
+    }
+  
+
+
            if(Object.keys(validationErrors).length>0){
             setMyErrors(validationErrors)
             return
@@ -121,7 +157,7 @@ const DoctorProfile = () => {
     }
   return (
     <>
-      <div className="flex items-center justify-center p-12 h-full  mb-40">
+      <div className="flex items-center mt-36 justify-center p-12 h-full  mb-40">
         <div className="mx-auto w-full  max-w-[550px] bg-gray-100">
           <div className="w-full relative flex justify-center pt-10 ">
             <img
@@ -210,7 +246,6 @@ const DoctorProfile = () => {
                   readOnly
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#05acb4] focus:shadow-md"
                 />
-               
               </div>
             </div>
             <div className="mb-5">
@@ -230,6 +265,66 @@ const DoctorProfile = () => {
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#05acb4] focus:shadow-md"
                 />
                 <FaEdit className="absolute top-4 right-4 cursor-pointer" />
+              </div>
+            </div>
+            <div className="mb-5">
+              <label
+                htmlFor="email"
+                className="mb-3 block text-base font-medium text-[#07074D]"
+              >
+                Degree
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={userData.degree || ""}
+                  name="degree"
+                  onChange={(e) =>
+                    setUserData({ ...userData, degree: e.target.value })
+                  }
+                  placeholder="Enter your Degree"
+                 
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#05acb4] focus:shadow-md"
+                />
+              </div>
+            </div>
+            <div className="mb-5">
+              <label
+                htmlFor="email"
+                className="mb-3 block text-base font-medium text-[#07074D]"
+              >
+                Fees
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  onChange={(e) =>
+                    setUserData({ ...userData, fees: e.target.value })
+                  }
+                  value={userData.fees || ""}
+                  name="fees"
+                  placeholder="Enter your consultation fees"
+                
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#05acb4] focus:shadow-md"
+                />
+              </div>
+            </div>
+            <div className="mb-5">
+              <div className="w-full px-3">
+                <label
+                  htmlFor="email"
+                  className="mb-3 block text-base font-medium text-[#07074D]"
+                >
+                  Profile Description
+                </label>
+                <textarea
+                  onChange={(e) =>
+                    setUserData({ ...userData, description: e.target.value })
+                  }
+                  value={(userData?.description as string) || ""}
+                  rows={10}
+                  className="appearance-none rounded-lg block w-full bg-gray-200 text-gray-700 border border-gray-200 h-24  py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                ></textarea>
               </div>
             </div>
             <div className="mb-5">

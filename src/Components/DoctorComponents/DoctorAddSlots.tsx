@@ -3,23 +3,30 @@ import React, { useState } from "react";
 import moment from "moment"
 import {toast} from "sonner"
 import SlotsList from "./DoctorSlotsList";
+import instance from "../../Axios/doctorInstance";
+import { AxiosError } from "axios";
 
 const DoctorAddSlots = () => {
   const [selectStartDate, setSelectStartDate] = useState<Date|null>();
+
   const [selectedSlots,setSelectedSlots]=useState<{ start: Date; end: Date }[]>([])
     const today = new Date().toISOString().split("T")[0]; 
    
      const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedSlots([])
        const date = new Date(e.target.value);
        setSelectStartDate(date);
      };
+       console.log("selected", selectStartDate);
 
    
        const timeSlots: { start: Date; end: Date }[] = [];
          const timeNow = new Date();
 
-       const startTime = new Date(2023, 3, 1, 9, 0); 
-       const endTime = new Date(2023, 3, 1, 18, 0);
+       const startTime = new Date();
+       startTime.setHours(9, 0, 0, 0);
+       const endTime = new Date();
+       endTime.setHours(18, 0, 0, 0);
 
        let currentTime = startTime;
        while (currentTime < endTime) {
@@ -42,9 +49,12 @@ const DoctorAddSlots = () => {
                 });
 
             }
-             if(selectStartDate?.toISOString().split("T")[0] === today &&
-               slot.end <= timeNow){
-                return toast.error("The time have passed to add to slot",{richColors:true,duration:1500})
+            const selectedDate = selectStartDate.toISOString().split("T")[0];
+               if (selectedDate === today && slot.start <= timeNow) {
+                 return toast.error("The time has passed to add this slot", {
+                   richColors: true,
+                   duration: 1500,
+                 });
                }
             setSelectedSlots((prevState)=>{
                 const isSelected=prevState.some(s=>s.start.getTime()===slot.start.getTime() &&s.end.getTime()===slot.end.getTime())
@@ -63,8 +73,48 @@ const DoctorAddSlots = () => {
 
 
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
+    if(!selectStartDate||selectedSlots.length===0){
+     return toast.error("Please select a date and at least one slot", {
+       richColors: true,
+       duration: 1500,
+     });
+    }
+    const formattedSlots=selectedSlots.map(slot=>({start:slot.start.toISOString(),end:slot.end.toISOString()}))
+    const data={
+      date:selectStartDate.toISOString(),
+      slots:formattedSlots
+    }
+   try{
+     const response = await instance.post("/add-slot", data);
+     if (response.data.success) {
+         setSelectStartDate(null);
+         setSelectedSlots([])
+       return toast.success("Sucessfully added Slots", {
+         richColors: true,
+         duration: 1500,
+       });
+    
+     }
   
+
+   }
+   catch(error){
+    if(error instanceof AxiosError){
+      toast.error(error.response?.data.message, {
+        richColors: true,
+        duration: 1500,
+      });
+    }else{
+      toast.error("Unknown error", {
+        richColors: true,
+        duration: 1500,
+      });
+
+    }
+
+    
+   }
    
   };
 

@@ -13,6 +13,7 @@ import DoctorAddSlots from "../Components/DoctorComponents/DoctorAddSlots"
 import ErrorPage from "../Components/extra/ErrorPage"
 
 
+
 const Dummy = () => {
   const status = useAppSelector((state) => state.doctor.docStatus);
   const navigate=useNavigate()

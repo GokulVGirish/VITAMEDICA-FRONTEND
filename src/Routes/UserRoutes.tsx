@@ -8,6 +8,8 @@ import UserProfile from "../Components/UserComponents/UserProfile"
 import UserAppointments from "../Components/UserComponents/UserAppointments"
 import ErrorPage from "../Components/extra/ErrorPage"
 import PasswordResetPage from "../Components/UserComponents/PasswordResetPage"
+import BookAppointmentsList from "../Pages/UserPages/BookAppointmentsList"
+import UserDoctorDetailPage from "../Pages/UserPages/UserDoctorDetailPage"
 
 
 const UserRoute=()=>{
@@ -20,6 +22,8 @@ const UserRoute=()=>{
         <Route path="/signup" element={<UserSignUpPage />} />
         <Route path="/otpVerify" element={<UserOtpVerification />} />
         <Route path="/reset-password" element={<PasswordResetPage/>}  />
+        <Route path="/doctorBooking" element={<BookAppointmentsList/>}/>
+        <Route path="/doctorDetail/:id" element={<UserDoctorDetailPage/>}/>
 
         {/* Profile layout */}
         <Route path="/profile" element={<UserProfileLayout />}>
