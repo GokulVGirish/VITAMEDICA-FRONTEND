@@ -25,7 +25,7 @@ const Navbar=()=>{
 
 
     return (
-      <div className="sticky top-0 z-50 ">
+      <div className="sticky top-0 z-20 ">
         <nav className="flex justify-between relative bg-[#928EDE] text-white w-screen">
           <div className="px-5 xl:px-12 py-6 flex w-full items-center justify-between ">
             <a className="text-3xl font-bold font-heading" href="#">

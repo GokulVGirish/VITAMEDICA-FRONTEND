@@ -10,6 +10,7 @@ import ErrorPage from "../Components/extra/ErrorPage"
 import PasswordResetPage from "../Components/UserComponents/PasswordResetPage"
 import BookAppointmentsList from "../Pages/UserPages/BookAppointmentsList"
 import UserDoctorDetailPage from "../Pages/UserPages/UserDoctorDetailPage"
+import UserPaymentPage from "../Pages/UserPages/UserPaymentPage"
 
 
 const UserRoute=()=>{
@@ -24,6 +25,7 @@ const UserRoute=()=>{
         <Route path="/reset-password" element={<PasswordResetPage/>}  />
         <Route path="/doctorBooking" element={<BookAppointmentsList/>}/>
         <Route path="/doctorDetail/:id" element={<UserDoctorDetailPage/>}/>
+        <Route path="/payment/:id" element={<UserPaymentPage/>} />
 
         {/* Profile layout */}
         <Route path="/profile" element={<UserProfileLayout />}>

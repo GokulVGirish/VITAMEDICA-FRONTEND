@@ -3,18 +3,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import Calendar from "react-calendar";
+import Swal from "sweetalert2";
+import {toast} from "sonner"
 import instance from "../../Axios/axios";
 import { useEffect, useState } from "react";
+import { json, useNavigate } from "react-router-dom";
+
 import moment from "moment";
 type PropsType={
     closeModal:()=>void
     id:string
 }
+
 const SlotBookingModal=({closeModal,id}:PropsType)=>{
     const [availbleDates,setAvailableDates]=useState<Date[]>([])
     const [selectedDate,setSelectedDate]=useState<Date|null>()
     const [slots,setSlots]=useState<any[]>([])
+    const [timeSelected,setTimeSelected]=useState<{start:string}|null>(null)
+    const navigate=useNavigate()
+    console.log("slots",slots)
+    console.log("selectedDate", moment(selectedDate).format("YYYY-MM-DD"));
+    console.log("timeSelected",timeSelected?.start)
 
     useEffect(()=>{
         const getSlots=async()=>{
@@ -55,10 +64,55 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
        }
 
     },[selectedDate])
+    const handleTimeSelect=(slot:any)=>{
+      if(!slot.availability || slot.locked){
+        setTimeSelected(null)
+        return toast.error("This Slot is reserved", {
+          richColors: true,
+          duration: 1500,
+        });
+      }
+      setTimeSelected(slot)
+
+    }
+    const handleBooking=()=>{
+        if(!selectedDate || !timeSelected){
+            return toast.error("Select a Date and Slot time",{richColors:true,duration:1500})
+        }
+           Swal.fire({
+             title: "Proceed for booking?",
+             text: "You won't be able to revert this!",
+             icon: "warning",
+             showCancelButton: true,
+             confirmButtonText: "Yes, proceed!",
+             cancelButtonText: "No, cancel",
+           }).then((result) => {
+             if (result.isConfirmed) {
+               // Handle "OK" button click
+               const bookingDetails = {
+                 date: moment(selectedDate).format("YYYY-MM-DD"),
+                 slotTime:timeSelected,
+
+               };
+               localStorage.setItem(
+                 "bookingDetails",
+                 JSON.stringify(bookingDetails)
+               );
+        
+               navigate(`/payment/${id}`)
+
+        
+               console.log("OK button clicked");
+             } else if (result.dismiss === Swal.DismissReason.cancel) {
+               // Handle "Cancel" button click
+               console.log("Cancel button clicked");
+             }
+           });
+    }
  
    return (
      <div
-       className="relative z-50"
+       className="relative z-30"
        aria-labelledby="crop-image-dialog"
        role="dialog"
        aria-modal="true"
@@ -80,6 +134,7 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
 
              <section className="py-12 bg-white rounded-lg mx-10 my-10  text-gray-800 sm:py-24">
                <div className="mx-auto  flex max-w-md flex-col lg:justify-around rounded-lg lg:max-w-screen-xl lg:flex-row">
+                
                  <div className="border rounded-lg border-gray-100 flex justify-center lg:justify-normal  shadow-gray-500/20 mt-8 mb-8 max-w-md bg-white shadow-sm sm:rounded-lg sm:shadow-lg lg:mt-0">
                    <form className="p-4  sm:p-8">
                      <div className="text-left mx-auto lg:mx-0 mt-4">
@@ -125,13 +180,23 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
                      <div>
                        {slots &&
                          slots.map((slot) => {
-                         
                            return (
                              <label
                                key={slot._id}
-                               className={`flex ${slot.availability?"bg-gray-100":"bg-red-400"} bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3  hover:bg-indigo-300 cursor-pointer `}
+                               className={`flex ${
+                                 slot.availability&&!slot.locked
+                                   ? "bg-gray-100"
+                                   : "bg-red-400"
+                               } bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3  hover:bg-indigo-300 cursor-pointer `}
                              >
-                               <input type="radio" name="Country" />
+                               <input
+                                 type="radio"
+                                 onClick={() =>
+                                   handleTimeSelect(slot)
+                                   
+                                 }
+                                 name="Country"
+                               />
                                <i className="pl-2">
                                  {" "}
                                  {moment(slot.start).format("h:mm A")} -{" "}
@@ -143,7 +208,10 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
                      </div>
                    </form>
                    <div className="px-3 flex justify-center py-3">
-                     <button className="py-2.5 px-6 rounded-lg text-sm font-medium text-white bg-[#928EDE]">
+                     <button
+                       onClick={handleBooking}
+                       className="py-2.5 px-6 rounded-lg text-sm font-medium text-white bg-[#928EDE]"
+                     >
                        Confirm
                      </button>
                    </div>
