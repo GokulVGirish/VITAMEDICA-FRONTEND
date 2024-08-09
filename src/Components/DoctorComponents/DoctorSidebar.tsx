@@ -1,6 +1,6 @@
 import logo from '@/assets/logo3.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChartPie } from '@fortawesome/free-solid-svg-icons';
+import { faChartPie, faWallet } from '@fortawesome/free-solid-svg-icons';
 import { faUserDoctor } from '@fortawesome/free-solid-svg-icons';
 import { faPersonHalfDress } from '@fortawesome/free-solid-svg-icons/faPersonHalfDress';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
@@ -39,6 +39,11 @@ const DoctorSidebar=()=>{
           <span onClick={()=>navigate("/doctor/profile")}  className="flex items-center px-4 py-2 mt-2 gap-5 text-[#364f6b] hover:bg-gray-700">
              <FontAwesomeIcon icon={faUserDoctor} />
             Doctor Profile
+          </span>
+        
+          <span onClick={()=>navigate("/doctor/wallet")}  className="flex items-center px-4 py-2 mt-2 gap-5 text-[#364f6b] hover:bg-gray-700">
+             <FontAwesomeIcon icon={faWallet} />
+            Wallet
           </span>
         
           <span  onClick={handleLogout}   className="flex cursor-pointer items-center px-4 py-2 mt-2 gap-5 text-[#364f6b] hover:bg-gray-700">

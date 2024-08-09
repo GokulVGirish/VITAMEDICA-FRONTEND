@@ -6,6 +6,7 @@ import { AxiosError } from "axios";
 import logo from "@/assets/logo1.png";
 import moment from "moment";
 import razorPay from "../../PaymentOptions/razorPay";
+import { useNavigate } from "react-router-dom";
 
 
 const PaymentComponent = () => {
@@ -16,6 +17,7 @@ const PaymentComponent = () => {
   const [paymentMethod, setPaymentMethod] = useState<string|null>(null);
   const slotDetailUnparsed=localStorage.getItem("bookingDetails")
   const slotDetails=JSON.parse(slotDetailUnparsed as string)
+  const navigate=useNavigate()
   console.log('slotDetails',slotDetails)
 
 
@@ -69,7 +71,7 @@ const PaymentComponent = () => {
     
       if (response.data.success) {
         console.log("order",response.data.order);
-        razorPay(response.data.order,id as string,slotDetails);
+        razorPay(response.data.order,id as string,slotDetails,navigate);
       }
 
   }

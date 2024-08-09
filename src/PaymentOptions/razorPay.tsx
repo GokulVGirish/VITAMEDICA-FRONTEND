@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import instance from "../Axios/axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-const  razorPay=(order:any,id:string,slotDetails:any)=>{
+const  razorPay=(order:any,id:string,slotDetails:any,navigate:Function):any=>{
 
     const amount = String(order.amount);
     console.log("amount",amount)
@@ -28,9 +28,27 @@ var options = {
        slotDetails,
        fees: amount,
      });
-     if (result.data.success) {
+  
+    if (result.data.success) {
+      localStorage.setItem(
+        "appointmentData",
+        JSON.stringify({
+          date: result.data.appointment.date,
+          start: result.data.appointment.start,
+          end: result.data.appointment.end
+        })
+      );
+     
        
-     }
+        await navigate(
+          `/paymentSuccess`
+        );
+    
+    }
+    
+   
+       
+     
 
    }catch(error){
     if(error instanceof AxiosError){
@@ -54,14 +72,16 @@ var options = {
 };
 var rzp1 = new window.Razorpay(options);
 rzp1.on("payment.failed", function (response: any) {
-  alert(response.error.code);
-  alert(response.error.description);
-  alert(response.error.source);
-  alert(response.error.step);
-  alert(response.error.reason);
-  alert(response.error.metadata.order_id);
-  alert(response.error.metadata.payment_id);
+  // alert(response.error.code);
+  // alert(response.error.description);
+  // alert(response.error.source);
+  // alert(response.error.step);
+  // alert(response.error.reason);
+  navigate("/paymentFailure",{state:{reason:response.error.reason}})
+  // alert(response.error.metadata.order_id);
+  // alert(response.error.metadata.payment_id);
 });
+
 rzp1.open();
 }
 export default razorPay

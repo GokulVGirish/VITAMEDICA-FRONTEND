@@ -11,6 +11,7 @@ import { faCircleCheck } from "@fortawesome/free-solid-svg-icons"
 import DoctorDocumentUpload from "../Components/DoctorComponents/DoctorDocumentUpload"
 import DoctorAddSlots from "../Components/DoctorComponents/DoctorAddSlots"
 import ErrorPage from "../Components/extra/ErrorPage"
+import DoctorWallet from "../Components/DoctorComponents/DoctorWallet"
 
 
 
@@ -91,6 +92,7 @@ const DoctorRoute=()=>{
             <Route path="profile" element={<DoctorProfile />} />
             <Route path="/uploadDocs" element={<DoctorDocumentUpload />} />
             <Route path="addSlot" element={<DoctorAddSlots />} />
+            <Route path="wallet" element={<DoctorWallet/>}/>
           </Route>
           <Route path="/login" element={<DoctorLoginPage />} />
           <Route path="/signup" element={<DoctorSignUpPage />} />

@@ -11,6 +11,8 @@ import PasswordResetPage from "../Components/UserComponents/PasswordResetPage"
 import BookAppointmentsList from "../Pages/UserPages/BookAppointmentsList"
 import UserDoctorDetailPage from "../Pages/UserPages/UserDoctorDetailPage"
 import UserPaymentPage from "../Pages/UserPages/UserPaymentPage"
+import PaymentSuccessPage from "../Pages/UserPages/PaymentSuccessPage"
+import PaymentFailurePage from "../Pages/UserPages/PaymentFailurePage"
 
 
 const UserRoute=()=>{
@@ -22,10 +24,12 @@ const UserRoute=()=>{
         <Route path="/login" element={<UserLoginPage />} />
         <Route path="/signup" element={<UserSignUpPage />} />
         <Route path="/otpVerify" element={<UserOtpVerification />} />
-        <Route path="/reset-password" element={<PasswordResetPage/>}  />
-        <Route path="/doctorBooking" element={<BookAppointmentsList/>}/>
-        <Route path="/doctorDetail/:id" element={<UserDoctorDetailPage/>}/>
-        <Route path="/payment/:id" element={<UserPaymentPage/>} />
+        <Route path="/reset-password" element={<PasswordResetPage />} />
+        <Route path="/doctorBooking" element={<BookAppointmentsList />} />
+        <Route path="/doctorDetail/:id" element={<UserDoctorDetailPage />} />
+        <Route path="/payment/:id" element={<UserPaymentPage />} />
+        <Route path="/paymentSuccess" element={<PaymentSuccessPage />} />
+        <Route path="/paymentFailure" element={<PaymentFailurePage />} />
 
         {/* Profile layout */}
         <Route path="/profile" element={<UserProfileLayout />}>
