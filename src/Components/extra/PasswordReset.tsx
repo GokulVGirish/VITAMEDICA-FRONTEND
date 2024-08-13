@@ -57,8 +57,9 @@ const PasswordReset = () => {
 
             }
             console.log("done")
+
            try{
-             const response = await instance.post(`/reset-password/${token}`, {
+             const response = await instance.post(`/password/reset/${token}`, {
                password,
              });
              if (response.data.success) {

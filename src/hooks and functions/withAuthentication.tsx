@@ -77,7 +77,7 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
             const accessToken = Cookies.get("accessToken");
             if(accessToken){
                const response = await fetch(
-                 "http://localhost:4000/verify-token",
+                 "http://localhost:4000/token/verify",
                  {
                    method: "GET",
                    headers: {

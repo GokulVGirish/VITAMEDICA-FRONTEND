@@ -47,15 +47,38 @@ const PaymentComponent = () => {
     getDoctorDetail();
   }, []);
   const handlePayment=async()=>{
-    console.log("inside")
-    if(!paymentMethod){
-        return toast.error("Select A Payment Method")
+   
+    const now = new Date();
+    const currentHours = now.getHours();
+    const currentMinutes = now.getMinutes();
+
+    
+    const slotStart = new Date(slotDetails.slotTime.start);
+    const slotStartHours = slotStart.getHours();
+    const slotStartMinutes = slotStart.getMinutes();
+
+   
+    if (slotDetails.date && moment(slotDetails.date).isSame(now, "day")) {
+     
+      if (
+        slotStartHours < currentHours ||
+        (slotStartHours === currentHours && slotStartMinutes <= currentMinutes)
+      ) {
+        return toast.error(" Cant Book slot.This slot's time has already passed.", {
+          richColors: true,
+          duration: 1500,
+        });
+      }
     }
+     if (!paymentMethod) {
+       return toast.error("Select A Payment Method");
+     }
+
   try{
-     const lockResponse = await instance.post("/lock-slot", {
+     const lockResponse = await instance.post("/appointments/lock-slot", {
        doctorId: doctor?._id,
        date: slotDetails?.date,
-       slotId: slotDetails?.slotTime?._id
+       slotId: slotDetails?.slotTime?._id,
      });
         console.log("lock response", lockResponse.data);
 
@@ -63,7 +86,7 @@ const PaymentComponent = () => {
    
        return toast.error(lockResponse.data.message,{richColors:true,duration:1500});
      }
-      const response = await instance.post("/order", {
+      const response = await instance.post("/appointments/order", {
         amount: doctor?.fees,
         currency: "INR",
         receipt: doctor?._id,

@@ -158,7 +158,7 @@ const UserSignUp = () => {
 
       setTimeout(() => {
         setLoading(false);
-        navigate("/otpVerify", { replace: true });
+        navigate("/signup/verify-otp", { replace: true });
       }, 2000);
     } else {
       toast.error(response.data.message, {
@@ -215,7 +215,7 @@ const UserSignUp = () => {
                 console.log(data);
                 setLoading(true)
                try{
-                 const response=await instance.post("/googleSignup",data)
+                 const response = await instance.post("/google/signup", data);
                 if(response.data.success){
                      Cookies.set("accessToken", response.data.accessToken, {
                        expires: 1 / 24,

@@ -12,6 +12,8 @@ import DoctorDocumentUpload from "../Components/DoctorComponents/DoctorDocumentU
 import DoctorAddSlots from "../Components/DoctorComponents/DoctorAddSlots"
 import ErrorPage from "../Components/extra/ErrorPage"
 import DoctorWallet from "../Components/DoctorComponents/DoctorWallet"
+import DoctorAppointments from "../Components/DoctorComponents/DoctorAppointments"
+import DoctorExistingSlots from "../Components/DoctorComponents/DoctorExistingSlots"
 
 
 
@@ -93,6 +95,7 @@ const DoctorRoute=()=>{
             <Route path="/uploadDocs" element={<DoctorDocumentUpload />} />
             <Route path="addSlot" element={<DoctorAddSlots />} />
             <Route path="wallet" element={<DoctorWallet/>}/>
+            <Route path="appointment" element={<DoctorAppointments/>}/>
           </Route>
           <Route path="/login" element={<DoctorLoginPage />} />
           <Route path="/signup" element={<DoctorSignUpPage />} />

@@ -193,7 +193,7 @@ const UserProfile = () => {
     formData.append("state", userData.address.state as string);
     formData.append("zip", userData.address.postalCode.toString());
  try{
-     const response = await instance.post("/profileUpdate",formData);
+     const response = await instance.put("/profile", formData);
      if(response.data.success){
         toast.success(response.data.message, {
           position: "top-right",
@@ -223,7 +223,9 @@ const UserProfile = () => {
   const handleChangePassword=async()=>{
     try{
       setPasswordModalOpen(true);
-      const response = await instance.post("/request-password-reset",{email:userData.email});
+      const response = await instance.post("/password/reset-request", {
+        email: userData.email,
+      });
 
 
     }

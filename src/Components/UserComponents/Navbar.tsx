@@ -30,6 +30,7 @@ const Navbar=()=>{
           <div className="px-5 xl:px-12 py-6 flex w-full items-center justify-between ">
             <a className="text-3xl font-bold font-heading" href="#">
               <img
+              onClick={()=>navigate("/")}
                 className="h-9 rounded-lg w-44 shadow-md"
                 src={logo}
                 alt="logo"

@@ -25,11 +25,14 @@ const Otp=()=>{
         const verify=async()=>{
          
           try{
-               const response = await axios.get("http://localhost:4000/verify-token", {
-             headers: {
-               Authorization: `Bearer ${accessToken}`
-              }
-                });
+               const response = await axios.get(
+                 "http://localhost:4000/token/verify",
+                 {
+                   headers: {
+                     Authorization: `Bearer ${accessToken}`,
+                   },
+                 }
+               );
              
                 if(response.status===200){
                   navigate("/")
@@ -127,7 +130,7 @@ const Otp=()=>{
 
       
      try{
-       const response = await instance.post("/resendOtp");
+       const response = await instance.post("/otp/resend");
       if(response.data.success){ 
         setSeconds(120);
            toast.success(response.data.message, {

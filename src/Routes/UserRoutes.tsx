@@ -13,6 +13,7 @@ import UserDoctorDetailPage from "../Pages/UserPages/UserDoctorDetailPage"
 import UserPaymentPage from "../Pages/UserPages/UserPaymentPage"
 import PaymentSuccessPage from "../Pages/UserPages/PaymentSuccessPage"
 import PaymentFailurePage from "../Pages/UserPages/PaymentFailurePage"
+import UserWallet from "../Components/UserComponents/UserWallet"
 
 
 const UserRoute=()=>{
@@ -35,6 +36,7 @@ const UserRoute=()=>{
         <Route path="/profile" element={<UserProfileLayout />}>
           <Route path="" element={<UserProfile />} />
           <Route path="appointment" element={<UserAppointments />} />
+          <Route path="wallet" element={<UserWallet/>}/>
         </Route>
         <Route path="*" element={<ErrorPage side="user" />} />
         {/* Profile layout end */}

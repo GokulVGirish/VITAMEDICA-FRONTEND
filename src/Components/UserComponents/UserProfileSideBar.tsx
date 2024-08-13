@@ -2,6 +2,7 @@ import logo from '@/assets/logo2.png';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faWallet } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'js-cookie';
 
 
@@ -18,7 +19,7 @@ const UserProfileSideBar=()=>{
       <div className="hidden md:flex flex-col w-64 bg-[#928EDE]">
         <div className="flex items-center justify-center h-16 bg-[#928EDE]">
           <span className="text-white font-bold uppercase">
-            <img src={logo} alt="logo" className=" w-44 rounded-lg shadow-xl" />
+            <img onClick={()=>navigate("/")} src={logo} alt="logo" className=" w-44 rounded-lg shadow-xl" />
           </span>
         </div>
         <div className="flex flex-col flex-1 overflow-y-auto">
@@ -60,6 +61,13 @@ const UserProfileSideBar=()=>{
                 />
               </svg>
               Appointments
+            </span>
+            <span
+              onClick={() => navigate("/profile/wallet")}
+              className="flex items-center px-4 py-2 mt-2 gap-5 text-[#364f6b] hover:bg-gray-700"
+            >
+              <FontAwesomeIcon icon={faWallet} />
+              Wallet
             </span>
             <span
               onClick={handleLogout}

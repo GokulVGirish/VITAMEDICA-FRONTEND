@@ -21,13 +21,16 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
     const [slots,setSlots]=useState<any[]>([])
     const [timeSelected,setTimeSelected]=useState<{start:string}|null>(null)
     const navigate=useNavigate()
+    const today=new Date()
+    console.log("availabledates",availbleDates)
+    console.log("id",id)
     console.log("slots",slots)
     console.log("selectedDate", moment(selectedDate).format("YYYY-MM-DD"));
     console.log("timeSelected",timeSelected?.start)
 
     useEffect(()=>{
         const getSlots=async()=>{
-            const response=await instance.get(`/getAvailableDate/${id}`)
+            const response=await instance.get(`/doctors/${id}/availability`)
             if(response.data.success){
                 console.log("dates",response.data.dates)
                 const dates = response.data.dates.map((date:string) => new Date(date));
@@ -46,7 +49,7 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
         const getTimeSlots=async()=>{
             try{
                 const response = await instance.get(
-                  `/doctor/${id}/slots?date=${selectedDate?.toISOString()}`
+                  `/doctors/${id}/slots?date=${selectedDate?.toISOString()}`
                 );
                 if(response.data.success){
                     console.log("dataa", response.data.slots);
@@ -65,13 +68,37 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
 
     },[selectedDate])
     const handleTimeSelect=(slot:any)=>{
-      if(!slot.availability || slot.locked){
-        setTimeSelected(null)
-        return toast.error("This Slot is reserved", {
-          richColors: true,
-          duration: 1500,
-        });
-      }
+         const now = new Date(); // Current date and time
+
+      
+         const currentHours = now.getHours();
+         const currentMinutes = now.getMinutes();
+         const slotStart = new Date(slot.start);
+         const slotStartHours = slotStart.getHours();
+         const slotStartMinutes = slotStart.getMinutes();
+
+      
+         if (selectedDate && moment(selectedDate).isSame(today, "day")) {
+    
+           if (
+             slotStartHours < currentHours ||
+             (slotStartHours === currentHours &&
+               slotStartMinutes <= currentMinutes)
+           ) {
+             setTimeSelected(null);
+             return toast.error("This slot's time has already passed.", {
+               richColors: true,
+               duration: 1500,
+             });
+           }
+         }
+          if (!slot.availability || slot.locked) {
+            setTimeSelected(null);
+            return toast.error("This Slot is reserved", {
+              richColors: true,
+              duration: 1500,
+            });
+          }
       setTimeSelected(slot)
 
     }
@@ -79,6 +106,7 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
         if(!selectedDate || !timeSelected){
             return toast.error("Select a Date and Slot time",{richColors:true,duration:1500})
         }
+
            Swal.fire({
              title: "Proceed for booking?",
              text: "You won't be able to revert this!",
@@ -143,6 +171,7 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
                          <h2 className="text-red-500">No AvailableSlots</h2>
                        )}
                        <DatePicker
+                       minDate={today}
                          onChange={(date) => setSelectedDate(date)}
                          includeDates={availbleDates}
                          inline

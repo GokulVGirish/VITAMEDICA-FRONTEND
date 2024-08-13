@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 
 export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: string}>("user/verifyOtp",async(otp,thunkAPI)=>{
     try{
-        const response=await instance.post("/verifyOtpSignup",otp)
+        const response = await instance.post("/signup/verify-otp", otp);
         Cookie.set("accessToken",response.data.accessToken)
         Cookie.set("refreshToken",response.data.refreshToken)
         console.log("response of signup",response.data)
@@ -54,7 +54,7 @@ export const loginUser=createAsyncThunk<any,{email:string,password:string},{reje
 })
 export const googleLogin=createAsyncThunk<any,{email:string;name:string,sub:string},{rejectValue: string}>("user/googleLogin",async(data,thunkAPI)=>{
     try{
-        const response = await instance.post("/googleLogin", data);
+        const response = await instance.post("/google/login", data);
          Cookie.set("accessToken", response.data.accessToken);
 
          Cookie.set("refreshToken", response.data.refreshToken);

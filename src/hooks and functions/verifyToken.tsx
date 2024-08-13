@@ -37,7 +37,7 @@ const useVerifyToken = (userType="") => {
 
        } 
       }else {
-         response = await instance.get("/verify-token");
+         response = await instance.get("/token/verify");
          if (response.status === 401) {
           //  navigate("/login");
          }

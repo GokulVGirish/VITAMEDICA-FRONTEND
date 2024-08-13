@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const instance=axios.create({
-    baseURL:"http://localhost:4000",
+    baseURL:"http://localhost:4000/api/users",
      headers: {
         'Content-Type': 'application/json',
     }

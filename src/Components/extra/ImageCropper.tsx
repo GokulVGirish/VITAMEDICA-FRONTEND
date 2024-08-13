@@ -136,7 +136,11 @@ const ImageCropper=({setAvatar,closeModal,side}:{setAvatar(url:string):void;clos
                             }
                           );
                       }else{
-                        response=await userInstance.put("/profilePicUpdate",formData,{headers:{"Content-Type":"multipart/form-data"}})
+                        response = await userInstance.put(
+                          "/profile/picture",
+                          formData,
+                          { headers: { "Content-Type": "multipart/form-data" } }
+                        );
 
                       }
                         console.log("imageresponse",response?.data)

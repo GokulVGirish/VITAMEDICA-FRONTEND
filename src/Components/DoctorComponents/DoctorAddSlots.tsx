@@ -1,22 +1,45 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment"
 import {toast} from "sonner"
-import SlotsList from "./DoctorSlotsList";
 import instance from "../../Axios/doctorInstance";
 import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
+import DoctorExistingSlots from "./DoctorExistingSlots";
 
 const DoctorAddSlots = () => {
   const [selectStartDate, setSelectStartDate] = useState<Date|null>();
 
   const [selectedSlots,setSelectedSlots]=useState<{ start: Date; end: Date }[]>([])
     const today = new Date().toISOString().split("T")[0]; 
+
+  const [availableDates, setAvailableDates] = useState<Date[]>([]);
+  const [slots, setSlots] = useState<any[]>([]);
+  console.log('availabledates',availableDates)
+
+  useEffect(()=>{
+    const getAvailableDates=async()=>{
+
+      const response=await instance.get("/getAvailableDates")
+      if(response.data.success){
+           const dates = response.data.dates.map(
+             (date: string) => new Date(date)
+           );
+           setAvailableDates(dates);
+
+      }
+
+    }
+    getAvailableDates()
+  },[])
+
    
      const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSelectedSlots([])
        const date = new Date(e.target.value);
        setSelectStartDate(date);
      };
+     const navigate=useNavigate()
        console.log("selected", selectStartDate);
 
    
@@ -88,6 +111,7 @@ const DoctorAddSlots = () => {
    try{
      const response = await instance.post("/add-slot", data);
      if (response.data.success) {
+      setAvailableDates([...availableDates,selectStartDate])
          setSelectStartDate(null);
          setSelectedSlots([])
        return toast.success("Sucessfully added Slots", {
@@ -119,83 +143,86 @@ const DoctorAddSlots = () => {
   };
 
   return (
-   <div>
-     <div className="w-screen">
-      <div className="mx-auto grid max-w-screen-lg px-6 pb-20">
-        <div>
-          <p className="mt-8 font-serif text-xl font-bold text-blue-900">
-            Select Date
-          </p>
-          <div className="relative mt-4 w-56">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                aria-hidden="true"
-                className="h-5 w-5 text-gray-500"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
+    <>
+      <div>
+        <div className="w-screen">
+          <div className="mx-auto grid max-w-screen-lg ">
+            <div>
+              <p className="mt-8 font-serif text-xl font-bold text-blue-900">
+                Select Date
+              </p>
+
+              <div className="relative mt-4 w-56">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <svg
+                    aria-hidden="true"
+                    className="h-5 w-5 text-gray-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <input
+                  type="date"
+                  className="block w-full rounded-lg border border-emerald-300 bg-emerald-50 p-2.5 pl-10 text-emerald-800 outline-none ring-opacity-30 placeholder:text-emerald-800 focus:ring focus:ring-emerald-300 sm:text-sm"
+                  placeholder="Select date"
+                  value={
+                    selectStartDate
+                      ? selectStartDate.toISOString().split("T")[0]
+                      : ""
+                  }
+                  min={today}
+                  onChange={handleStartDateChange}
+                />
+              </div>
             </div>
-            <input
-              type="date"
-              className="block w-full rounded-lg border border-emerald-300 bg-emerald-50 p-2.5 pl-10 text-emerald-800 outline-none ring-opacity-30 placeholder:text-emerald-800 focus:ring focus:ring-emerald-300 sm:text-sm"
-              placeholder="Select date"
-              value={
-                selectStartDate
-                  ? selectStartDate.toISOString().split("T")[0]
-                  : ""
-              }
-              min={today}
-              onChange={handleStartDateChange}
-            />
+
+            <div>
+              <p className="mt-8 font-serif text-xl font-bold text-blue-900">
+                Select a time
+              </p>
+              <div className="mt-4 grid grid-cols-4 gap-2 lg:max-w-xl">
+                {timeSlots.map((slot, index) => (
+                  <button
+                    key={index}
+                    className={`rounded-lg px-4 py-2 font-medium ${
+                      selectedSlots.some(
+                        (s) =>
+                          s.start.getTime() === slot.start.getTime() &&
+                          s.end.getTime() === slot.end.getTime()
+                      )
+                        ? "bg-emerald-700 text-white"
+                        : "bg-emerald-100 text-emerald-900"
+                    } active:scale-95`}
+                    onClick={() => handleSlotClick(slot)}
+                  >
+                    {moment(slot.start).format("h:mm A")} -{" "}
+                    {moment(slot.end).format("h:mm A")}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              className="mt-8 w-56 rounded-lg   bg-emerald-600 px-1 py-2 text-md font-bold text-white transition hover:translate-y-1"
+              onClick={handleSubmit}
+            >
+              Create Slots
+            </button>
           </div>
         </div>
-
-        <div>
-          <p className="mt-8 font-serif text-xl font-bold text-blue-900">
-            Select a time
-          </p>
-          <div className="mt-4 grid grid-cols-4 gap-2 lg:max-w-xl">
-            {timeSlots.map((slot, index) => (
-              <button
-                key={index}
-                className={`rounded-lg px-4 py-2 font-medium ${
-                  selectedSlots.some(
-                    (s) =>
-                      s.start.getTime() === slot.start.getTime() &&
-                      s.end.getTime() === slot.end.getTime()
-                  )
-                    ? "bg-emerald-700 text-white"
-                    : "bg-emerald-100 text-emerald-900"
-                } active:scale-95`}
-               
-                onClick={() => handleSlotClick(slot)}
-              >
-                {moment(slot.start).format("h:mm A")} -{" "}
-                {moment(slot.end).format("h:mm A")}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <button
-          className="mt-8 w-56 rounded-full border-8 border-emerald-500 bg-emerald-600 px-3 py-2 text-md font-bold text-white transition hover:translate-y-1"
-          onClick={handleSubmit}
-        >
-          Create Slots
-        </button>
       </div>
-    
-    </div>
-    <SlotsList/>
-   </div>
-    
+      <DoctorExistingSlots
+        availableDates={availableDates}
+
+      />
+    </>
   );
 };
 
