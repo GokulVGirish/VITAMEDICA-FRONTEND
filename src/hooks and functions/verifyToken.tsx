@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 const useVerifyToken = (userType="") => {
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const useVerifyToken = (userType="") => {
         }
         
        }else if (userType === "doctor") {
-        console.log("called")
+       
         response=await doctorInstance.get("/verify-token")
            if (response.status === 401) {
             
@@ -49,6 +50,7 @@ const useVerifyToken = (userType="") => {
            if (userType === "admin") {
              navigate("/admin/login");
            } else if (userType === "doctor") {
+           
              toast.error(error.response?.data.message, {
                richColors: true,
                duration: 1500,

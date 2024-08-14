@@ -68,6 +68,13 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
 
     },[selectedDate])
     const handleTimeSelect=(slot:any)=>{
+        if (!slot.availability || slot.locked) {
+          setTimeSelected(null);
+          return toast.error("This Slot is reserved", {
+            richColors: true,
+            duration: 1500,
+          });
+        }
          const now = new Date(); // Current date and time
 
       

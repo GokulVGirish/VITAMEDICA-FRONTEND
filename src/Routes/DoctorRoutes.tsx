@@ -14,6 +14,7 @@ import ErrorPage from "../Components/extra/ErrorPage"
 import DoctorWallet from "../Components/DoctorComponents/DoctorWallet"
 import DoctorAppointments from "../Components/DoctorComponents/DoctorAppointments"
 import DoctorExistingSlots from "../Components/DoctorComponents/DoctorExistingSlots"
+import DoctorProtectedRoutes from "./ProtectedRoutes/doctorProtectedRoutes"
 
 
 
@@ -76,6 +77,9 @@ const DoctorRoute=()=>{
   const validPaths = [
     "/doctor",
     "/doctor/addSlot",
+    "/doctor/wallet",
+    "/doctor/appointment",
+    "/doctor/profile"
     
  
   ];
@@ -88,15 +92,59 @@ const DoctorRoute=()=>{
     return (
       <div className="relative">
         {showDummy && <Dummy />}
-        <Routes>
-          <Route path="/" element={<DoctorLayoutPage />}>
-            <Route index element={<DoctorDash />} />
-            <Route path="profile" element={<DoctorProfile />} />
-            <Route path="/uploadDocs" element={<DoctorDocumentUpload />} />
-            <Route path="addSlot" element={<DoctorAddSlots />} />
-            <Route path="wallet" element={<DoctorWallet/>}/>
-            <Route path="appointment" element={<DoctorAppointments/>}/>
-          </Route>
+      
+              <Routes>
+        {/* Wrap protected routes with DoctorProtectedRoutes */}
+        <Route path="/" element={<DoctorLayoutPage />}>
+          <Route
+            index
+            element={
+              <DoctorProtectedRoutes>
+                <DoctorDash />
+              </DoctorProtectedRoutes>
+            }
+          />
+          <Route
+            path="profile"
+            element={
+              <DoctorProtectedRoutes>
+                <DoctorProfile />
+              </DoctorProtectedRoutes>
+            }
+          />
+          <Route
+            path="/uploadDocs"
+            element={
+            
+                <DoctorDocumentUpload />
+           
+            }
+          />
+          <Route
+            path="addSlot"
+            element={
+              <DoctorProtectedRoutes>
+                <DoctorAddSlots />
+              </DoctorProtectedRoutes>
+            }
+          />
+          <Route
+            path="wallet"
+            element={
+              <DoctorProtectedRoutes>
+                <DoctorWallet />
+              </DoctorProtectedRoutes>
+            }
+          />
+          <Route
+            path="appointment"
+            element={
+              <DoctorProtectedRoutes>
+                <DoctorAppointments />
+              </DoctorProtectedRoutes>
+            }
+          />
+        </Route>
           <Route path="/login" element={<DoctorLoginPage />} />
           <Route path="/signup" element={<DoctorSignUpPage />} />
           <Route path="/otpVerify" element={<DoctorOtpVerification />} />

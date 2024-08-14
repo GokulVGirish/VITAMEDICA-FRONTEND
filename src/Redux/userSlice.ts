@@ -3,6 +3,8 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import Cookie from "js-cookie"
 import instance from "../Axios/axios";
 import { AxiosError } from "axios";
+import { Socket } from "socket.io-client";
+
 
 export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: string}>("user/verifyOtp",async(otp,thunkAPI)=>{
     try{
@@ -30,12 +32,13 @@ export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: stri
 })
 export const loginUser=createAsyncThunk<any,{email:string,password:string},{rejectValue: string}>("user/login",async(data,thunkAPI)=>{
 
+
     try{
         const response=await instance.post("/login",data)
        Cookie.set("accessToken", response.data.accessToken); 
-
-
-      Cookie.set("refreshToken", response.data.refreshToken); 
+       Cookie.set("refreshToken", response.data.refreshToken); 
+       
+ 
         return response.data
 
     }
@@ -97,6 +100,7 @@ const userSlice=createSlice({
         clearErrorMessage:(state)=>{
             state.error=""
             state.message=""
+            state.loading=false
 
         },
        

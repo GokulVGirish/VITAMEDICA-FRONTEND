@@ -141,7 +141,7 @@ const PaymentComponent = () => {
 
       <div className="text-center text-lg font-bold">
         {moment(slotDetails?.slotTime?.start).format("h:mm A")}-{" "}
-        {moment(slotDetails?.slotTime).format("h:mm A")}
+        {moment(slotDetails?.slotTime.end).format("h:mm A")}
       </div>
       <div className="p-4 border-t mx-8 mt-2">
         <div>

@@ -1,7 +1,7 @@
 import logo from '@/assets/logo1.png';
 import doctor from '@/assets/cover1.jpg';
 import { useNavigate } from 'react-router-dom';
-import { useState,useEffect } from 'react';
+import { useState,useEffect, useContext } from 'react';
 import { loginUser,googleLogin } from '../../Redux/userSlice';
 import { ToastContainer,Zoom,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +9,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 import { clearErrorMessage } from '../../Redux/userSlice';
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+
 
 
 import { useAppSelector ,useAppDispatch} from '../../Redux/hoocks';
@@ -24,11 +25,13 @@ const UserLogin=()=>{
     const [password,setPassword]=useState("")
     const [myerrors,setMyErrors]=useState<partialError>({})
     const {error,loading,message}=useAppSelector((state)=>state.user)
+   
     const dispatch=useAppDispatch()
       const override = {
        display: "flex",
        justifyContent: "center",
      };
+      
 
     const handleSubmit=()=>{
         setMyErrors({})
@@ -74,7 +77,8 @@ const UserLogin=()=>{
                  theme: "colored",
               transition: Zoom,
                  });
-                 dispatch(clearErrorMessage())
+                  dispatch(clearErrorMessage());
+               
         }
         if(message){
                 toast.success(message, {
@@ -196,6 +200,7 @@ const UserLogin=()=>{
               <div className="mt-8">
                 <button
                   onClick={handleSubmit}
+                  type='button'
                   disabled={loading}
                   className="bg-[#928EDE] text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
                 >

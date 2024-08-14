@@ -4,6 +4,7 @@ import instance from "../../Axios/axios";
 import moment from "moment";
 import {toast} from "sonner"
 import { AxiosError } from "axios";
+import Swal from "sweetalert2";
 const UserAppointments=()=>{
     const [appointments,setAppointments]=useState<any>(null)
     const [page,setPage]=useState(1)
@@ -40,14 +41,34 @@ const UserAppointments=()=>{
     const cancelAppointment=async(appointmentId:string,date:Date,startTime:Date)=>{
 
     try{
-       const response = await instance.put(`/appointments/${appointmentId}/cancel?date=${date}&startTime=${startTime}
+       Swal.fire({
+         title: "Sure you want to cancel?",
+         text: "Cancellation will only return 60% of the booked amount",
+         icon: "warning",
+         showCancelButton: true,
+         confirmButtonText: "Yes, proceed!",
+         cancelButtonText: "No, cancel",
+       }).then(async (result) => {
+         if (result.isConfirmed) {
+           const response =
+             await instance.put(`/appointments/${appointmentId}/cancel?date=${date}&startTime=${startTime}
       `);
-      if(response.data.success){
-        toast.success(response.data.message,{richColors:true,duration:1500})
-        setAppointments((prevState:any)=>prevState?.map((appointment:any)=>appointment._id==appointmentId?{...appointment,status:"cancelled"}:appointment))
-
-
-      }
+           if (response.data.success) {
+             toast.success(response.data.message, {
+               richColors: true,
+               duration: 1500,
+             });
+             setAppointments((prevState: any) =>
+               prevState?.map((appointment: any) =>
+                 appointment._id == appointmentId
+                   ? { ...appointment, status: "cancelled" }
+                   : appointment
+               )
+             );
+           }
+         }
+       });
+       
     }
     catch(error){
       if(error instanceof AxiosError){

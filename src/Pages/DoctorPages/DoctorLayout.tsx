@@ -3,7 +3,7 @@ import DoctorSidebar from "../../Components/DoctorComponents/DoctorSidebar";
 import useVerifyToken from "../../hooks and functions/verifyToken";
 
 const DoctorLayoutPage = () => {
-    useVerifyToken("doctor");
+   
   return (
     <>
       <div className="flex h-screen bg-gray-100">

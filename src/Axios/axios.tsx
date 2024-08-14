@@ -29,14 +29,22 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response)=>response,
     (error)=>{
-        if(error.response && error.response.status===401){
-            toast.error(error.response.data.message,{
-                 richColors:true,
-                 duration:1500,
-                 onAutoClose:()=>{
-                    // return window.location.href = "/login";
-                 }
-            })
+        if (
+          error.response &&
+          error.response.status === 401 &&
+          error.response.data.message === "Sorry User Blocked"
+        ) {
+            Cookies.remove("accessToken")
+            Cookies.remove("refreshToken")
+          toast.error(error.response.data.message, {
+            richColors: true,
+            duration: 1500,
+            onAutoClose: () => {
+              return (window.location.href = "/login");
+            },
+          });
+        }else if (error.response && error.response.status === 401) {
+          window.location.href = "/login";
         }
         return Promise.reject(error)
     }
