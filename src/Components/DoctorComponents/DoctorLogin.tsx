@@ -1,12 +1,13 @@
 import logo from '@/assets/logo1.png';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SyncLoader from "react-spinners/SyncLoader";
 import { clearErrorMessage } from '../../Redux/doctorSlice';
 import { useAppDispatch,useAppSelector } from '../../Redux/hoocks';
 import { doctorLogin } from "../../Redux/doctorSlice";
+import { SocketContext } from '../../socketio/SocketIo';
 
 
 interface partialError {
@@ -19,6 +20,7 @@ const DoctorLogin=()=>{
      const [password, setPassword] = useState<string>("");
      const { loading, message, error } = useAppSelector((state) => state.doctor);
      const [myErrors, setMyErrors] = useState<partialError>({});
+     const socket=useContext(SocketContext)
      const dispatch=useAppDispatch()
         const override = {
           display: "flex",
@@ -89,7 +91,7 @@ const DoctorLogin=()=>{
             setMyErrors(validationErrors);
             return;
           }
-          dispatch(doctorLogin({email:email,password:password}))
+          dispatch(doctorLogin({email:email,password:password,socket}))
 
          
         };

@@ -148,7 +148,7 @@ const DoctorAddSlots = () => {
         <div className="w-screen">
           <div className="mx-auto grid max-w-screen-lg ">
             <div>
-              <p className="mt-8 font-serif text-xl font-bold text-blue-900">
+              <p className="mt-8 font-serif  text-xl font-bold text-gray-700">
                 Select Date
               </p>
 
@@ -170,7 +170,7 @@ const DoctorAddSlots = () => {
                 </div>
                 <input
                   type="date"
-                  className="block w-full rounded-lg border border-emerald-300 bg-emerald-50 p-2.5 pl-10 text-emerald-800 outline-none ring-opacity-30 placeholder:text-emerald-800 focus:ring focus:ring-emerald-300 sm:text-sm"
+                  className="block w-full rounded-lg border border-[#0e8e93] bg-[#abf1f4] p-2.5 pl-10 text-gray-900 font-medium outline-none ring-opacity-30 placeholder:text-emerald-800 focus:ring focus:ring-emerald-300 sm:text-sm"
                   placeholder="Select date"
                   value={
                     selectStartDate
@@ -184,21 +184,21 @@ const DoctorAddSlots = () => {
             </div>
 
             <div>
-              <p className="mt-8 font-serif text-xl font-bold text-blue-900">
+              <p className="mt-8 font-serif text-xl font-bold text-gray-700">
                 Select a time
               </p>
               <div className="mt-4 grid grid-cols-4 gap-2 lg:max-w-xl">
                 {timeSlots.map((slot, index) => (
                   <button
                     key={index}
-                    className={`rounded-lg px-4 py-2 font-medium ${
+                    className={`rounded-lg px-4 border border-[#0e8e93] py-2 font-medium ${
                       selectedSlots.some(
                         (s) =>
                           s.start.getTime() === slot.start.getTime() &&
                           s.end.getTime() === slot.end.getTime()
                       )
-                        ? "bg-emerald-700 text-white"
-                        : "bg-emerald-100 text-emerald-900"
+                        ? "bg-[#05acb4] text-gray-1000"
+                        : "bg-[#abf1f4] text-gray-900"
                     } active:scale-95`}
                     onClick={() => handleSlotClick(slot)}
                   >
@@ -210,7 +210,7 @@ const DoctorAddSlots = () => {
             </div>
 
             <button
-              className="mt-8 w-56 rounded-lg   bg-emerald-600 px-1 py-2 text-md font-bold text-white transition hover:translate-y-1"
+              className="mt-8 w-56 rounded-lg   bg-[#139fa6] px-1 py-2 text-md font-bold text-white transition hover:translate-y-1"
               onClick={handleSubmit}
             >
               Create Slots
@@ -218,10 +218,7 @@ const DoctorAddSlots = () => {
           </div>
         </div>
       </div>
-      <DoctorExistingSlots
-        availableDates={availableDates}
-
-      />
+      <DoctorExistingSlots availableDates={availableDates} />
     </>
   );
 };

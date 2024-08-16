@@ -1,5 +1,5 @@
 import logo from '@/assets/logo2.png';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { faWallet } from '@fortawesome/free-solid-svg-icons';
@@ -8,25 +8,36 @@ import Cookies from 'js-cookie';
 
 const UserProfileSideBar=()=>{
     const navigate=useNavigate()
+    const location=useLocation()
       function handleLogout() {
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
         navigate("/login");
       }
+       const isActive = (path: string) => location.pathname === path;
 
 
     return (
       <div className="hidden md:flex flex-col w-64 bg-[#928EDE]">
         <div className="flex items-center justify-center h-16 bg-[#928EDE]">
           <span className="text-white font-bold uppercase">
-            <img onClick={()=>navigate("/")} src={logo} alt="logo" className=" w-44 rounded-lg shadow-xl" />
+            <img
+              onClick={() => navigate("/")}
+              src={logo}
+              alt="logo"
+              className=" w-44 rounded-lg shadow-xl"
+            />
           </span>
         </div>
         <div className="flex flex-col flex-1 overflow-y-auto">
           <nav className="flex-1 px-2 py-4 bg-[#928EDE]">
             <span
               onClick={() => navigate("/profile")}
-              className="flex items-center px-4 py-2 text-[#364f6b] hover:bg-gray-700"
+              className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
+                isActive("/profile")
+                  ? `text-white  bg-gray-700 rounded-md`
+                  : `text-[#364f6b]`
+              } hover:font-bold `}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +56,11 @@ const UserProfileSideBar=()=>{
             </span>
             <span
               onClick={() => navigate("/profile/appointment")}
-              className="flex items-center px-4 py-2 mt-2 text-[#364f6b] hover:bg-gray-700"
+              className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
+                isActive("/profile/appointment")
+                  ? `text-white  bg-gray-700 rounded-md`
+                  : `text-[#364f6b]`
+              } hover:font-bold `}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -64,15 +79,18 @@ const UserProfileSideBar=()=>{
             </span>
             <span
               onClick={() => navigate("/profile/wallet")}
-              className="flex items-center px-4 py-2 mt-2 gap-5 text-[#364f6b] hover:bg-gray-700"
+              className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
+                isActive("/profile/wallet")
+                  ? `text-white  bg-gray-700 rounded-md`
+                  : `text-[#364f6b]`
+              } hover:font-bold `}
             >
               <FontAwesomeIcon icon={faWallet} />
               Wallet
             </span>
             <span
               onClick={handleLogout}
-              className="flex cursor-pointer items-center px-4 py-2 mt-2 gap-5 text-[#364f6b] hover:bg-gray-700"
-            >
+              className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5 text-[#364f6b]  rounded-md hover:font-bold `}>
               <FontAwesomeIcon icon={faArrowRightFromBracket} />
               Logout
             </span>

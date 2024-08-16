@@ -1,7 +1,7 @@
 import logo from '@/assets/logo1.png';
 import doctor from '@/assets/cover1.jpg';
 import { useNavigate } from 'react-router-dom';
-import { useState,useEffect, useContext } from 'react';
+import { useState,useEffect, useContext, useReducer, useRef } from 'react';
 import { loginUser,googleLogin } from '../../Redux/userSlice';
 import { ToastContainer,Zoom,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,6 +13,7 @@ import { jwtDecode } from "jwt-decode";
 
 
 import { useAppSelector ,useAppDispatch} from '../../Redux/hoocks';
+import { SocketContext } from '../../socketio/SocketIo';
 
 interface partialError{
     email?:string;
@@ -25,12 +26,16 @@ const UserLogin=()=>{
     const [password,setPassword]=useState("")
     const [myerrors,setMyErrors]=useState<partialError>({})
     const {error,loading,message}=useAppSelector((state)=>state.user)
+    const passwordRefObj=useRef<HTMLInputElement>(null)
+    const socket=useContext(SocketContext)
+   
    
     const dispatch=useAppDispatch()
       const override = {
        display: "flex",
        justifyContent: "center",
      };
+       dispatch(clearErrorMessage());
       
 
     const handleSubmit=()=>{
@@ -58,7 +63,7 @@ const UserLogin=()=>{
             return
         }
         
-        dispatch(loginUser({email:email,password:password}))
+        dispatch(loginUser({email:email,password:password,socket}))
 
       
 
@@ -134,22 +139,29 @@ const UserLogin=()=>{
                 <img src={logo} alt="logo" />
               </h2>
               <p className="text-xl text-gray-600 text-center">Welcome back!</p>
-           
-                <div className="w-full flex justify-center">
-                  <GoogleLogin
-                    ux_mode="popup" 
-                    useOneTap
-                    shape="pill"
-                    type='icon'
-                    theme="outline"
-                    onSuccess={async (e) => {
-                        const data:{name:string,email:string,sub:string}=await jwtDecode(e.credential as string)
-                        console.log(data)
-                        dispatch(googleLogin({name:data.name,email:data.email,sub:data.sub}))
-                    }}
-                  />
-                </div>
-              
+
+              <div className="w-full flex justify-center">
+                <GoogleLogin
+                  ux_mode="popup"
+                  useOneTap
+                  shape="pill"
+                  type="icon"
+                  theme="outline"
+                  onSuccess={async (e) => {
+                    const data: { name: string; email: string; sub: string } =
+                      await jwtDecode(e.credential as string);
+                    console.log(data);
+                    dispatch(
+                      googleLogin({
+                        name: data.name,
+                        email: data.email,
+                        sub: data.sub,
+                      })
+                    );
+                  }}
+                />
+              </div>
+
               <div className="mt-4 flex items-center justify-between">
                 <span className="border-b w-1/5 lg:w-1/4"></span>
                 <a
@@ -168,6 +180,10 @@ const UserLogin=()=>{
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   name="email"
+                  onKeyDown={(e)=>{if(e.key==="Enter"){
+                    passwordRefObj.current?.focus()
+
+                  }}}
                   className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
                   type="email"
                 />
@@ -186,8 +202,10 @@ const UserLogin=()=>{
                 </div>
                 <input
                   value={password}
+                  ref={passwordRefObj}
                   onChange={(e) => setPassword(e.target.value)}
                   name="password"
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
                   type="password"
                 />
@@ -200,7 +218,7 @@ const UserLogin=()=>{
               <div className="mt-8">
                 <button
                   onClick={handleSubmit}
-                  type='button'
+                  type="button"
                   disabled={loading}
                   className="bg-[#928EDE] text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
                 >

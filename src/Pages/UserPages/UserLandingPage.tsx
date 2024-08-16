@@ -9,8 +9,7 @@ import useVerifyToken from "../../hooks and functions/verifyToken"
 import { useEffect } from "react"
 const UserLangingPage=()=>{
   
-        
-      useVerifyToken()
+    
         
 
   

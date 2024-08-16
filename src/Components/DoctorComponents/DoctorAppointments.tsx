@@ -3,13 +3,17 @@ import instance from "../../Axios/doctorInstance";
 import moment from "moment";
 import Swal from "sweetalert2";
 import {toast} from "sonner"
+import { useNavigate,Link } from "react-router-dom";
 const DoctorAppointments=()=>{
 
     const [appointments,setAppointments]=useState<any>(null)
     const [filter,setFilter]=useState<"today"|"upcomming">("today")
     const [page,setPage]=useState(1)
     const [totalPages,setTotalPages]=useState(1)
+    const navigate=useNavigate()
     const limit:number=7
+    
+    console.log("appointments",appointments)
 
 
     useEffect(()=>{
@@ -80,7 +84,7 @@ const DoctorAppointments=()=>{
         appointments?.map((appointment: any) => (
           <tr
             key={appointment._id}
-            className="hover:bg-gray-100 transition-all"
+            className="hover:bg-gray-100 transition-all cursor-pointer"
           >
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
               {moment(appointment?.date).format("MMMM D, YYYY")}
@@ -93,23 +97,28 @@ const DoctorAppointments=()=>{
               {appointment?.userName}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <button
-                className={`mr-2 ${
+              <span
+                className={`py-1 px-2.5 border-none rounded bg-red-100 text-base  font-medium ${
                   appointment?.status === "completed"
-                    ? "bg-green-500 hover:bg-green-700"
-                    : "bg-red-500 hover:bg-red-700"
-                } text-white py-1 px-3 rounded-full`}
+                    ? "text-green-800 bg-green-100 "
+                    : "text-red-800 bg-red-100 "
+                }   rounded-md`}
               >
                 {appointment?.status}
-              </button>
+              </span>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
               {appointment?.status === "pending" ? (
                 <button
-                onClick={()=>handleBookingCancellation(appointment?.date,appointment?.start)}
+                  onClick={() =>
+                    handleBookingCancellation(
+                      appointment?.date,
+                      appointment?.start
+                    )
+                  }
                   className={`mr-2 bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded-full`}
                 >
-                 cancel
+                  cancel
                 </button>
               ) : (
                 <button
@@ -119,9 +128,19 @@ const DoctorAppointments=()=>{
                       : "bg-red-500 hover:bg-red-700"
                   } text-white py-1 px-3 rounded-full`}
                 >
-                  {appointment?.status === "cancelled" ? "cancelled" : "completed"}
+                  {appointment?.status === "cancelled"
+                    ? "cancelled"
+                    : "completed"}
                 </button>
               )}
+            </td>
+            <td>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                onClick={() => navigate(`/doctor/userProfile/${appointment._id}`)}
+              >
+                view
+              </button>
             </td>
           </tr>
         )),
@@ -184,6 +203,9 @@ const DoctorAppointments=()=>{
                     </th>
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                       actions
+                    </th>
+                    <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
+                      view
                     </th>
                   </tr>
                 </thead>

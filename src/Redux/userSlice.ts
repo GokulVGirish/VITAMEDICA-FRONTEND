@@ -30,14 +30,29 @@ export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: stri
     }
 
 })
-export const loginUser=createAsyncThunk<any,{email:string,password:string},{rejectValue: string}>("user/login",async(data,thunkAPI)=>{
+export const loginUser=createAsyncThunk<any,{email:string,password:string,socket: Socket | null},{rejectValue: string}>("user/login",async(data,thunkAPI)=>{
 
 
     try{
-        const response=await instance.post("/login",data)
-       Cookie.set("accessToken", response.data.accessToken); 
-       Cookie.set("refreshToken", response.data.refreshToken); 
-       
+          const response = await instance.post("/login", { email:data.email, password:data.password });
+
+
+    // Extract token and other necessary data from response
+    const { accessToken, refreshToken, userId } = response.data;
+    console.log("user Id",userId)
+        console.log("socket data", data.socket);
+
+    // Set cookies
+       Cookie.set("accessToken", accessToken);
+       Cookie.set("refreshToken", refreshToken);
+       console.log("socket data",data.socket)
+
+    // Emit register event with only necessary data
+         if (data.socket) {
+           data.socket.emit("loggedin",  userId );
+         }
+
+
  
         return response.data
 
@@ -93,7 +108,7 @@ const userSlice=createSlice({
     name:"user",
     initialState,
     reducers:{
-        clearUser:(state,action)=>{
+        clearUser:(state)=>{
 
             state.user=null
         },
@@ -126,8 +141,10 @@ const userSlice=createSlice({
             state.message=""
 
         }).addCase(loginUser.fulfilled,(state,action)=>{
+            console.log("action",action)
             state.message=action.payload.message
             state.loading=false
+            state.user=action.payload.name
 
         }).addCase(loginUser.rejected,(state,action)=>{
             state.error=action.payload as string

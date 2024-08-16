@@ -2,6 +2,7 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 import instance from "../Axios/doctorInstance";
 import { AxiosError } from "axios";
+import { Socket } from "socket.io-client";
 export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: string}>("doctor/verifyOtp",async(otp,thunkAPI)=>{
     try{
         const response = await instance.post("/verifyOtpSignup",otp);
@@ -28,12 +29,16 @@ export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: stri
     }
 
 })
-export const doctorLogin=createAsyncThunk<any,{email:string,password:string},{rejectValue: string}>("doctor/login",async(data,thunkAPI)=>{
+export const doctorLogin=createAsyncThunk<any,{email:string,password:string,socket:Socket|null},{rejectValue: string}>("doctor/login",async(data,thunkAPI)=>{
     try{
-        const response=await instance.post("/login",data)
+        const response=await instance.post("/login",{email:data.email,password:data.password})
         console.log("frrgfergfff",response.data.accessToken)
          Cookies.set("accessToken", response.data.accessToken);
          Cookies.set("refreshToken", response.data.refreshToken);
+           if (data.socket) {
+             data.socket.emit("loggedin", response.data.docId);
+           }
+
          return response.data
 
     }
@@ -100,6 +105,10 @@ const doctorSlice=createSlice({
         clearDoctor:(state,action)=>{
             state.doctor=null
 
+        },
+        verifyDoctor:(state,action)=>{
+          state.docStatus=action.payload.status
+
         }
 
     },
@@ -161,4 +170,4 @@ const doctorSlice=createSlice({
 })
 const doctorReducer=doctorSlice.reducer
 export default doctorReducer
-export const {clearDoctor,clearErrorMessage}=doctorSlice.actions
+export const {clearDoctor,clearErrorMessage,verifyDoctor}=doctorSlice.actions

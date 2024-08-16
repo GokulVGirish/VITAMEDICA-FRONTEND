@@ -15,6 +15,8 @@ import DoctorWallet from "../Components/DoctorComponents/DoctorWallet"
 import DoctorAppointments from "../Components/DoctorComponents/DoctorAppointments"
 import DoctorExistingSlots from "../Components/DoctorComponents/DoctorExistingSlots"
 import DoctorProtectedRoutes from "./ProtectedRoutes/doctorProtectedRoutes"
+import DoctorUserProfile from "../Components/DoctorComponents/DoctorUserProfile"
+
 
 
 
@@ -92,59 +94,55 @@ const DoctorRoute=()=>{
     return (
       <div className="relative">
         {showDummy && <Dummy />}
+
+        <Routes>
+          {/* Wrap protected routes with DoctorProtectedRoutes */}
+          <Route path="/" element={<DoctorLayoutPage />}>
+            <Route
+              index
+              element={
+                <DoctorProtectedRoutes>
+                  <DoctorDash />
+                </DoctorProtectedRoutes>
+              }
+            />
+            <Route
+              path="profile"
+              element={
+                <DoctorProtectedRoutes>
+                  <DoctorProfile />
+                </DoctorProtectedRoutes>
+              }
+            />
+            <Route path="/uploadDocs" element={<DoctorDocumentUpload />} />
+            <Route
+              path="addSlot"
+              element={
+                <DoctorProtectedRoutes>
+                  <DoctorAddSlots />
+                </DoctorProtectedRoutes>
+              }
+            />
+            <Route
+              path="wallet"
+              element={
+                <DoctorProtectedRoutes>
+                  <DoctorWallet />
+                </DoctorProtectedRoutes>
+              }
+            />
+            <Route
+              path="appointment"
+              element={
+                <DoctorProtectedRoutes>
+                  <DoctorAppointments />
+                </DoctorProtectedRoutes>
+              }
+            />
+            <Route path="userProfile/:id" element={<DoctorUserProfile/>}/>
+             
       
-              <Routes>
-        {/* Wrap protected routes with DoctorProtectedRoutes */}
-        <Route path="/" element={<DoctorLayoutPage />}>
-          <Route
-            index
-            element={
-              <DoctorProtectedRoutes>
-                <DoctorDash />
-              </DoctorProtectedRoutes>
-            }
-          />
-          <Route
-            path="profile"
-            element={
-              <DoctorProtectedRoutes>
-                <DoctorProfile />
-              </DoctorProtectedRoutes>
-            }
-          />
-          <Route
-            path="/uploadDocs"
-            element={
-            
-                <DoctorDocumentUpload />
-           
-            }
-          />
-          <Route
-            path="addSlot"
-            element={
-              <DoctorProtectedRoutes>
-                <DoctorAddSlots />
-              </DoctorProtectedRoutes>
-            }
-          />
-          <Route
-            path="wallet"
-            element={
-              <DoctorProtectedRoutes>
-                <DoctorWallet />
-              </DoctorProtectedRoutes>
-            }
-          />
-          <Route
-            path="appointment"
-            element={
-              <DoctorProtectedRoutes>
-                <DoctorAppointments />
-              </DoctorProtectedRoutes>
-            }
-          />
-        </Route>
+          </Route>
           <Route path="/login" element={<DoctorLoginPage />} />
           <Route path="/signup" element={<DoctorSignUpPage />} />
           <Route path="/otpVerify" element={<DoctorOtpVerification />} />

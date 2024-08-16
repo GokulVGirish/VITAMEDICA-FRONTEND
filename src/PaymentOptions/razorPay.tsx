@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 const  razorPay=(order:any,id:string,slotDetails:any,navigate:Function):any=>{
 
-    const amount = String(order.amount);
+    const amount = String(order.amount*100);
     console.log("amount",amount)
 
 
@@ -12,7 +12,7 @@ var options = {
   key: "rzp_test_ju6rorodT9IZ3H", 
   amount: amount,
   currency: "INR",
-  name: "Acme Corp",
+  name: "VITAMEDICA",
   description: "Test Transaction",
   image: "https://example.com/your_logo",
   order_id: order.id,
@@ -26,7 +26,7 @@ var options = {
        razorpay_signature: response.razorpay_signature,
        docId: id,
        slotDetails,
-       fees: amount,
+       fees: order.amount.toString(),
      });
   
     if (result.data.success) {
