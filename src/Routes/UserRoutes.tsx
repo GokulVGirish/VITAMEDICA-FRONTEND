@@ -14,33 +14,63 @@ import UserPaymentPage from "../Pages/UserPages/UserPaymentPage"
 import PaymentSuccessPage from "../Pages/UserPages/PaymentSuccessPage"
 import PaymentFailurePage from "../Pages/UserPages/PaymentFailurePage"
 import UserWallet from "../Components/UserComponents/UserWallet"
+import { useContext,useState,useEffect } from "react"
+import { SocketContext } from "../socketio/SocketIo"
+import CallModal from "../Components/extra/CallModal"
 
 
-const UserRoute=()=>{
+
+const UserRoute=()=>{         
+  const socket = useContext(SocketContext);
+  const [callData, setCallData] = useState<any>(null);
+  const [showCallModal, setShowCallModal] = useState(false);
+
+     socket?.on("call-request", (data: any) => {
+       console.log("Received call request:", data);
+       setCallData(data);
+       setShowCallModal(true);
+     });
+    
+  
+  useEffect(() => {
+    
+    console.log("listening")
+  
+   
+  }, [socket]);
 
     return (
-      <Routes>
-        <Route path="/" element={<UserLangingPage />} />
+      <div className="relative">
+        {showCallModal && (
+          <CallModal
+            callData={callData}
+            onClose={() => setShowCallModal(false)}
+          />
+        )}
 
-        <Route path="/login" element={<UserLoginPage />} />
-        <Route path="/signup" element={<UserSignUpPage />} />
-        <Route path="/otpVerify" element={<UserOtpVerification />} />
-        <Route path="/reset-password" element={<PasswordResetPage />} />
-        <Route path="/doctorBooking" element={<BookAppointmentsList />} />
-        <Route path="/doctorDetail/:id" element={<UserDoctorDetailPage />} />
-        <Route path="/payment/:id" element={<UserPaymentPage />} />
-        <Route path="/paymentSuccess" element={<PaymentSuccessPage />} />
-        <Route path="/paymentFailure" element={<PaymentFailurePage />} />
+        <Routes>
+          <Route path="/" element={<UserLangingPage />} />
 
-        {/* Profile layout */}
-        <Route path="/profile" element={<UserProfileLayout />}>
-          <Route path="" element={<UserProfile />} />
-          <Route path="appointment" element={<UserAppointments />} />
-          <Route path="wallet" element={<UserWallet/>}/>
-        </Route>
-        <Route path="*" element={<ErrorPage side="user" />} />
-        {/* Profile layout end */}
-      </Routes>
+          <Route path="/login" element={<UserLoginPage />} />
+          <Route path="/signup" element={<UserSignUpPage />} />
+          <Route path="/otpVerify" element={<UserOtpVerification />} />
+          <Route path="/reset-password" element={<PasswordResetPage />} />
+          <Route path="/doctorBooking" element={<BookAppointmentsList />} />
+          <Route path="/doctorDetail/:id" element={<UserDoctorDetailPage />} />
+          <Route path="/payment/:id" element={<UserPaymentPage />} />
+          <Route path="/paymentSuccess" element={<PaymentSuccessPage />} />
+          <Route path="/paymentFailure" element={<PaymentFailurePage />} />
+
+          {/* Profile layout */}
+          <Route path="/profile" element={<UserProfileLayout />}>
+            <Route path="" element={<UserProfile />} />
+            <Route path="appointment" element={<UserAppointments />} />
+            <Route path="wallet" element={<UserWallet />} />
+          </Route>
+          <Route path="*" element={<ErrorPage side="user" />} />
+          {/* Profile layout end */}
+        </Routes>
+      </div>
     );
 
 

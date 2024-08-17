@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import instance from "../../Axios/doctorInstance";
 import UserDoctorDetail from "../UserComponents/UserDoctorDetail";
 import moment from "moment";
@@ -12,9 +12,10 @@ const DoctorUserProfile=()=>{
 
     const [appointmentDetails,setAppointmentDetails]=useState<any>(null)
     console.log("appointments",appointmentDetails)
+    const navigate=useNavigate()
     const {id}=useParams()
-     const [zp, setZp] = useState<any>(null);
-     const [enableCall, setEnableCall] = useState(false);
+    //  const [zp, setZp] = useState<any>(null);
+    //  const [enableCall, setEnableCall] = useState(false);
 
 
     const fetchAppointmentData=useCallback(async()=>{
@@ -26,6 +27,7 @@ const DoctorUserProfile=()=>{
         }
 
     },[id])
+
     useEffect(()=>{
         fetchAppointmentData()
 
@@ -47,55 +49,51 @@ const DoctorUserProfile=()=>{
       return age;
     }
 
-    useEffect(()=>{
-        const initZego=()=>{
-            const appId = 1196584464;
-            const serverSecret="61417d53b06fde2e6cb32210b0b35b57"
-            const token = ZegoUIKitPrebuilt.generateKitTokenForTest(
-              appId,
-              serverSecret,
-              "frgregrg",
-              id as string ,
-              `userName${id}`
-            );
-            const  zegoInstance=ZegoUIKitPrebuilt.create(token)
-             zegoInstance.addPlugins({ ZIM });
-             setZp(zegoInstance);
-        }
-        initZego()
+    // useEffect(()=>{
+    //     const initZego=()=>{
+    //         const appId = 1196584464;
+    //         const serverSecret="61417d53b06fde2e6cb32210b0b35b57"
+    //         const token = ZegoUIKitPrebuilt.generateKitTokenForTest(
+    //           appId,
+    //           serverSecret,
+    //           "frgregrg",
+    //           id as string ,
+    //           `userName${id}`
+    //         );
+    //         const  zegoInstance=ZegoUIKitPrebuilt.create(token)
+    //          zegoInstance.addPlugins({ ZIM });
+    //          setZp(zegoInstance);
+    //     }
+    //     initZego()
 
-        return ()=>{
-            if(zp){
-                zp.desroy()
-            }
-        }
+    //     return ()=>{
+    //         if(zp){
+    //             zp.desroy()
+    //         }
+    //     }
 
 
-    },[id])
-    const invite=()=>{
-         const targetUser = {
-           userID:appointmentDetails?._id, 
-           userName: appointmentDetails?.userName,
-           image: appointmentDetails?.image,
-         };
-        zp.sendCallInvitation({
-          callees: [targetUser],
-          callType: ZegoUIKitPrebuilt.InvitationTypeVideoCall,
-          timeout: 60,
-        })
-          .then((res: any) => {
-            console.warn("Invitation sent:", res);
-          })
-          .catch((err: any) => {
-            console.error("Error sending invitation:", err);
-          });
-    }
+    // },[id])
+    // const invite=()=>{
+    //      const targetUser = {
+    //        userID:appointmentDetails?._id, 
+    //        userName: appointmentDetails?.userName,
+    //        image: appointmentDetails?.image,
+    //      };
+    //     zp.sendCallInvitation({
+    //       callees: [targetUser],
+    //       callType: ZegoUIKitPrebuilt.InvitationTypeVideoCall,
+    //       timeout: 60,
+    //     })
+    //       .then((res: any) => {
+    //         console.warn("Invitation sent:", res);
+    //       })
+    //       .catch((err: any) => {
+    //         console.error("Error sending invitation:", err);
+    //       });
+    // }
 
-    const handleConsultation=()=>{
-        setEnableCall(true)
-        invite()
-
-    }
+  
 
     return (
       <div className="p-16 ">
@@ -130,8 +128,9 @@ const DoctorUserProfile=()=>{
 
             <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
               <button
-                onClick={handleConsultation}
+            
                 className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                onClick={()=>navigate(`/doctor/videocall/${id}/${appointmentDetails.docId}/${appointmentDetails?.userId}`)}
               >
                 Start Consultation
               </button>
@@ -174,7 +173,7 @@ const DoctorUserProfile=()=>{
           </div>
         </div>
 
-        {enableCall && zp && <div id="zego-video-call">{zp.joinRoom()}</div>}
+    
       </div>
     );
 }

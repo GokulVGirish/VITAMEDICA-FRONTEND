@@ -16,6 +16,8 @@ import DoctorAppointments from "../Components/DoctorComponents/DoctorAppointment
 import DoctorExistingSlots from "../Components/DoctorComponents/DoctorExistingSlots"
 import DoctorProtectedRoutes from "./ProtectedRoutes/doctorProtectedRoutes"
 import DoctorUserProfile from "../Components/DoctorComponents/DoctorUserProfile"
+import VideoCall from "../communication/videoCall"
+
 
 
 
@@ -23,6 +25,7 @@ import DoctorUserProfile from "../Components/DoctorComponents/DoctorUserProfile"
 const Dummy = () => {
   const status = useAppSelector((state) => state.doctor.docStatus);
   const navigate=useNavigate()
+
 
   if (status === "Verified") {
     return null;
@@ -90,10 +93,12 @@ const DoctorRoute=()=>{
   
    
    const showDummy = isBasePath 
+  
 
     return (
       <div className="relative">
         {showDummy && <Dummy />}
+     
 
         <Routes>
           {/* Wrap protected routes with DoctorProtectedRoutes */}
@@ -145,6 +150,7 @@ const DoctorRoute=()=>{
           </Route>
           <Route path="/login" element={<DoctorLoginPage />} />
           <Route path="/signup" element={<DoctorSignUpPage />} />
+          <Route path="/videocall/:appointment/:callerId/:toPersonId" element={<VideoCall/>}/>
           <Route path="/otpVerify" element={<DoctorOtpVerification />} />
           <Route path="*" element={<ErrorPage side="doctor" />} />
         </Routes>

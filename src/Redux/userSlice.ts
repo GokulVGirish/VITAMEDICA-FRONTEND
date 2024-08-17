@@ -39,8 +39,8 @@ export const loginUser=createAsyncThunk<any,{email:string,password:string,socket
 
     // Extract token and other necessary data from response
     const { accessToken, refreshToken, userId } = response.data;
-    console.log("user Id",userId)
-        console.log("socket data", data.socket);
+ 
+     
 
     // Set cookies
        Cookie.set("accessToken", accessToken);
@@ -141,7 +141,7 @@ const userSlice=createSlice({
             state.message=""
 
         }).addCase(loginUser.fulfilled,(state,action)=>{
-            console.log("action",action)
+            
             state.message=action.payload.message
             state.loading=false
             state.user=action.payload.name

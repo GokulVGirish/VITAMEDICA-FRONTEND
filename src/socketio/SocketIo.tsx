@@ -25,6 +25,8 @@ const SocketProvider=({children}:{children:ReactNode})=>{
         }
       });
 
+      
+
 
       setSocket(socketInstance);
       
@@ -41,10 +43,7 @@ const SocketProvider=({children}:{children:ReactNode})=>{
         }})
       
       });
-      socket?.on("disconnect",(reason)=>{
-        socket.emit("clientDisconnected",accessToken||null);
-
-      })
+   
 
       return () => {
         socketInstance.disconnect();

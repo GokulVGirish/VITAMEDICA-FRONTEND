@@ -37,6 +37,7 @@ const Navbar=()=>{
   };
 
     const isActive=(path:string)=>path===location.pathname
+    
      useEffect(() => {
        if (isOpen) {
          document.addEventListener("mousedown", handleClickOutside);
