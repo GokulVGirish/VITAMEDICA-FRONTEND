@@ -92,7 +92,7 @@ const DoctorsList = () => {
                 <div className="px-4  justify-between py-3 w-72">
                   <p
                     onClick={() => navigate(`/doctorDetail/${doctor._id}`)}
-                    className="text-3xl mt-3 text-center space-x-2 font-bold text-black truncate block capitalize"
+                    className="text-3xl mt-3 text-center space-x-2 cursor-pointer font-bold text-black truncate block capitalize"
                   >
                     Dr {doctor.name}
                   </p>

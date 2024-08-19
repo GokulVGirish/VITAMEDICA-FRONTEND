@@ -1,9 +1,10 @@
 import logo from '@/assets/logo2.png';
-import { useState,useEffect,useRef } from 'react';
+import { useState,useEffect,useRef,useContext } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate ,useLocation} from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../Redux/hoocks';
 import { clearErrorMessage,clearUser } from '../../Redux/userSlice';
+import { SocketContext } from '../../socketio/SocketIo';
 const Navbar=()=>{
    const [isOpen, setIsOpen] = useState(false);
    const {user}=useAppSelector((state)=>state.user)
@@ -11,12 +12,14 @@ const Navbar=()=>{
    const dispatch=useAppDispatch()
    const location=useLocation()   
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const socket=useContext(SocketContext)
   
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     };
     const handleLogout=()=>{
+        socket?.emit("logout");
       Cookies.remove("accessToken")
       Cookies.remove("refreshToken")
       dispatch(clearUser())

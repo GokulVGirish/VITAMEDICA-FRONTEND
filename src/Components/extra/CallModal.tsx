@@ -11,17 +11,17 @@ import instance from "../../Axios/axios";
 const CallModal = ({ callData, onClose }:{callData:any,onClose:()=>void}) => {
 
     console.log("callldata",callData)
-  const [isModalOpen, setIsModalOpen] = useState(true);
+
   const socket=useContext(SocketContext)
   const [doctor,setDoctor]=useState<{image:string;name:string,department:{name:string}}|null>(null)
   const navigate = useNavigate();
   console.log("doctor",doctor)
 
 
-  const closeModal = () => {
+  const handleCancelCall = () => {
     const from = callData.from;
     socket?.emit("cut-call", { from });
-    setIsModalOpen(false);
+  
     onClose();
   };
 
@@ -52,7 +52,6 @@ const CallModal = ({ callData, onClose }:{callData:any,onClose:()=>void}) => {
     >
       <div className="relative p-4 w-full max-w-md max-h-full">
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-         
           <div className="p-4 md:p-5 text-center">
             <div className=" flex items-center justify-center">
               <img
@@ -66,17 +65,17 @@ const CallModal = ({ callData, onClose }:{callData:any,onClose:()=>void}) => {
             </div>
 
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-             {doctor?.name} is Calling...
+              {doctor?.name} is Calling...
             </h3>
             <h3 className="mb-5 text-md font-normal text-gray-500 dark:text-gray-400">
-             {doctor?.department.name} 
+              {doctor?.department.name}
             </h3>
             <button
               type="button"
               className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
               onClick={() =>
                 navigate(
-                  `/doctor/videocall/${callData.room}/${callData.to}/${callData.from}`
+                  `/doctor/videocall/${callData.room}/${callData.to}/${callData.from}/${"user"}`
                 )
               }
             >
@@ -84,10 +83,10 @@ const CallModal = ({ callData, onClose }:{callData:any,onClose:()=>void}) => {
             </button>
             <button
               type="button"
-              className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              onClick={onClose}
+              className="text-white ml-3 bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+              onClick={handleCancelCall}
             >
-              No, cancel
+              Cancel
             </button>
           </div>
         </div>

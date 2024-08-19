@@ -4,12 +4,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { faWallet } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'js-cookie';
+import { useContext } from 'react';
+import { SocketContext } from '../../socketio/SocketIo';
 
 
 const UserProfileSideBar=()=>{
     const navigate=useNavigate()
     const location=useLocation()
+    const socket=useContext(SocketContext)
       function handleLogout() {
+        socket?.emit("logout");
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
         navigate("/login");

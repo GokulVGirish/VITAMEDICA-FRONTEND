@@ -50,7 +50,12 @@ const UserDoctorDetail = () => {
     
   return (
     <main
-      style={{ backgroundImage: `url(${logo})`, height: "50vh",backgroundSize:"cover",backgroundPosition:"center", }}
+      style={{
+        backgroundImage: `url(${logo})`,
+        height: "50vh",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
       className="profile-page pt-96"
     >
       <section className="relative block h-500-px">
@@ -98,8 +103,7 @@ const UserDoctorDetail = () => {
                   <div className="py-6 px-3 mt-32 sm:mt-0">
                     <button
                       onClick={() => setModalOpen(true)}
-                      className="bg-pink-500 active:bg-pink-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-3 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
-                      type="button"
+                      className="bg-[#928EDE] active:bg-pink-600 uppercase text-white font-bold hover:bg-[#7F7BD1] hover:scale-105 hover:shadow-lg shadow text-xs px-4 py-3 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
                     >
                       Book Appointment
                     </button>

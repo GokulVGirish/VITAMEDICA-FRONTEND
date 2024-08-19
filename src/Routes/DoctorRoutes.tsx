@@ -101,7 +101,7 @@ const DoctorRoute=()=>{
      
 
         <Routes>
-          {/* Wrap protected routes with DoctorProtectedRoutes */}
+        
           <Route path="/" element={<DoctorLayoutPage />}>
             <Route
               index
@@ -150,7 +150,7 @@ const DoctorRoute=()=>{
           </Route>
           <Route path="/login" element={<DoctorLoginPage />} />
           <Route path="/signup" element={<DoctorSignUpPage />} />
-          <Route path="/videocall/:appointment/:callerId/:toPersonId" element={<VideoCall/>}/>
+          <Route path="/videocall/:appointment/:callerId/:toPersonId/:role" element={<VideoCall/>}/>
           <Route path="/otpVerify" element={<DoctorOtpVerification />} />
           <Route path="*" element={<ErrorPage side="doctor" />} />
         </Routes>

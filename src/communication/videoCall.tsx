@@ -5,8 +5,12 @@ import { useRef } from "react";
 import Swal from "sweetalert2";
 import { toast } from "sonner";
 import instance from "../Axios/doctorInstance";
+import StarRating from "../Components/extra/RatingStar";
+import PrescriptionModal from "../Components/extra/PrescriptionModal";
+import { useNavigate } from "react-router-dom";
 import { FiVideo, FiVideoOff, FiMic, FiMicOff } from "react-icons/fi";
 import { FaPhone, FaTimes } from "react-icons/fa";
+
 
 
 
@@ -22,14 +26,21 @@ const configuration = {
 
 
 const VideoCall=()=>{
-const { appointment, callerId, toPersonId } = useParams<{
+const { appointment, callerId, toPersonId,role } = useParams<{
   appointment: string;
   callerId: string;
   toPersonId: string;
+  role:string
 }>();
+
+const [messages,setMessages]=useState<{sender:string;message:string}[]>([])
+const [newMessage,setNewMessages]=useState("")
+const [showRatingModal,setShowRatingModal]=useState(false)
+const [showPrescription,setShowPrescription]=useState(false)
 console.log("appointment",appointment,"callerId",callerId,"userId",toPersonId)
 const socket = useContext(SocketContext);
 const room = appointment;
+const navigate=useNavigate()
 
 const pc = useRef<RTCPeerConnection | null>(null);
 const localStream = useRef<MediaStream | null>(null);
@@ -88,6 +99,12 @@ useEffect(() => {
     });
   });
 
+  socket?.on("chat-message",(data)=>{
+    const {message,from}=data
+    setMessages((prevState)=>[...prevState,{sender:from,message}])
+
+  })
+
   return () => {
     socket?.off("calling");
     socket?.off("ignoredStatus");
@@ -95,8 +112,7 @@ useEffect(() => {
 }, [room]);
 socket?.on("cut-call", () => {
   Swal.fire({
-    title: "User cut the call",
-    showCancelButton: true,
+    title: "User rejected the call",
     confirmButtonText: "Ok",
   }).then((result) => {
     if (result.isConfirmed) {
@@ -104,6 +120,26 @@ socket?.on("cut-call", () => {
       hangup();
     }
   });
+});
+socket?.on("review", () => {
+  Swal.fire({
+    title: "Do you finish the call?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    cancelButtonText: "Reconnect",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      console.log("Call finished.");
+      setShowRatingModal(true);
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      console.log("Reconnecting to the call...");
+      startB();
+    }
+  });
+});
+socket?.on("prescription",()=>{
+  setShowPrescription(true)
 });
 
 async function makeCall() {
@@ -226,8 +262,12 @@ async function hangup(callend?: { callend: boolean }) {
   if (hangupButton.current) hangupButton.current.disabled = true;
   if (muteAudButton.current) muteAudButton.current.disabled = true;
   if (muteVideoButton.current) muteVideoButton.current.disabled = true;
-  if (callend) {
-    socket?.emit("review", { room, callerId });
+  console.log("role is ",role,"callend",callend)
+  if (role==="doctor") {
+    console.log("in here role")
+    socket?.emit("review", {to:toPersonId});
+  }else if(role==="user"){
+    socket?.emit("prescription",{to:toPersonId})
   }
 }
 
@@ -294,18 +334,33 @@ function muteAudio() {
 function pauseVideo() {
   if (localStream.current) {
     localStream.current.getVideoTracks().forEach((track) => {
-      track.enabled = !track.enabled; // Toggle pause/resume video
+      track.enabled = !track.enabled; 
     });
-    setVideoState(!videoState); // Update state for UI toggle
+    setVideoState(!videoState); 
   }
 }
+const sendMessage=()=>{
+  if(newMessage.trim()!==""){
+    socket?.emit("chat-message",{message:newMessage,from:callerId,to:toPersonId})
+   setMessages((prevState) => [...prevState, { sender: callerId as string, message:newMessage }]);
+   setNewMessages("")
+  }
+}
+
+ const handleCloseRating = async () => {
+   try {
+     setShowRatingModal(false);
+     navigate("/")
+   } catch (error) {
+     console.log(error);
+   }
+ };
+
+
 
 
     return (
       <div style={{ width: "100vw" }}>
-       
-      
-
         <div className="bg-white w-screen h-screen fixed top-0 left-0 z-50  flex justify-center items-center">
           <div className="flex flex-col md:flex-row items-center justify-center">
             <div className="flex flex-col items-center space-y-4 md:space-y-8">
@@ -382,16 +437,16 @@ function pauseVideo() {
           >
             <div className="flex-grow overflow-y-auto p-4">
               <div className="mb-4 text-lg font-bold">Chat</div>
-              {/* {messages.map((msg, index) => (
+              {messages.map((msg, index) => (
                 <div
                   key={index}
                   className={`mb-2 ${
-                    msg.sender === user.userid ? "text-right" : "text-left"
+                    msg.sender === callerId ? "text-right" : "text-left"
                   }`}
                 >
                   <div
                     className={`inline-block p-2 rounded ${
-                      msg.sender === user.userid
+                      msg.sender === callerId
                         ? "bg-green-500 text-white"
                         : "bg-gray-800 text-white"
                     }`}
@@ -399,25 +454,33 @@ function pauseVideo() {
                     {msg.message}
                   </div>
                 </div>
-              ))} */}
+              ))}
             </div>
             <div className="p-4 border-t border-gray-300">
               <input
                 type="text"
-         
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                onChange={(e) => setNewMessages(e.target.value)}
+                value={newMessage}
                 placeholder="Type a message..."
                 className="w-full p-2 border border-gray-300 rounded"
-               
               />
               <button
-              
+                onClick={sendMessage}
+                type="button"
                 className="w-full mt-2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
               >
                 Send
               </button>
             </div>
           </div>
-         
+          {showRatingModal && <StarRating appointmentId={appointment as string} docId={toPersonId as string}  closeRating={handleCloseRating}  />}
+          {showPrescription&&<PrescriptionModal appointmentId={appointment as string} closeModal={()=>setShowPrescription(false)}/>}
         </div>
       </div>
     );

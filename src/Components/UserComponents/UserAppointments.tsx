@@ -133,11 +133,11 @@ const UserAppointments=()=>{
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <button
-                            className={`mr-2 ${
+                            className={`py-1 px-2.5  border-none rounded   text-base  font-medium ${
                               appointment?.status === "completed"
-                                ? "bg-green-500 hover:bg-green-700"
-                                : "bg-red-500 hover:bg-red-700"
-                            } text-white py-1 px-3 rounded-full`}
+                                ? "text-green-800 bg-green-100 "
+                                : "text-red-800 bg-red-100 "
+                            }   rounded-md`}
                           >
                             {appointment?.status}
                           </button>
