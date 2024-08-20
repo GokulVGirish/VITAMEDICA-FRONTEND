@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../Redux/hoocks";
 import { useAppSelector } from "../../Redux/hoocks";
 import { verifyOtpSigup } from "../../Redux/doctorSlice";
-
-
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SyncLoader from "react-spinners/SyncLoader";
@@ -34,7 +32,7 @@ const DoctorOtp = () => {
     const verify=async()=>{
         try{
              const response = await axios.get(
-               "http://localhost:4000/doctor/verify-token",
+               "http://localhost:4000/api/doctors/auth/verify-token",
                {
                  headers: {
                    Authorization: `Bearer ${accessToken}`,
@@ -91,9 +89,10 @@ const DoctorOtp = () => {
   }, [seconds]);
   useEffect(() => {
     if (error) {
+      setOtp("")
       toast.error(error, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -106,7 +105,7 @@ const DoctorOtp = () => {
     if (message) {
       toast.success(message, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -121,7 +120,7 @@ const DoctorOtp = () => {
         navigate("/doctor");
      dispatch(clearErrorMessage());
       
-      }, 3000);
+      }, 1500);
     }
   }, [message, error, loading]);
 
@@ -152,12 +151,12 @@ const DoctorOtp = () => {
 
 
        try {
-         const response = await instance.post("/resendOtp");
+         const response = await instance.post("/auth/otp/resend");
          if (response.data.success) {
            setSeconds(120);
            toast.success(response.data.message, {
              position: "top-right",
-             autoClose: 5000,
+             autoClose: 1500,
              hideProgressBar: false,
              closeOnClick: true,
              pauseOnHover: true,
@@ -169,9 +168,10 @@ const DoctorOtp = () => {
          }
        } catch (error) {
          if (error instanceof AxiosError) {
+          setOtp("")
            toast.error(error.response?.data.message, {
              position: "top-right",
-             autoClose: 5000,
+             autoClose: 1500,
              hideProgressBar: false,
              closeOnClick: true,
              pauseOnHover: true,
@@ -200,7 +200,7 @@ const DoctorOtp = () => {
       </div>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={1500}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

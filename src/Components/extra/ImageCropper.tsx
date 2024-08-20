@@ -127,14 +127,14 @@ const ImageCropper=({setAvatar,closeModal,side}:{setAvatar(url:string):void;clos
                          let response
                       if(side==="doctor"){
                            response = await instance.post(
-                            "/profilePicUpdate",
-                            formData,
-                            {
-                              headers: {
-                                "Content-Type": "multipart/form-data",
-                              },
-                            }
-                          );
+                             "/profile/picture",
+                             formData,
+                             {
+                               headers: {
+                                 "Content-Type": "multipart/form-data",
+                               },
+                             }
+                           );
                       }else{
                         response = await userInstance.put(
                           "/profile/picture",

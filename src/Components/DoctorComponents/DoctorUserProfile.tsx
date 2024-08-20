@@ -3,6 +3,7 @@ import { useParams,useNavigate } from "react-router-dom";
 import instance from "../../Axios/doctorInstance";
 import moment from "moment";
 import { Loader } from "rsuite";
+import PdfDownload from "../extra/PdfDownload";
 
 import { SocketContext } from "../../socketio/SocketIo";
 
@@ -20,7 +21,7 @@ const DoctorUserProfile=()=>{
 
     const fetchAppointmentData=useCallback(async()=>{
 
-        const response=await instance.get(`/appointmentDetail/${id}`)
+        const response=await instance.get(`/appointments/${id}`)
         if(response.data.success){
             setAppointmentDetails(response.data.detail)
 
@@ -112,23 +113,37 @@ const DoctorUserProfile=()=>{
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className={`absolute  top-36 right-3 w-6 h-6 ${online?"bg-green-500":"bg-red-500"}  border-2 border-white rounded-full`}></span>
+                <span
+                  className={`absolute  top-36 right-3 w-6 h-6 ${
+                    online ? "bg-green-500" : "bg-red-500"
+                  }  border-2 border-white rounded-full`}
+                ></span>
               </div>
             </div>
 
             <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-              <button
-                className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                onClick={() =>
-                  navigate(
-                    `/doctor/videocall/${id}/${appointmentDetails.docId}/${
-                      appointmentDetails?.userId
-                    }/${"doctor"}`
-                  )
-                }
-              >
-                Start Consultation
-              </button>
+              {appointmentDetails?.status === "cancelled" ? (
+                <span className="text-white py-2 px-4 uppercase cursor-default rounded bg-red-400  shadow  font-medium transition transform ">
+                  cancelled
+                </span>
+              ) : appointmentDetails?.status === "completed" ? (
+                <span className="text-white py-2 px-4 uppercase cursor-default rounded bg-green-400  shadow  font-medium transition transform ">
+                  completed
+                </span>
+              ) : (
+                <button
+                  className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+                  onClick={() =>
+                    navigate(
+                      `/doctor/videocall/${id}/${appointmentDetails.docId}/${
+                        appointmentDetails?.userId
+                      }/${"doctor"}`,{state:{img:appointmentDetails?.image}}
+                    )
+                  }
+                >
+                  Start Consultation
+                </button>
+              )}
             </div>
           </div>
 

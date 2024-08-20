@@ -75,7 +75,7 @@ const CallModal = ({ callData, onClose }:{callData:any,onClose:()=>void}) => {
               className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
               onClick={() =>
                 navigate(
-                  `/doctor/videocall/${callData.room}/${callData.to}/${callData.from}/${"user"}`
+                  `/doctor/videocall/${callData.room}/${callData.to}/${callData.from}/${"user"}`,{state:{img:doctor?.image}}
                 )
               }
             >

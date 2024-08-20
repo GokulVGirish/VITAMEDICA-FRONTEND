@@ -10,7 +10,7 @@ const DoctorListing = () => {
     const [filter,setFilter]=useState<"all"|"blocked"|"unblocked">("all")
      useEffect(() => {
        const getUsers = async () => {
-         const response = await adminInstance.get("/doctorManagement");
+         const response = await adminInstance.get("/doctors");
          if (response.data.success) {
            setDoctors(response.data.doctors);
            setFilteredDoctors(response.data.doctors);
@@ -21,7 +21,7 @@ const DoctorListing = () => {
     const handleBlockUnblock=async(id:string,status:boolean)=>{
         try{
             console.log("clicked")
-            const response=await adminInstance.put(`/doctorBlockUnblock/${id}/${status}`)
+            const response=await adminInstance.put(`/doctors/${id}/${status}`)
             if(response.data.success){
                 setDoctors((prevState)=>prevState?.map((doctor)=>doctor._id===id?{...doctor,isBlocked:!status}:doctor))
 
@@ -81,7 +81,7 @@ const DoctorListing = () => {
         />
         <div className="w-full max-w-4xl">
           <div className="text-center my-4">
-            <h1 className="text-2xl font-bold">Users List</h1>{" "}
+            <h1 className="text-2xl font-bold">Doctors List</h1>{" "}
           </div>
 
           <div className="flex justify-between mb-4">
@@ -92,9 +92,9 @@ const DoctorListing = () => {
                 onClick={() => setFilter("all")}
                 className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                   filter === "all"
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#05acb4] text-white"
                     : "bg-gray-300 text-gray-700"
-                } hover:bg-blue-700`}
+                } hover:bg-[#1d9aa0]`}
               >
                 All
               </button>
@@ -102,9 +102,9 @@ const DoctorListing = () => {
                 onClick={() => setFilter("blocked")}
                 className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                   filter === "blocked"
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#05acb4] text-white"
                     : "bg-gray-300 text-gray-700"
-                } hover:bg-blue-700`}
+                } hover:bg-[#1d9aa0]`}
               >
                 Blocked
               </button>
@@ -112,9 +112,9 @@ const DoctorListing = () => {
                 onClick={() => setFilter("unblocked")}
                 className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                   filter === "unblocked"
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#05acb4] text-white"
                     : "bg-gray-300 text-gray-700"
-                } hover:bg-blue-700`}
+                } hover:bg-[#1d9aa0]`}
               >
                 Unblocked
               </button>
@@ -126,7 +126,7 @@ const DoctorListing = () => {
           </div>
 
           <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
-            <thead className="bg-gray-800 text-white">
+            <thead className="bg-[#05acb4] text-white">
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                   Name
@@ -171,7 +171,7 @@ const DoctorListing = () => {
             </tbody>
           </table>
           {filteredDoctors?.length === 0 && (
-            <div className=" flex  min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center  bg-gray-800 rounded-lg ">
+            <div className=" flex  min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center  bg-gray-700 rounded-lg ">
               No Doctors To Show
             </div>
           )}

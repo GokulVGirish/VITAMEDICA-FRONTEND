@@ -11,7 +11,7 @@ const DepartmentsListing=()=>{
      useEffect(()=>{
         const getDepartments=async()=>{
             try{
-                const response=await adminInstance.get("/department")
+                const response=await adminInstance.get("/departments")
                 if(response.data.success){
                     setDepartments(response.data.departments)
                 }
@@ -47,7 +47,7 @@ const DepartmentsListing=()=>{
         }
         try{
             const response = await adminInstance.post(
-              "/department",
+              "/departments",
               {department}
             );
             if(response.data.success){
@@ -92,7 +92,7 @@ const DepartmentsListing=()=>{
      }
      const handleDelete=async(id:string)=>{
         try{
-             const response=await adminInstance.delete(`/department/${id}`)
+             const response=await adminInstance.delete(`/departments/${id}`)
             
              if(response.data.success){
                 
@@ -178,14 +178,13 @@ const DepartmentsListing=()=>{
                 </button>
               </div>
             </div>
-           
 
             <div>
               <br />
             </div>
 
             <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
-              <thead className="bg-gray-800 text-white">
+              <thead className="bg-[#05acb4] text-white">
                 <tr>
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                     Name
@@ -209,10 +208,10 @@ const DepartmentsListing=()=>{
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
-                        onClick={()=>handleDelete(department._id)}
+                          onClick={() => handleDelete(department._id)}
                           className={`mr-2 bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded-full`}
                         >
-                        Delete
+                          Delete
                         </button>
                       </td>
                     </tr>

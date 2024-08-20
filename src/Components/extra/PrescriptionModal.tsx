@@ -42,7 +42,7 @@ const PrescriptionModal = ({appointmentId,closeModal}:{appointmentId:string;clos
      const formData=new FormData()
      formData.append("prescription",pdf)
     try{
-        const response = await instance.put(`/appointment/${appointmentId}/prescriptions`,formData,{headers:{"Content-Type":"multipart/form-data"}});
+        const response = await instance.put(`/appointments/${appointmentId}/prescriptions`,formData,{headers:{"Content-Type":"multipart/form-data"}});
         if(response.data.success){
             toast.success(response.data.message,{richColors:true,duration:1500,onAutoClose:()=>{
                 closeModal()

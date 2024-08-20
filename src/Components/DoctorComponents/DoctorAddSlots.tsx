@@ -20,7 +20,7 @@ const DoctorAddSlots = () => {
   useEffect(()=>{
     const getAvailableDates=async()=>{
 
-      const response=await instance.get("/getAvailableDates")
+      const response = await instance.get("/slots/available-dates");
       if(response.data.success){
            const dates = response.data.dates.map(
              (date: string) => new Date(date)
@@ -109,7 +109,7 @@ const DoctorAddSlots = () => {
       slots:formattedSlots
     }
    try{
-     const response = await instance.post("/add-slot", data);
+     const response = await instance.post("/slots", data);
      if (response.data.success) {
       setAvailableDates([...availableDates,selectStartDate])
          setSelectStartDate(null);

@@ -12,7 +12,7 @@ const UnverifiefDoctorsList=()=>{
     useEffect(()=>{
         const getDoctors=async()=>{
             try{
-                const response=await adminInstance.get("/unverifiedDoctor")
+                const response = await adminInstance.get("/doctors/unverified");
                 if(response.data.success){
                     setDoctors(response.data.doctors)
                     console.log("response is", response.data.doctors);
@@ -56,7 +56,7 @@ const UnverifiefDoctorsList=()=>{
             </div>
 
             <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
-              <thead className="bg-gray-800 text-white">
+              <thead className="bg-[#05acb4] text-white">
                 <tr>
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                     Name
@@ -97,7 +97,7 @@ const UnverifiefDoctorsList=()=>{
               </tbody>
             </table>
             {doctors.length === 0 && (
-              <div className=" flex  min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center  bg-gray-800 rounded-lg ">
+              <div className=" flex  min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center  bg-gray-700 rounded-lg ">
                 No Doctors To Verify
               </div>
             )}

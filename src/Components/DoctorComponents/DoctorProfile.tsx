@@ -131,7 +131,7 @@ const DoctorProfile = () => {
            }
           try{
             setLoading(true)
-             const response = await instance.put("/profileUpdate",userData);
+             const response = await instance.put("/profile",userData);
              setLoading(false)
              if (response.data.success) {
                toast.success(response.data.message, {

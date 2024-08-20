@@ -1,6 +1,5 @@
 import { AxiosError } from "axios";
 import instance from "../Axios/axios";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 const  razorPay=(order:any,id:string,slotDetails:any,navigate:Function):any=>{
 

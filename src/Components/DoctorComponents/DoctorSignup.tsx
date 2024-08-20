@@ -62,7 +62,7 @@ const DoctorSignUp=()=>{
             validationErrors.email = 'Invalid email format';
         }
 
-        // Password validation
+  
         if (!state.password.trim()) {
             validationErrors.password = 'Password is required';
         } else if (state.password.length < 6) {
@@ -74,14 +74,14 @@ const DoctorSignUp=()=>{
         }
           
 
-        // Confirm password validation
+  
         if (!state.cpassword.trim()) {
             validationErrors.cpassword = 'Confirm Password is required';
         } else if (state.password !== state.cpassword) {
             validationErrors.cpassword = 'Passwords do not match';
         }
 
-        // Name validation
+     
         const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
         if (!state.name.trim()) {
             validationErrors.name = 'Name is required';
@@ -89,7 +89,7 @@ const DoctorSignUp=()=>{
             validationErrors.name = 'Invalid name format';
         }
 
-        // Gender validation
+        
         if (state.gender !== 'male' && state.gender !== 'female') {
        
             validationErrors.gender = 'Gender must be either male or female';
@@ -99,8 +99,7 @@ const DoctorSignUp=()=>{
           validationErrors.department="select a department"
         }
 
-        // Phone number validation
-        const phoneRegex = /^\d{10}$/; // Adjust as per your requirement
+        const phoneRegex = /^\d{10}$/;
         if (!state.phone.trim()) {
             validationErrors.phone = 'Phone number is required';
         } else if (!phoneRegex.test(state.phone)) {
@@ -113,7 +112,7 @@ const DoctorSignUp=()=>{
         }
         console.log("doctor state is",state)
         setLoading(true)
-        const response = await adminInstance.post("/signup",state);
+        const response = await adminInstance.post("/auth/signup",state);
       
         if(response.data.success){
           Cookies.set("accessToken", response.data.token, {
@@ -121,7 +120,7 @@ const DoctorSignUp=()=>{
           });
              toast.success(response.data.message, {
                position: "top-right",
-               autoClose: 5000,
+               autoClose: 1000,
                hideProgressBar: false,
                closeOnClick: true,
                pauseOnHover: true,
@@ -134,12 +133,12 @@ const DoctorSignUp=()=>{
               navigate("/doctor/otpVerify");
                 setLoading(false);
 
-             },3000)
+             },1500)
 
         }else{
              toast.error(response.data.message, {
                position: "top-right",
-               autoClose: 5000,
+               autoClose: 1500,
                hideProgressBar: false,
                closeOnClick: true,
                pauseOnHover: true,
@@ -155,7 +154,7 @@ const DoctorSignUp=()=>{
     }
     useEffect(()=>{
       const getDepartments=async()=>{
-        const response = await instance.get("/department");
+        const response = await instance.get("/utility/departments");
         if(response.data.success){
            setDepartments(response.data.departments);
 
@@ -171,7 +170,7 @@ const DoctorSignUp=()=>{
         <div className="flex justify-center w-full h-full my-auto xl:gap-14 lg:justify-normal md:gap-5 draggable">
           <ToastContainer
             position="top-right"
-            autoClose={5000}
+            autoClose={1500}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick

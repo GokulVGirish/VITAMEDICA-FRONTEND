@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { toast } from "sonner";
 
 const instance = axios.create({
-  baseURL: "http://localhost:4000/doctor",
+  baseURL: "http://localhost:4000/api/doctors",
   headers: {
     "Content-Type": "application/json",
   },

@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 
 export const adminLogin=createAsyncThunk<any,{email:string,password:string},{rejectValue: string}>("admin/login",async(data,thunkAPI)=>{
     try{
-        const response=await adminInstance.post("/login",data)
+        const response=await adminInstance.post("/auth/login",data)
         console.log("admin response",response)
         Cookies.set("adminAccessToken",response.data.adminAccessToken)
         Cookies.set("adminRefreshToken",response.data.adminRefreshToken)

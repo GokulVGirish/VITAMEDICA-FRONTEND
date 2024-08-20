@@ -32,7 +32,7 @@ const DoctorsList = () => {
       
         const getDoctors=async()=>{
             try{
-                const response=await instance.get(`/doctor-list?page=${currentPage}&limit=6`)
+                const response=await instance.get(`/doctors/list?page=${currentPage}&limit=6`)
                 if(response.data.success){
                     console.log("data of doctor",response.data.doctors)
                     setDoctors(response.data.doctors);

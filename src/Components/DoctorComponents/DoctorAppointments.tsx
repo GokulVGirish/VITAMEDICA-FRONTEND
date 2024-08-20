@@ -21,7 +21,7 @@ const DoctorAppointments=()=>{
         if(filter==="today"){
 
             const getTodaysApointments=async()=>{
-                const response=await instance.get("/todays-appointments")
+                const response = await instance.get("/appointments/today");
                 if(response.data.success){
                     setAppointments(response.data.appointments)
                 }
@@ -31,7 +31,9 @@ const DoctorAppointments=()=>{
 
         }else{
             const getUpcommingAppointments=async()=>{
-                const response = await instance.get(`/upcomming-appointments?page=${page}&limit=${limit}`);
+                const response = await instance.get(
+                  `/appointments/upcomming?page=${page}&limit=${limit}`
+                );
                 console.log("upcomming res",response.data)
                 if(response.data.success){
                   setAppointments(response.data.appointments)
@@ -52,6 +54,7 @@ const DoctorAppointments=()=>{
         setPage((prevState)=>prevState+1)
     }
   const handleBookingCancellation=(date:Date,start:Date)=>{
+    console.log("date,d",date)
       Swal.fire({
         title:
           "This slot has been booked and money will be debited from Your wallet?",
@@ -63,7 +66,7 @@ const DoctorAppointments=()=>{
       }).then(async (result) => {
         if (result.isConfirmed) {
           const response = await instance.delete(
-            `/cancelBookedSlots?date=${date.toISOString()}&startTime=${start}`
+            `/slots/booked?date=${date}&startTime=${start}`
           );
           if (response.data.success) {
             toast.success(response.data.message, {

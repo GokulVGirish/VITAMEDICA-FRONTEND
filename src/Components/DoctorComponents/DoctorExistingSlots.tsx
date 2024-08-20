@@ -55,7 +55,7 @@ const DoctorExistingSlots=({availableDates}:PropsType)=>{
              }).then(async(result)=>{
                 if(result.isConfirmed){
                     const response = await instance.delete(
-                      `/cancelBookedSlots?date=${selectedSlotDate.toISOString()}&startTime=${selectedTimeSlot.start}`
+                      `/slots/booked?date=${selectedSlotDate.toISOString()}&startTime=${selectedTimeSlot.start}`
                     );
                     if(response.data.success){
                          toast.success(response.data.message, {
@@ -90,7 +90,7 @@ const DoctorExistingSlots=({availableDates}:PropsType)=>{
                 if (result.isConfirmed) {
                     try {
                       const response = await instance.delete(
-                        `/cancelUnbookedSlots`,
+                        `/slots/unbooked`,
                         {
                           params: {
                             date: selectedSlotDate.toISOString(),

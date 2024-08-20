@@ -29,7 +29,7 @@ const DoctorRejectModal = ({closeModal,id}:PropsType) => {
             }
              try {
                const response = await adminInstance.delete(
-                 `/rejectDoctor/${id}`,{params:{reason}}
+                 `/doctors/${id}/reject`,{params:{reason}}
                );
                if (response.data.success) {
                 toast.success(response.data.message,{richColors:true,duration:1500,onAutoClose:()=>{

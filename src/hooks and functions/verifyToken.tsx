@@ -17,14 +17,14 @@ const useVerifyToken = (userType="") => {
         let response
        if(userType==="admin"){
           
-           response=await adminInstance.get("/verify-token")
+           response=await adminInstance.get("/auth/verify-token")
              if (response.status === 401) {
                 // navigate("/admin/login");
         }
         
        }else if (userType === "doctor") {
        
-        response=await doctorInstance.get("/verify-token")
+        response=await doctorInstance.get("/auth/verify-token")
            if (response.status === 401) {
             
                  toast.error(response.data.message, {
@@ -38,7 +38,7 @@ const useVerifyToken = (userType="") => {
 
        } 
       }else {
-         response = await instance.get("/token/verify");
+         response = await instance.get("/auth/token/verify");
          if (response.status === 401) {
           //  navigate("/login");
          }

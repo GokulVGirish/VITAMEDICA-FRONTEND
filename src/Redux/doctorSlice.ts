@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 import { Socket } from "socket.io-client";
 export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: string}>("doctor/verifyOtp",async(otp,thunkAPI)=>{
     try{
-        const response = await instance.post("/verifyOtpSignup",otp);
+        const response = await instance.post("/auth/signup/verify-otp", otp);
         console.log("hellosss")
         console.log("data response", response.data);
         Cookies.set("accessToken", response.data.accessToken);
@@ -31,7 +31,7 @@ export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: stri
 })
 export const doctorLogin=createAsyncThunk<any,{email:string,password:string,socket:Socket|null},{rejectValue: string}>("doctor/login",async(data,thunkAPI)=>{
     try{
-        const response=await instance.post("/login",{email:data.email,password:data.password})
+        const response=await instance.post("/auth/login",{email:data.email,password:data.password})
         console.log("frrgfergfff",response.data.accessToken)
          Cookies.set("accessToken", response.data.accessToken);
          Cookies.set("refreshToken", response.data.refreshToken);
@@ -59,11 +59,15 @@ export const doctorLogin=createAsyncThunk<any,{email:string,password:string,sock
 
 export const doctorDocumentUpload=createAsyncThunk<any,any,{rejectValue: string}>("doctor/docUpload",async(data,thunkAPI)=>{
     try{
-        const response = await instance.post("/docUpload", data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        const response = await instance.post(
+          "/utility/upload-documents",
+          data,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         return response.data
 
     }
@@ -102,7 +106,7 @@ const doctorSlice=createSlice({
             state.loading=false
 
         },
-        clearDoctor:(state,action)=>{
+        clearDoctor:(state)=>{
             state.doctor=null
 
         },

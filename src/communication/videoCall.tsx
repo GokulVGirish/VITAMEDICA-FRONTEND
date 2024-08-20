@@ -1,6 +1,6 @@
 import { SocketContext } from "../socketio/SocketIo"
 import { useContext ,useEffect,useState} from "react"
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import { useRef } from "react";
 import Swal from "sweetalert2";
 import { toast } from "sonner";
@@ -10,6 +10,8 @@ import PrescriptionModal from "../Components/extra/PrescriptionModal";
 import { useNavigate } from "react-router-dom";
 import { FiVideo, FiVideoOff, FiMic, FiMicOff } from "react-icons/fi";
 import { FaPhone, FaTimes } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -26,12 +28,15 @@ const configuration = {
 
 
 const VideoCall=()=>{
-const { appointment, callerId, toPersonId,role } = useParams<{
+const { appointment, callerId, toPersonId,role} = useParams<{
   appointment: string;
   callerId: string;
   toPersonId: string;
-  role:string
+  role:string;
+  img:string
 }>();
+const state=useLocation().state
+const img=state.img
 
 const [messages,setMessages]=useState<{sender:string;message:string}[]>([])
 const [newMessage,setNewMessages]=useState("")
@@ -139,7 +144,20 @@ socket?.on("review", () => {
   });
 });
 socket?.on("prescription",()=>{
-  setShowPrescription(true)
+   Swal.fire({
+     title: "Do you finish the appointment?",
+     icon: "question",
+     showCancelButton: true,
+     confirmButtonText: "Yes",
+     cancelButtonText: "Reconnect",
+   }).then((result)=>{
+    if (result.isConfirmed) {
+      setShowPrescription(true);
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      console.log("Reconnecting to the call...");
+      startB();
+    }
+   })
 });
 
 async function makeCall() {
@@ -278,11 +296,6 @@ useEffect(() => {
 }, []);
 
 async function startB() {
-  
-    // const id = userId; 
-    // const response = await instance.post(`${"/user"}/call`, { id });
-    // if (response.data.success) {
-    //   console.log("response : ", response);
 
 
 
@@ -358,129 +371,136 @@ const sendMessage=()=>{
 
 
 
-
     return (
-      <div style={{ width: "100vw" }}>
-        <div className="bg-white w-screen h-screen fixed top-0 left-0 z-50  flex justify-center items-center">
-          <div className="flex flex-col md:flex-row items-center justify-center">
-            <div className="flex flex-col items-center space-y-4 md:space-y-8">
-              <div className="bg-gray-200 h-96 w-full md:w-96 rounded-lg shadow-md">
-                <video
-                  ref={localVideo}
-                  className="w-full h-full rounded-lg object-cover"
-                  autoPlay
-                  playsInline
-                  muted
-                ></video>
-              </div>
-            </div>
-            <div className="flex flex-col items-center space-y-4 md:space-y-8 md:ml-8">
-              <div className="bg-gray-200 h-96 w-full md:w-96 rounded-lg mr-14 shadow-md">
-                <video
-                  ref={remoteVideo}
-                  className="w-full h-full rounded-lg object-cover"
-                  autoPlay
-                  playsInline
-                ></video>
-              </div>
+      <div className="h-[100vh] bg-[#110620] w-full   flex items-center justify-around">
+        <div className="flex relative flex-col md:flex-row items-center justify-center">
+          <div className="flex absolute bottom-5 left-14 flex-col items-center space-y-4 md:space-y-8">
+            <div className="bg-gray-200 h-32 w-44 border border-black  rounded-lg shadow-md">
+              <video
+                ref={localVideo}
+                className="w-full h-full rounded-lg object-cover"
+                autoPlay
+                playsInline
+                muted
+              ></video>
             </div>
           </div>
-          <div className="flex space-x-4 absolute bottom-10 ">
-            <button
-              onClick={startB}
-              ref={startButton}
-              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
-            >
-              <FaPhone className="h-5 w-5" />
-            </button>
-            <button
-              onClick={hangB}
-              ref={hangupButton}
-              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-            >
-              <FaTimes className="h-5 w-5" />
-            </button>
-            <button
-              onClick={muteAudio}
-              ref={muteAudButton}
-              className={`bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 ${
-                !audioState
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-gray-500 hover:bg-gray-600"
-              }`}
-            >
-              {audioState ? (
-                <FiMic className="h-5 w-5" />
-              ) : (
-                <FiMicOff className="h-5 w-5" />
-              )}
-            </button>
-            <button
-              onClick={pauseVideo}
-              ref={muteVideoButton}
-              className={`bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 ${
-                !videoState
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-gray-500 hover:bg-gray-600"
-              }`}
-            >
-              {videoState ? (
-                <FiVideo className="h-5 w-5" />
-              ) : (
-                <FiVideoOff className="h-5 w-5" />
-              )}
-            </button>
-          </div>
-          <div
-            className="absolute right-0 top-10  w-80 bg-white shadow-md border rounded-lg mr-10 border-gray-300 flex flex-col overflow-x-hidden"
-            style={{ height: "95%" }}
-          >
-            <div className="flex-grow overflow-y-auto p-4">
-              <div className="mb-4 text-lg font-bold">Chat</div>
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`mb-2 ${
-                    msg.sender === callerId ? "text-right" : "text-left"
-                  }`}
-                >
-                  <div
-                    className={`inline-block p-2 rounded ${
-                      msg.sender === callerId
-                        ? "bg-green-500 text-white"
-                        : "bg-gray-800 text-white"
-                    }`}
-                  >
-                    {msg.message}
-                  </div>
-                </div>
-              ))}
+          <div className="flex  flex-col items-center space-y-4 md:space-y-8 md:ml-8">
+            <div className="bg-[#081f36] h-[700px]  w-[900px] rounded-lg mr-14 shadow-md">
+              <video
+                ref={remoteVideo}
+                className="w-full h-full rounded-lg object-cover"
+                autoPlay
+                playsInline
+              ></video>
             </div>
-            <div className="p-4 border-t border-gray-300">
-              <input
-                type="text"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    sendMessage();
-                  }
-                }}
-                onChange={(e) => setNewMessages(e.target.value)}
-                value={newMessage}
-                placeholder="Type a message..."
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+            <div className="flex space-x-4 absolute bottom-10 ">
               <button
-                onClick={sendMessage}
-                type="button"
-                className="w-full mt-2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                onClick={startB}
+                ref={startButton}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
               >
-                Send
+                <FaPhone className="h-5 w-5" />
+              </button>
+              <button
+                onClick={hangB}
+                ref={hangupButton}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+              >
+                <FaTimes className="h-5 w-5" />
+              </button>
+              <button
+                onClick={muteAudio}
+                ref={muteAudButton}
+                className={`bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 ${
+                  !audioState
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-gray-500 hover:bg-gray-600"
+                }`}
+              >
+                {audioState ? (
+                  <FiMic className="h-5 w-5" />
+                ) : (
+                  <FiMicOff className="h-5 w-5" />
+                )}
+              </button>
+              <button
+                onClick={pauseVideo}
+                ref={muteVideoButton}
+                className={`bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 ${
+                  !videoState
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-gray-500 hover:bg-gray-600"
+                }`}
+              >
+                {videoState ? (
+                  <FiVideo className="h-5 w-5" />
+                ) : (
+                  <FiVideoOff className="h-5 w-5" />
+                )}
               </button>
             </div>
           </div>
-          {showRatingModal && <StarRating appointmentId={appointment as string} docId={toPersonId as string}  closeRating={handleCloseRating}  />}
-          {showPrescription&&<PrescriptionModal appointmentId={appointment as string} closeModal={()=>setShowPrescription(false)}/>}
+        </div>
+
+        <div className="flex flex-col  flex-shrink-0 rounded-2xl bg-[#081f36] h-[500px] w-[400px] p-4">
+          <div className="flex flex-col h-full overflow-x-auto mb-4">
+            <div className="flex flex-col h-full">
+              <div className="grid grid-cols-12 gap-y-2">
+                {messages.map((msg, index) => {
+                  return msg.sender !== callerId ? (
+                    <div className="col-start-1 col-end-8 p-3 rounded-lg">
+                      <div className="flex flex-row items-center">
+                        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+                          <img className="rounded-full" src={img} alt="noimg" />
+                        </div>
+                        <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+                          <div>{msg.message}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="col-start-6 col-end-13 p-3 rounded-lg">
+                      <div className="flex items-center justify-start flex-row-reverse">
+                        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">Me</div>
+                        <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
+                          <div>{msg.message}</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          <div
+            className="flex flex-row items-center h-16 rounded-xl bg-[#3a5e81] w-full px-4"
+          >
+            <div></div>
+            <div className="flex-grow ml-4">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      sendMessage();
+                    }
+                  }}
+                  onChange={(e) => setNewMessages(e.target.value)}
+                  value={newMessage}
+                  placeholder="Type a message..."
+                  className="flex w-full border rounded-xl  focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                />
+                <button
+                  onClick={sendMessage}
+                  className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"
+                >
+                  <FontAwesomeIcon icon={faPaperPlane} />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

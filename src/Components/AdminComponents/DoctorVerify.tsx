@@ -16,7 +16,7 @@ const DoctorVerify = () => {
      useEffect(()=>{
         const getDoctorDocs=async()=>{
             try{
-                const response=await adminInstance.get(`/doctorDocument/${id}`)
+                const response=await adminInstance.get(`/doctors/${id}/documents`)
                 if(response.data.success){
                     console.log("data",response.data.doctor)
                     setDoctor(response.data.doctor);
@@ -40,7 +40,7 @@ const DoctorVerify = () => {
       const handleVerify=async()=>{
         try{
 
-            const response = await adminInstance.put(`/verifyDoctor/${id}`);
+            const response = await adminInstance.put(`/doctors/${id}/verify`);
             if(response.data.success){
                  toast.success("Doctor verified", {
                    position: "top-right",

@@ -18,7 +18,7 @@ const UserListing = () => {
   console.log("filtered users",filteredUsers)
   useEffect(() => {
     const getUsers = async () => {
-      const response = await adminInstance.get("/userManagement");
+      const response = await adminInstance.get("/users");
       if (response.data.success) {
         setUsers(response.data.users);
         setFilteredUsers(response.data.users);
@@ -30,7 +30,7 @@ const UserListing = () => {
     try {
       console.log("called");
       const response = await adminInstance.put(
-        `/userBlockUnblock/${id}/${currentStatus}`
+        `/users/${id}/${currentStatus}`
       );
       if (response.data.success) {
         toast.success(response.data.message, {
@@ -111,9 +111,9 @@ const UserListing = () => {
                 onClick={() => setFilter("all")}
                 className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                   filter === "all"
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#05acb4] text-white"
                     : "bg-gray-300 text-gray-700"
-                } hover:bg-blue-700`}
+                } hover:bg-[#1d9aa0]`}
               >
                 All
               </button>
@@ -121,9 +121,9 @@ const UserListing = () => {
                 onClick={() => setFilter("blocked")}
                 className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                   filter === "blocked"
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#05acb4] text-white"
                     : "bg-gray-300 text-gray-700"
-                } hover:bg-blue-700`}
+                } hover:bg-[#1d9aa0]`}
               >
                 Blocked
               </button>
@@ -131,9 +131,9 @@ const UserListing = () => {
                 onClick={() => setFilter("unblocked")}
                 className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                   filter === "unblocked"
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#05acb4] text-white"
                     : "bg-gray-300 text-gray-700"
-                } hover:bg-blue-700`}
+                } hover:bg-[#1d9aa0]`}
               >
                 Unblocked
               </button>
@@ -145,7 +145,7 @@ const UserListing = () => {
           </div>
 
           <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
-            <thead className="bg-gray-800 text-white">
+            <thead className="bg-[#05acb4] text-white">
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                   Name
@@ -189,8 +189,8 @@ const UserListing = () => {
                 ))}
             </tbody>
           </table>
-          {filteredUsers.length===0 && (
-            <div className=" flex  min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center  bg-gray-800 rounded-lg ">
+          {filteredUsers.length === 0 && (
+            <div className=" flex  min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center  bg-gray-700 rounded-lg ">
               No Users
             </div>
           )}

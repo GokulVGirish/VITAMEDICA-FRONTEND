@@ -31,7 +31,7 @@ const DoctorLogin=()=>{
                if (error) {
                  toast.error(error, {
                    position: "top-right",
-                   autoClose: 5000,
+                   autoClose: 1500,
                    hideProgressBar: false,
                    closeOnClick: true,
                    pauseOnHover: true,
@@ -45,7 +45,7 @@ const DoctorLogin=()=>{
                if (message) {
                  toast.success(message, {
                    position: "top-right",
-                   autoClose: 5000,
+                   autoClose: 1000,
                    hideProgressBar: false,
                    closeOnClick: true,
                    pauseOnHover: true,
@@ -60,7 +60,7 @@ const DoctorLogin=()=>{
                  setTimeout(() => {
                    navigate("/doctor");
                    dispatch(clearErrorMessage());
-                 }, 3000);
+                 }, 1000);
                }
 
         },[loading,error,message])
@@ -100,7 +100,7 @@ const DoctorLogin=()=>{
         <div className="flex justify-center w-full h-full my-auto xl:gap-14 lg:justify-normal md:gap-5 draggable">
           <ToastContainer
             position="top-right"
-            autoClose={5000}
+            autoClose={1500}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick

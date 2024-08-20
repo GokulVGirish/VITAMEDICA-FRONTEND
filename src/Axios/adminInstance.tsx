@@ -2,7 +2,7 @@ import axios from "axios"
 import Cookies from "js-cookie"
 
 const adminInstance=axios.create({
-    baseURL:"http://localhost:4000/admin",
+    baseURL:"http://localhost:4000/api/admin",
     headers:{
         "Content-Type":"application/json"
     }

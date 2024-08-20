@@ -223,7 +223,7 @@ const UserProfile = () => {
   const handleChangePassword=async()=>{
     try{
       setPasswordModalOpen(true);
-      const response = await instance.post("/password/reset-request", {
+      const response = await instance.post("/profile/password/reset-request", {
         email: userData.email,
       });
 

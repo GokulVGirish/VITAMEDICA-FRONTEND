@@ -8,7 +8,7 @@ import { Socket } from "socket.io-client";
 
 export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: string}>("user/verifyOtp",async(otp,thunkAPI)=>{
     try{
-        const response = await instance.post("/signup/verify-otp", otp);
+        const response = await instance.post("/auth/signup/verify-otp", otp);
         Cookie.set("accessToken",response.data.accessToken)
         Cookie.set("refreshToken",response.data.refreshToken)
         console.log("response of signup",response.data)
@@ -34,7 +34,10 @@ export const loginUser=createAsyncThunk<any,{email:string,password:string,socket
 
 
     try{
-          const response = await instance.post("/login", { email:data.email, password:data.password });
+          const response = await instance.post("/auth/login", {
+            email: data.email,
+            password: data.password,
+          });
 
 
     // Extract token and other necessary data from response
@@ -72,7 +75,7 @@ export const loginUser=createAsyncThunk<any,{email:string,password:string,socket
 })
 export const googleLogin=createAsyncThunk<any,{email:string;name:string,sub:string},{rejectValue: string}>("user/googleLogin",async(data,thunkAPI)=>{
     try{
-        const response = await instance.post("/google/login", data);
+        const response = await instance.post("/auth/google/login", data);
          Cookie.set("accessToken", response.data.accessToken);
 
          Cookie.set("refreshToken", response.data.refreshToken);

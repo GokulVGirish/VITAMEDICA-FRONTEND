@@ -116,7 +116,7 @@ const DoctorDocumentUpload: React.FC = () => {
       formData.append("images", file3);
       formData.append("images", file4);
       console.log("called")
-      dispatch(doctorDocumentUpload(formData))
+      await dispatch(doctorDocumentUpload(formData))
       navigate("/doctor")
       
     };

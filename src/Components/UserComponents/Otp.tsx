@@ -130,7 +130,7 @@ const Otp=()=>{
 
       
      try{
-       const response = await instance.post("/otp/resend");
+       const response = await instance.post("/auth/otp/resend");
       if(response.data.success){ 
         setSeconds(120);
            toast.success(response.data.message, {

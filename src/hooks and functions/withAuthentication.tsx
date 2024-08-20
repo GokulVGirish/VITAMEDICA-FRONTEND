@@ -20,7 +20,7 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
              const accessToken = Cookies.get("adminAccessToken");
              if(accessToken){
                 const response = await fetch(
-                  "http://localhost:4000/admin/verify-token",
+                  "http://localhost:4000/admin/auth/verify-token",
                   {
                     method: "GET",
                     headers: {
@@ -49,7 +49,7 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
              if(accessToken){
                console.log("access with", accessToken);
                const response = await fetch(
-                 "http://localhost:4000/doctor/verify-token",
+                 "http://localhost:4000/api/doctors/verify-token",
                  {
                    method: "GET",
                    headers: {
@@ -77,7 +77,7 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
             const accessToken = Cookies.get("accessToken");
             if(accessToken){
                const response = await fetch(
-                 "http://localhost:4000/api/users/token/verify",
+                 "http://localhost:4000/api/users/auth/token/verify",
                  {
                    method: "GET",
                    headers: {

@@ -139,7 +139,7 @@ const UserSignUp = () => {
       return;
     }
     setLoading(true);
-    const response = await instance.post("/signup", state);
+    const response = await instance.post("/auth/signup", state);
     Cookies.set("accessToken", response.data.token, { expires: 1 / 24 / 12 });
     console.log("state", state);
 
@@ -215,7 +215,10 @@ const UserSignUp = () => {
                 console.log(data);
                 setLoading(true)
                try{
-                 const response = await instance.post("/google/signup", data);
+                 const response = await instance.post(
+                   "/auth/google/signup",
+                   data
+                 );
                 if(response.data.success){
                      Cookies.set("accessToken", response.data.accessToken, {
                        expires: 1 / 24,

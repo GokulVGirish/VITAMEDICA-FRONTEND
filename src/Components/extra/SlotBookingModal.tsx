@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import {toast} from "sonner"
 import instance from "../../Axios/axios";
 import { useEffect, useState } from "react";
-import { json, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 import moment from "moment";
 type PropsType={
@@ -30,13 +30,24 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
 
     useEffect(()=>{
         const getSlots=async()=>{
-            const response=await instance.get(`/doctors/${id}/availability`)
-            if(response.data.success){
-                console.log("dates",response.data.dates)
-                const dates = response.data.dates.map((date:string) => new Date(date));
+          try{
+              const response = await instance.get(
+                `/doctors/${id}/availability`
+              );
+              if (response.data.success) {
+                console.log("dates", response.data.dates);
+                const dates = response.data.dates.map(
+                  (date: string) => new Date(date)
+                );
                 setAvailableDates(dates);
-            }
+              }
 
+
+          }
+          catch(error){
+            console.log(error)
+
+          }
 
         }
         getSlots()
@@ -123,7 +134,6 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
              cancelButtonText: "No, cancel",
            }).then((result) => {
              if (result.isConfirmed) {
-               // Handle "OK" button click
                const bookingDetails = {
                  date: moment(selectedDate).format("YYYY-MM-DD"),
                  slotTime:timeSelected,

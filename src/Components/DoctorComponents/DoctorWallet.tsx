@@ -19,7 +19,7 @@ const DoctorWallet=()=>{
        const fetchWallet = async () => {
          try {
            const response = await instance.get(
-             `/doctor-wallet?page=${page}&limit=${limit}`
+             `/wallet?page=${page}&limit=${limit}`
            );
            if(response.data.success){
             console.log("responsedata",response.data)
