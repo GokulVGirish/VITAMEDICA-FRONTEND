@@ -8,6 +8,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 import instance from "../../Axios/doctorInstance";
 import userInstance from "../../Axios/axios";
 import {toast} from "sonner"
+import Spinner from "./Spinner";
 
 const ImageCropper=({setAvatar,closeModal,side}:{setAvatar(url:string):void;closeModal():void;side:"user"|"doctor"})=>{
     const [imageUrl,setImageUrl]=useState("")
@@ -15,6 +16,7 @@ const ImageCropper=({setAvatar,closeModal,side}:{setAvatar(url:string):void;clos
     const previewCanvasRef=useRef<HTMLCanvasElement>(null)
     const [crop,setCrop]=useState<Crop>()
     const [error,setError]=useState("")
+    const [spinner,setSpinner]=useState(false)
     const onSelectFile=(e:React.ChangeEvent<HTMLInputElement>)=>{
     if(e.target.files){
         
@@ -100,7 +102,7 @@ const ImageCropper=({setAvatar,closeModal,side}:{setAvatar(url:string):void;clos
               minWidth={25}
             >
               <img
-              ref={imgRef}
+                ref={imgRef}
                 src={imageUrl}
                 alt="upload"
                 style={{ maxHeight: "70vh" }}
@@ -109,65 +111,66 @@ const ImageCropper=({setAvatar,closeModal,side}:{setAvatar(url:string):void;clos
             </ReactCrop>
             <button
               onClick={() => {
-                const canvas=setCanvasPreview(
+                const canvas = setCanvasPreview(
                   imgRef?.current as HTMLImageElement,
-                  previewCanvasRef?.current as HTMLCanvasElement ,
+                  previewCanvasRef?.current as HTMLCanvasElement,
                   convertToPixelCrop(
                     crop as Partial<Crop>,
                     imgRef?.current?.width as number,
                     imgRef?.current?.height as number
                   )
                 );
-                console.log("hello",canvas)
-                canvas.toBlob(async(blob)=>{
-                    if(blob){
-                        console.log(blob)
-                         const formData = new FormData();
-                         formData.append("image", blob);
-                         let response
-                      if(side==="doctor"){
-                           response = await instance.post(
-                             "/profile/picture",
-                             formData,
-                             {
-                               headers: {
-                                 "Content-Type": "multipart/form-data",
-                               },
-                             }
-                           );
-                      }else{
-                        response = await userInstance.put(
-                          "/profile/picture",
-                          formData,
-                          { headers: { "Content-Type": "multipart/form-data" } }
-                        );
-
-                      }
-                        console.log("imageresponse",response?.data)
-                        if(response?.data&&response.data.success){
-                             const dataurl =
-                               previewCanvasRef.current?.toDataURL();
-                             setAvatar(dataurl as string);
-                             closeModal();
-                              toast.success("Profile updated successfully!",{richColors:true,duration:1500});
-
+                console.log("hello", canvas);
+                canvas.toBlob(async (blob) => {
+                  if (blob) {
+                      setSpinner(true);
+                   
+                    console.log(blob);
+                    const formData = new FormData();
+                    formData.append("image", blob);
+                    let response;
+                    if (side === "doctor") {
+                     
+                      response = await instance.post(
+                        "/profile/picture",
+                        formData,
+                        {
+                          headers: {
+                            "Content-Type": "multipart/form-data",
+                          },
                         }
-                       
-
+                      );
+                    } else {
+                      response = await userInstance.put(
+                        "/profile/picture",
+                        formData,
+                        { headers: { "Content-Type": "multipart/form-data" } }
+                      );
                     }
-
-                })
-               
+                    console.log("imageresponse", response?.data);
+                    if (response?.data && response.data.success) {
+                        setSpinner(false);
+                      const dataurl = previewCanvasRef.current?.toDataURL();
+                      setAvatar(dataurl as string);
+                      closeModal();
+                      toast.success("Profile updated successfully!", {
+                        richColors: true,
+                        duration: 1500,
+                      });
+                    }
+                  }
+                });
               }}
               className="text-white font-mono text-xs py-2 px-4 rounded-2xl mt-4 bg-sky-500 hover:bg-sky-600"
             >
               Crop Image
             </button>
+           {spinner && <Spinner/>}
           </div>
         )}
         {crop && (
           <canvas
-          ref={previewCanvasRef}
+            ref={previewCanvasRef}
             className="mt-4"
             style={{
               display: "none",
@@ -176,9 +179,7 @@ const ImageCropper=({setAvatar,closeModal,side}:{setAvatar(url:string):void;clos
               width: 150,
               height: 150,
             }}
-          >
-
-          </canvas>
+          ></canvas>
         )}
       </>
     );

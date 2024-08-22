@@ -1,78 +1,148 @@
-
+import { RefObject, useCallback, useEffect, useState } from "react";
+import instance from "../../Axios/doctorInstance";
+import { useNavigate } from "react-router-dom";
 
 
 
 
 import React from "react";
 
-const DoctorFilterSort = () => {
+const DoctorFilterSort = ({
+  selctedCategory,
+  setSelectedCategory,
+  searchBarRef,
+  searchTerm,
+  handleSearchChange,
+  searchResult,
+}: {
+  selctedCategory: { _id: number; name: string };
+  setSelectedCategory(category: { _id: number; name: string }): void;
+  searchBarRef: RefObject<HTMLInputElement>;
+  searchTerm: string;
+  handleSearchChange: () => void;
+  searchResult: { _id: number; name: string; image: string }[];
+}) => {
+  const [departments, setDepartments] = useState<
+    { name: string; _id: number }[]
+  >([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate=useNavigate()
+
+  const getDepartments = useCallback(async () => {
+    const response = await instance.get("/utility/departments");
+    if (response.data.success) {
+      setDepartments(response?.data?.departments);
+    }
+  }, []);
+  useEffect(() => {
+    getDepartments();
+  }, [getDepartments]);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleCategorySelect = (category: { _id: number; name: string }) => {
+    setSelectedCategory(category);
+    setDropdownOpen(false);
+  };
+
   return (
-    <div className="m-2 w-screen max-w-screen-md mx-auto">
-      <div className="flex flex-col">
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
-          <form>
-            <div className="relative mb-3 w-full flex items-center justify-between rounded-md">
-           {/* svg */}
-              <input
-                type="text"
-                name="search"
-                className="h-12 w-full rounded-lg cursor-text  border border-gray-100 bg-gray-100 py-4 pr-40 pl-12 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                placeholder="Search Doctor"
-              />
+    <form className="max-w-lg mx-auto mt-12">
+      <div className="flex">
+        <button
+          id="dropdown-button"
+          onClick={toggleDropdown}
+          className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-[#928EDE] border rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100  dark:hover:bg-gray-600 dark:text-white border-[#7d78e0]"
+          type="button"
+        >
+          {selctedCategory.name}
+          <svg
+            className="w-2.5 h-2.5 ms-2.5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 10 6"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="m1 1 4 4 4-4"
+            />
+          </svg>
+        </button>
+        {dropdownOpen && (
+          <div
+            id="dropdown"
+            className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute"
+          >
+            <ul
+              className="py-2 text-sm text-gray-700 dark:text-gray-200"
+              aria-labelledby="dropdown-button"
+            >
+              {[{ name: "All Departments", _id: 345 }, ...departments]?.map(
+                (category) => (
+                  <li key={category._id}>
+                    <button
+                      type="button"
+                      className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      onClick={() => handleCategorySelect(category)}
+                    >
+                      {category.name}
+                    </button>
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
+        )}
+        <div className="relative w-full">
+          <input
+            type="search"
+            ref={searchBarRef}
+            className="block p-2.5 w-full z-20 py-3 px-4 text-sm  text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300   dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
+            placeholder="Search Doctors..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            required
+          />
+          {searchResult?.length > 0 && (
+            <div className="absolute top-full left-0 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-30 dark:bg-gray-700 dark:border-gray-600">
+              <ul className="max-h-60 overflow-y-auto text-sm text-gray-700 dark:text-gray-200">
+                {searchResult.map((doctor) => (
+                  <li key={doctor._id} onClick={() => navigate(`/doctorDetail/${doctor._id}`)}>
+                    <div className=" flex items-center px-2 pb-1 hover:rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                      <img
+                        className="h-8 rounded-full"
+                        src={
+                          doctor.image ||
+                          "https://i0.wp.com/digitalhealthskills.com/wp-content/uploads/2022/11/fd35c-no-user-image-icon-27.png?fit=500%2C500&ssl=1"
+                        }
+                        alt="noImg"
+                      />
+                      <button
+                        type="button"
+                        className="block px-4 py-2 w-full text-left  "
+                        onClick={() =>
+                          handleCategorySelect({
+                            _id: doctor._id,
+                            name: doctor.name,
+                          })
+                        }
+                      >
+                        {doctor.name}
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              <div className="flex flex-col">
-                <label
-                  htmlFor="manufacturer"
-                  className="text-sm font-medium text-stone-600"
-                >
-                  Department
-                </label>
-                <select
-                  id="manufacturer"
-                  className="mt-2 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                >
-                  <option>Cardiology</option>
-                  <option>Psychatry</option>
-                  <option>Neurology</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col">
-                <label
-                  htmlFor="date"
-                  className="text-sm font-medium text-stone-600"
-                >
-                  Date of Entry
-                </label>
-                <input
-                  type="date"
-                  id="date"
-                  className="mt-2 block w-full cursor-pointer rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                />
-              </div>
-           
-            </div>
-
-            <div className="mt-2 grid w-full grid-cols-2 justify-end space-x-4 md:flex">
-              <button
-                type="button"
-                className="rounded-lg bg-gray-200 px-8 py-2 font-medium text-gray-700 outline-none hover:opacity-80 focus:ring"
-              >
-                Reset
-              </button>
-              <button
-                type="submit"
-                className="rounded-lg bg-blue-600 px-8 py-2 font-medium text-white outline-none hover:opacity-80 focus:ring"
-              >
-                Search
-              </button>
-            </div>
-          </form>
+          )}
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

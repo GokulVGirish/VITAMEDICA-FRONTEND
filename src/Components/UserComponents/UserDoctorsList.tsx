@@ -1,5 +1,5 @@
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { MutableRefObject, RefObject, useEffect, useMemo, useRef, useState } from "react";
 import DoctorFilterSort from "./DoctorFilterSort";
 import instance from "../../Axios/axios";
 import { AxiosError } from "axios";
@@ -21,8 +21,12 @@ export type Doctor={
 const DoctorsList = () => {
 
     const [doctors,setDoctors]=useState<Doctor[]|null>(null)
-       const [currentPage, setCurrentPage] = useState(1);
-       const [totalPages, setTotalPages] = useState(1);
+    const [searchResult, setSearchResult] =useState<{ _id: number; name: string; image:string}[]>();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [selectedCategory, setSelectedCategory] = useState<{name:string;_id:number}>({name:"All Departments",_id:453});
+    const searchBarRef = useRef<HTMLInputElement | null>();
+     const [searchTerm, setSearchTerm] = useState("");
     const navigate=useNavigate()
     console.log("current pages",currentPage,"totalpages",totalPages)
   
@@ -57,9 +61,23 @@ const DoctorsList = () => {
             }
 
         }
+       if(selectedCategory.name==="All Departments"){
         getDoctors()
+       }else{
+         const categoryFilter=async()=>{
+          const response = await instance.get(`/doctors/category?category=${selectedCategory._id}&page=${currentPage}&limit=6`);
+          if (response.data.success) {
+            console.log("data of doctor", response.data.doctors);
+            setDoctors(response.data.doctors);
+            setTotalPages(response.data.totalPages);
+          }
 
-    },[currentPage])
+         }
+         categoryFilter()
+         
+       }
+
+    },[currentPage,selectedCategory])
 
     const handleNextPage = () => {
       if (currentPage < totalPages) {
@@ -72,6 +90,29 @@ const DoctorsList = () => {
         setCurrentPage((prevPage) => prevPage - 1);
       }
     };
+      const handleSearchChange = async() => {
+  
+        const searchValue = searchBarRef.current?.value || "";
+
+
+  setSearchTerm(searchValue);
+
+      if (searchValue.trim() === "") {
+   
+    setSearchResult([]);
+     } else {
+   
+    try {
+      const response = await instance.get(`/doctors/search?search=${searchValue}`);
+      console.log("search response", response.data);
+      setSearchResult(response.data.doctors);
+    } catch (error) {
+      console.error("Error fetching search results", error);
+    }}
+
+      };
+      console.log("search term",searchTerm)
+
     const doctorDetails = useMemo(
       () =>doctors?.map((doctor) => {
           return (
@@ -127,14 +168,28 @@ const DoctorsList = () => {
     );
     return (
       <div>
-        <DoctorFilterSort />
+        <DoctorFilterSort
+          searchResult={
+            searchResult as { _id: number; name: string; image: string }[]
+          }
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
+          searchBarRef={searchBarRef as RefObject<HTMLInputElement>}
+          selctedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
+        {doctors?.length === 0 && (
+          <div className="flex justify-center mt-16">
+            <h1 className="text-2xl  md:text-3xl pl-2 my-2 border-l-4  font-sans font-bold border-[#928EDE]  dark:text-gray-400">
+              No Doctors Available
+            </h1>
+          </div>
+        )}
         <section
           id="Projects"
           className="w-fit  mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-9"
         >
           {doctorDetails}
-          
-           
         </section>
         {/* pagenation */}
         <div className=" flex justify-center mb-10 ">

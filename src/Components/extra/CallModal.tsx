@@ -36,14 +36,7 @@ const CallModal = ({ callData, onClose }:{callData:any,onClose:()=>void}) => {
      getDoctorDetail();
    }, []);
 
-//   const handleCallRequest = async (e:any) => {
-//     e.preventDefault();
-//     try {
-//       navigate("/doctor/videocall", { state: { callData } });
-//     } catch (error) {
-//       console.error("Error navigating to video call:", error);
-//     }
-//   };
+
 
   return (
     <div

@@ -5,9 +5,16 @@ import moment from "moment";
 import {toast} from "sonner"
 import { AxiosError } from "axios";
 import Swal from "sweetalert2";
+import BookingCancellationReason from "../extra/BookingCancellationReason";
 const UserAppointments=()=>{
     const [appointments,setAppointments]=useState<any>(null)
     const [page,setPage]=useState(1)
+    const [appointId,setAppointId]=useState<string>()
+    const [date,setDate]=useState<Date>()
+    const [time,setTime]=useState<Date>()
+     const [cancellationReason, setCancellationReason] = useState("");
+     const [cancellationReasonModel, setCancellationReasonModal] =
+       useState(false);
     const [totalPages,setTotalPages]=useState(1)
     const limit:number=10
     console.log("appoint",appointments)
@@ -50,22 +57,12 @@ const UserAppointments=()=>{
          cancelButtonText: "No, cancel",
        }).then(async (result) => {
          if (result.isConfirmed) {
-           const response =
-             await instance.put(`/appointments/${appointmentId}/cancel?date=${date}&startTime=${startTime}
-      `);
-           if (response.data.success) {
-             toast.success(response.data.message, {
-               richColors: true,
-               duration: 1500,
-             });
-             setAppointments((prevState: any) =>
-               prevState?.map((appointment: any) =>
-                 appointment._id == appointmentId
-                   ? { ...appointment, status: "cancelled" }
-                   : appointment
-               )
-             );
-           }
+          setCancellationReasonModal(true)
+          setAppointId(appointmentId)
+          setDate(date)
+          setTime(startTime)
+
+        
          }
        });
        
@@ -80,6 +77,33 @@ const UserAppointments=()=>{
       }
     }
     }
+    const handleCancel = async () => {
+      console.log("clicked");
+      if (cancellationReason.trim() === "") {
+        return toast.error("Enter a valid reason", {
+          richColors: true,
+          duration: 1500,
+        });
+      }
+         const response =
+           await instance.put(`/appointments/${appointId}/cancel?date=${date}&startTime=${time}
+      `,{reason:cancellationReason});
+         if (response.data.success) {
+          setCancellationReason("")
+          setCancellationReasonModal(false)
+           toast.success(response.data.message, {
+             richColors: true,
+             duration: 1500,
+           });
+           setAppointments((prevState: any) =>
+             prevState?.map((appointment: any) =>
+               appointment._id == appointId
+                 ? { ...appointment, status: "cancelled" }
+                 : appointment
+             )
+           );
+         }
+    };
 
     return (
       <>
@@ -173,6 +197,14 @@ const UserAppointments=()=>{
                       </tr>
                     ))}
                 </tbody>
+                {cancellationReasonModel && (
+                  <BookingCancellationReason
+                    handleCancel={handleCancel}
+                    cancellationReason={cancellationReason}
+                    setCancellationReasonModal={setCancellationReasonModal}
+                    setCancellationReason={setCancellationReason}
+                  />
+                )}
               </table>
               {appointments?.length === 0 && (
                 <div className=" flex  min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center  bg-gray-800 rounded-lg ">

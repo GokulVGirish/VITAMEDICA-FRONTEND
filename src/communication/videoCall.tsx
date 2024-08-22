@@ -372,10 +372,10 @@ const sendMessage=()=>{
 
 
     return (
-      <div className="h-[100vh] bg-[#110620] w-full   flex items-center justify-around">
-        <div className="flex relative flex-col md:flex-row items-center justify-center">
-          <div className="flex absolute bottom-5 left-14 flex-col items-center space-y-4 md:space-y-8">
-            <div className="bg-gray-200 h-32 w-44 border border-black  rounded-lg shadow-md">
+      <div className="md:h-[100vh] h-[100vh] bg-[#110620] w-full md:w-full justify-center flex-col md:flex-row  flex items-center md:justify-around">
+        <div className="flex  md:relative flex-col md:flex-row items-center justify-center">
+          <div className="flex order-2 mt-5 md:mt-0 md:absolute bottom-5 left-14 flex-col items-center  md:space-y-8">
+            <div className="bg-gray-500  w-[300px] h-[280px] md:h-32 md:w-44 border border-black  rounded-lg shadow-md">
               <video
                 ref={localVideo}
                 className="w-full h-full rounded-lg object-cover"
@@ -385,8 +385,8 @@ const sendMessage=()=>{
               ></video>
             </div>
           </div>
-          <div className="flex  flex-col items-center space-y-4 md:space-y-8 md:ml-8">
-            <div className="bg-[#081f36] h-[700px]  w-[900px] rounded-lg mr-14 shadow-md">
+          <div className="flex   flex-col items-center mt-5 md:mt-0  md:space-y-8 md:ml-8">
+            <div className="bg-[#081f36]  w-[300px] h-[280px] md:h-[700px]  md:w-[900px] rounded-lg md:mr-14 shadow-md">
               <video
                 ref={remoteVideo}
                 className="w-full h-full rounded-lg object-cover"
@@ -394,7 +394,7 @@ const sendMessage=()=>{
                 playsInline
               ></video>
             </div>
-            <div className="flex space-x-4 absolute bottom-10 ">
+            <div className="flex space-x-4 absolute bottom-[340px] md:bottom-10 ">
               <button
                 onClick={startB}
                 ref={startButton}
@@ -443,7 +443,7 @@ const sendMessage=()=>{
           </div>
         </div>
 
-        <div className="flex flex-col  flex-shrink-0 rounded-2xl bg-[#081f36] h-[500px] w-[400px] p-4">
+        <div className="flex flex-col mt-5 md:mt-0  flex-shrink-0 rounded-2xl bg-[#081f36] h-[280px] md:h-[500px] w-[300px] md:w-[400px] p-4">
           <div className="flex flex-col h-full overflow-x-auto mb-4">
             <div className="flex flex-col h-full">
               <div className="grid grid-cols-12 gap-y-2">
@@ -462,7 +462,9 @@ const sendMessage=()=>{
                   ) : (
                     <div className="col-start-6 col-end-13 p-3 rounded-lg">
                       <div className="flex items-center justify-start flex-row-reverse">
-                        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">Me</div>
+                        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
+                          Me
+                        </div>
                         <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
                           <div>{msg.message}</div>
                         </div>
@@ -473,9 +475,7 @@ const sendMessage=()=>{
               </div>
             </div>
           </div>
-          <div
-            className="flex flex-row items-center h-16 rounded-xl bg-[#3a5e81] w-full px-4"
-          >
+          <div className="flex flex-row items-center h-16 rounded-xl bg-[#3a5e81] w-full px-4">
             <div></div>
             <div className="flex-grow ml-4">
               <div className="relative w-full">

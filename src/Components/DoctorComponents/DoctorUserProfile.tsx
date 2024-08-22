@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState ,useContext} from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import instance from "../../Axios/doctorInstance";
 import moment from "moment";
-import { Loader } from "rsuite";
+import PdfViewer from "../extra/PdfViewer";
 import PdfDownload from "../extra/PdfDownload";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { SocketContext } from "../../socketio/SocketIo";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
 
 
 const DoctorUserProfile=()=>{
@@ -13,6 +15,7 @@ const DoctorUserProfile=()=>{
     const [appointmentDetails,setAppointmentDetails]=useState<any>(null)
     const socket=useContext(SocketContext)
     const [online,setOnline]=useState<boolean>(false)
+    const [pdfModal,setPdfModal]=useState(false)
     console.log("appointments",appointmentDetails)
     const navigate=useNavigate()
     const {id}=useParams()
@@ -121,7 +124,7 @@ const DoctorUserProfile=()=>{
               </div>
             </div>
 
-            <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
+            <div className="space-x-8 flex  justify-between mt-32 md:mt-0 md:justify-center">
               {appointmentDetails?.status === "cancelled" ? (
                 <span className="text-white py-2 px-4 uppercase cursor-default rounded bg-red-400  shadow  font-medium transition transform ">
                   cancelled
@@ -137,13 +140,19 @@ const DoctorUserProfile=()=>{
                     navigate(
                       `/doctor/videocall/${id}/${appointmentDetails.docId}/${
                         appointmentDetails?.userId
-                      }/${"doctor"}`,{state:{img:appointmentDetails?.image}}
+                      }/${"doctor"}`,
+                      { state: { img: appointmentDetails?.image } }
                     )
                   }
                 >
                   Start Consultation
                 </button>
               )}
+              {appointmentDetails?.status === "completed" &&
+             <span className="" onClick={()=>setPdfModal(true)}>
+              <FontAwesomeIcon className="size-9 hover:text-gray-400"  icon={faFilePdf}/>
+             </span>
+               }
             </div>
           </div>
 
@@ -182,6 +191,12 @@ const DoctorUserProfile=()=>{
             </button>
           </div>
         </div>
+        {pdfModal && (
+          <PdfViewer
+            viewPdf={appointmentDetails?.prescription}
+            closeModal={() => setPdfModal(false)}
+          />
+        )}
       </div>
     );
 }

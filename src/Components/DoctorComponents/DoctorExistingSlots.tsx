@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import instance from "../../Axios/doctorInstance";
 import {toast} from "sonner"
 import Swal from "sweetalert2";
+import BookingCancellationReason from "../extra/BookingCancellationReason";
 
 interface PropsType {
   availableDates: Date[] 
@@ -18,6 +19,8 @@ const DoctorExistingSlots=({availableDates}:PropsType)=>{
       const [slots, setSlots] = useState<any[]>([]);
       const [selectedTimeSlot,setSelectedTimeSlot]=useState<{start:string,availability:boolean,_id:string}|null>(null)
       const date=new Date()
+      const [cancellationReason, setCancellationReason] = useState("");
+      const [cancellationReasonModel, setCancellationReasonModal] =useState(false);
       console.log("slots",slots)
       console.log("selecteddate",selectedSlotDate)
       useEffect(()=>{
@@ -54,21 +57,7 @@ const DoctorExistingSlots=({availableDates}:PropsType)=>{
                cancelButtonText: "No, cancel",
              }).then(async(result)=>{
                 if(result.isConfirmed){
-                    const response = await instance.delete(
-                      `/slots/booked?date=${selectedSlotDate.toISOString()}&startTime=${selectedTimeSlot.start}`
-                    );
-                    if(response.data.success){
-                         toast.success(response.data.message, {
-                           richColors: true,
-                           duration: 1500,
-                         });
-                         setSlots((prevState) =>
-                           prevState.filter(
-                             (slot) => slot._id !== selectedTimeSlot._id
-                           )
-                         );
-
-                    }
+                  setCancellationReasonModal(true)
 
                   
 
@@ -118,6 +107,33 @@ const DoctorExistingSlots=({availableDates}:PropsType)=>{
          }
 
       }
+       const handleCancel = async () => {
+         console.log("clicked");
+         if (cancellationReason.trim() === "") {
+           return toast.error("Enter a valid reason", {
+             richColors: true,
+             duration: 1500,
+           });
+         }
+          const response = await instance.delete(
+            `/slots/booked?date=${selectedSlotDate?.toISOString()}&startTime=${
+              selectedTimeSlot?.start
+            }`,
+            { data: { reason: cancellationReason } }
+          );
+          if (response.data.success) {
+            setCancellationReasonModal(false)
+            setCancellationReason("")
+            toast.success(response.data.message, {
+              richColors: true,
+              duration: 1500,
+            });
+            setSlots((prevState) =>
+              prevState.filter((slot) => slot._id !== selectedTimeSlot?._id)
+            );
+          }
+         
+       };
 
 
 
@@ -205,6 +221,14 @@ const DoctorExistingSlots=({availableDates}:PropsType)=>{
               </div>
             </div>
           </div>
+          {cancellationReasonModel && (
+            <BookingCancellationReason
+              handleCancel={handleCancel}
+              cancellationReason={cancellationReason}
+              setCancellationReasonModal={setCancellationReasonModal}
+              setCancellationReason={setCancellationReason}
+            />
+          )}
         </section>
       </div>
     );

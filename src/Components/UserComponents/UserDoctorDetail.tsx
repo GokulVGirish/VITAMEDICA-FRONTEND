@@ -7,10 +7,12 @@ import { AxiosError } from "axios";
 import instance from "../../Axios/axios";
 import { Doctor } from "./UserDoctorsList";
 import SlotBookingModal from "../extra/SlotBookingModal";
+
 const UserDoctorDetail = () => {
     const {id}=useParams()
     const [doctor,setDoctor]=useState<Doctor|null>(null)
       const [modalOpen,setModalOpen]=useState(false)
+   
     console.log("doctor",doctor)
 
 
@@ -21,6 +23,7 @@ const UserDoctorDetail = () => {
                 const response=await instance.get(`/doctors/${id}/profile`)
                 
                 if(response.data.success){
+                 
                   
                     setDoctor(response.data.doctor)
 
@@ -29,6 +32,7 @@ const UserDoctorDetail = () => {
 
             }
             catch(error){
+             
                
                 if(error instanceof AxiosError){
                     return toast.error(error.response?.data.message,{richColors:true,duration:1500})
@@ -43,6 +47,7 @@ const UserDoctorDetail = () => {
             }
         }
         getDoctorDetail()
+     
 
 
     },[])
@@ -163,6 +168,7 @@ const UserDoctorDetail = () => {
           </div>
         </div>
       </section>
+     
       {modalOpen && (
         <SlotBookingModal
           id={id as string}

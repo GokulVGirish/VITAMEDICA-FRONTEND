@@ -4,11 +4,16 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import {toast} from "sonner"
 import { useNavigate,Link } from "react-router-dom";
+import BookingCancellationReason from "../extra/BookingCancellationReason";
 const DoctorAppointments=()=>{
 
     const [appointments,setAppointments]=useState<any>(null)
     const [filter,setFilter]=useState<"today"|"upcomming">("today")
     const [page,setPage]=useState(1)
+    const [cancellationReason,setCancellationReason]=useState("")
+    const [cancellationReasonModel,setCancellationReasonModal]=useState(false)
+    const [cancellationDate,setCancellationDate]=useState<Date>()
+    const [cancellationTime,setCancellationTime]=useState<Date>()
     const [totalPages,setTotalPages]=useState(1)
     const navigate=useNavigate()
     const limit:number=7
@@ -54,7 +59,7 @@ const DoctorAppointments=()=>{
         setPage((prevState)=>prevState+1)
     }
   const handleBookingCancellation=(date:Date,start:Date)=>{
-    console.log("date,d",date)
+   
       Swal.fire({
         title:
           "This slot has been booked and money will be debited from Your wallet?",
@@ -65,20 +70,40 @@ const DoctorAppointments=()=>{
         cancelButtonText: "No, cancel",
       }).then(async (result) => {
         if (result.isConfirmed) {
-          const response = await instance.delete(
-            `/slots/booked?date=${date}&startTime=${start}`
-          );
-          if (response.data.success) {
-            toast.success(response.data.message, {
-              richColors: true,
-              duration: 1500,
-            });
-            setAppointments((prevState:any[]) =>
-              prevState.map((appointment)=>appointment.start===start?{...appointment,status:"cancelled"}:appointment)
-            );
-          }
+          setCancellationReasonModal(true)
+          setCancellationDate(date)
+          setCancellationTime(start)
+        
         }
       });
+
+  }
+  const handleCancel=async()=>{
+    console.log("clicked")
+    if(cancellationReason.trim()===""){
+      return toast.error("Enter a valid reason", {
+        richColors: true,
+        duration: 1500,
+      });
+    }
+      const response = await instance.delete(
+        `/slots/booked?date=${cancellationDate}&startTime=${cancellationTime}`,{data:{reason:cancellationReason}}
+      );
+      if (response.data.success) {
+        setCancellationReason("")
+        setCancellationReasonModal(false)
+        toast.success(response.data.message, {
+          richColors: true,
+          duration: 1500,
+        });
+        setAppointments((prevState: any[]) =>
+          prevState.map((appointment) =>
+            appointment.start === cancellationTime
+              ? { ...appointment, status: "cancelled" }
+              : appointment
+          )
+        );
+      }
 
   }
 
@@ -166,9 +191,9 @@ const DoctorAppointments=()=>{
                     onClick={() => setFilter("today")}
                     className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                       filter === "today"
-                        ? "bg-blue-600 text-white"
+                        ? "bg-[#05acb4] text-white"
                         : "bg-gray-300 text-gray-700"
-                    } hover:bg-blue-700`}
+                    } hover:bg-[#1d9aa0]`}
                   >
                     Todays's
                   </button>
@@ -176,9 +201,9 @@ const DoctorAppointments=()=>{
                     onClick={() => setFilter("upcomming")}
                     className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                       filter === "upcomming"
-                        ? "bg-blue-600 text-white"
+                        ? "bg-[#05acb4] text-white"
                         : "bg-gray-300 text-gray-700"
-                    } hover:bg-blue-700`}
+                    } hover:bg-[#1d9aa0]`}
                   >
                     Upcomming
                   </button>
@@ -190,7 +215,7 @@ const DoctorAppointments=()=>{
               </div>
 
               <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
-                <thead className="bg-gray-800 text-white">
+                <thead className="bg-[#05acb4] text-white">
                   <tr>
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                       Date
@@ -213,11 +238,19 @@ const DoctorAppointments=()=>{
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {appointmentRows} 
+                  {appointmentRows}
                 </tbody>
               </table>
+              {cancellationReasonModel && (
+                <BookingCancellationReason
+                  handleCancel={handleCancel}
+                  cancellationReason={cancellationReason}
+                  setCancellationReasonModal={setCancellationReasonModal}
+                  setCancellationReason={setCancellationReason}
+                />
+              )}
               {appointments?.length === 0 && (
-                <div className=" flex  min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center  bg-gray-800 rounded-lg ">
+                <div className=" flex  min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center  bg-gray-700 rounded-lg ">
                   No Appointments
                 </div>
               )}

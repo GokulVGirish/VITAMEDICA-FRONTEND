@@ -6,6 +6,7 @@ import ProfileModal from "../extra/ProfileModal";
 import SyncLoader from "react-spinners/SyncLoader";
 import "react-image-crop/dist/ReactCrop.css";
 import {toast} from "sonner"
+import PasswordChangeModal from "../extra/PasswordChangeMoadal";
 export type Doctor ={
     _id:string
   name: string;
@@ -49,6 +50,7 @@ const DoctorProfile = () => {
        const [myErrors, setMyErrors] = useState<any>({});
        const [modalOpen,setModalOpen]=useState(false)
        const [loading,setLoading]=useState(false)
+        const [passwordModalOpen, setPasswordModalOpen] = useState(false);
         const override = {
           display: "flex",
           justifyContent: "center",
@@ -155,6 +157,18 @@ const DoctorProfile = () => {
 
 
     }
+    const handleChangePassword = async () => {
+      try {
+        setPasswordModalOpen(true);
+        const response = await instance.post(
+          "/profile/password/reset-request",
+          {
+            email: userData.email,
+          }
+        );
+      } catch (error) {}
+    };
+
   return (
     <>
       <div className="flex items-center mt-36 justify-center p-12 h-full  mb-40">
@@ -264,7 +278,10 @@ const DoctorProfile = () => {
                   readOnly
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#05acb4] focus:shadow-md"
                 />
-                <FaEdit className="absolute top-4 right-4 cursor-pointer" />
+                <FaEdit
+                  onClick={handleChangePassword}
+                  className="absolute top-4 right-4 cursor-pointer"
+                />
               </div>
             </div>
             <div className="mb-5">
@@ -283,7 +300,6 @@ const DoctorProfile = () => {
                     setUserData({ ...userData, degree: e.target.value })
                   }
                   placeholder="Enter your Degree"
-                 
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#05acb4] focus:shadow-md"
                 />
               </div>
@@ -304,7 +320,6 @@ const DoctorProfile = () => {
                   value={userData.fees || ""}
                   name="fees"
                   placeholder="Enter your consultation fees"
-                
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#05acb4] focus:shadow-md"
                 />
               </div>
@@ -358,6 +373,11 @@ const DoctorProfile = () => {
             </div>
           </form>
         </div>
+        {passwordModalOpen && (
+          <PasswordChangeModal
+            modalOpen={(status: boolean) => setPasswordModalOpen(status)}
+          />
+        )}
         {modalOpen && (
           <ProfileModal
             setAvatar={(url: string) => setImageURL(url)}

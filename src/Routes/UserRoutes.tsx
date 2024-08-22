@@ -17,6 +17,7 @@ import UserWallet from "../Components/UserComponents/UserWallet"
 import { useContext,useState,useEffect } from "react"
 import { SocketContext } from "../socketio/SocketIo"
 import CallModal from "../Components/extra/CallModal"
+import ForgotPassword from "../Components/extra/ForgotPassword"
 
 
 
@@ -54,6 +55,7 @@ const UserRoute=()=>{
           <Route path="/login" element={<UserLoginPage />} />
           <Route path="/signup" element={<UserSignUpPage />} />
           <Route path="/otpVerify" element={<UserOtpVerification />} />
+          <Route path="/forgotPassword/:request" element={<ForgotPassword/>}/>
           <Route path="/reset-password" element={<PasswordResetPage />} />
           <Route path="/doctorBooking" element={<BookAppointmentsList />} />
           <Route path="/doctorDetail/:id" element={<UserDoctorDetailPage />} />

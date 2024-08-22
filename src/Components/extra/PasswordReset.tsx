@@ -6,11 +6,13 @@ import { useState } from "react";
 import {toast} from "sonner"
 import instance from "../../Axios/axios";
 import { AxiosError } from "axios";
+import docInstance from "../../Axios/doctorInstance";
 
 const PasswordReset = () => {
     const {search}=useLocation()
     const queryParams=new URLSearchParams(search)
     const token=queryParams.get("token")
+    const request=queryParams.get("request")
     const [password,setPassword]=useState<string>("")
     const [cPassword,setCPassword]=useState<string>("")
     const handleSubmit=async(e:React.FormEvent)=>{
@@ -59,18 +61,34 @@ const PasswordReset = () => {
             console.log("done")
 
            try{
-             const response = await instance.post(`/profile/password/reset/${token}`, {
-               password,
-             });
-             if (response.data.success) {
-               toast.success(response.data.message, {
-                 richColors: true,
-                 duration: 1500,
-                 onAutoClose: () => {
-                   window.close();
-                 },
-               });
-             }
+            let response;
+              if(request==="user"){
+                response = await instance.post(
+                  `/profile/password/reset/${token}`,
+                  {
+                    password,
+                  }
+                );
+             
+              }else{
+                 response = await docInstance.post(
+                   `/profile/password/reset/${token}`,
+                   {
+                     password,
+                   }
+                 );
+               
+
+              }
+                if (response.data.success) {
+                  toast.success(response.data.message, {
+                    richColors: true,
+                    duration: 1500,
+                    onAutoClose: () => {
+                      window.close();
+                    },
+                  });
+                }
 
            }
            catch(error){

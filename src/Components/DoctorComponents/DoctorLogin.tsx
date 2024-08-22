@@ -96,7 +96,7 @@ const DoctorLogin=()=>{
          
         };
     return (
-      <div  className="container flex flex-col mx-auto bg-transparent   ">
+      <div className="container flex flex-col mx-auto bg-transparent   ">
         <div className="flex justify-center w-full h-full my-auto xl:gap-14 lg:justify-normal md:gap-5 draggable">
           <ToastContainer
             position="top-right"
@@ -118,7 +118,11 @@ const DoctorLogin=()=>{
                 className="flex flex-col w-full h-full py-6 px-8 text-center bg-transparent rounded-3xl"
               >
                 <div className="flex w-full justify-center">
-                  <img className="w-80 rounded-lg shadow-lg" src={logo} alt="logo" />
+                  <img
+                    className="w-80 rounded-lg shadow-lg"
+                    src={logo}
+                    alt="logo"
+                  />
                 </div>
                 <p className="mb-4 text-grey-700 mt-3">Welcome Doctor</p>
 
@@ -146,7 +150,7 @@ const DoctorLogin=()=>{
                 </label>
                 <input
                   name="password"
-                  type='password'
+                  type="password"
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter a password"
                   className="flex shadow-lg items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
@@ -164,10 +168,12 @@ const DoctorLogin=()=>{
                       value=""
                       className="sr-only peer"
                     />
-                  
                   </label>
                   <div className="flex justify-center w-full">
-                    <span className="mr-4 text-sm font-medium text-purple-blue-500">
+                    <span
+                      onClick={() => navigate(`/forgotPassword/${"doctor"}`)}
+                      className="mr-4 text-sm cursor-pointer font-medium text-purple-blue-500"
+                    >
                       Forget password?
                     </span>
                   </div>

@@ -42,10 +42,10 @@ const DoctorWallet=()=>{
     return (
       <>
         <div className=" flex justify-start mt-4 ml-4">
-          <div className="p-4 w-52 bg-white shadow-lg rounded-2xl dark:bg-gray-800">
+          <div className="p-4 w-52  shadow-lg rounded-2xl bg-gray-700">
             <div className="flex items-center">
               <span className="relative px-4 py-2 rounded-full bg-purple-200 ">
-               ₹
+                ₹
               </span>
               <p className="ml-2 text-black text-md dark:text-white">
                 Wallet Balance
@@ -70,24 +70,24 @@ const DoctorWallet=()=>{
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                 <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-800">
+                  <table className="min-w-full divide-y bg-[#05acb4]">
+                    <thead className="bg-[#05acb4]">
                       <tr>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-white "
                         >
                           Date
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  text-white "
                         >
                           Amount
                         </th>
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right  text-white "
                         >
                           Type
                         </th>
@@ -99,32 +99,32 @@ const DoctorWallet=()=>{
                         </th> */}
                         <th
                           scope="col"
-                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                          className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-white"
                         >
                           Reason
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                    <tbody className=" divide-y divide-gray-200 dark:divide-gray-700 bg-gray-700">
                       {transactions &&
                         transactions.map((transaction: any) => {
                           return (
-                            <tr key={transaction?._id}>
-                              <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                            <tr className="" key={transaction?._id}>
+                              <td className=" border-t border-white px-4 py-4 text-sm  text-gray-500 dark:text-gray-300 whitespace-nowrap">
                                 {moment(transaction.date).format(
                                   "MMMM D, YYYY"
                                 )}
                               </td>
-                              <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                              <td className="px-4 py-4 border-t border-white text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                                 {transaction?.amount}
                               </td>
-                              <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                              <td className="px-4 py-4 border-t border-white text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                                 {transaction?.type}
                               </td>
                               {/* <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                                 {transaction?.paymentMethod}
                               </td> */}
-                              <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
+                              <td className="px-4 py-4 border-t border-white text-sm text-gray-500 dark:text-gray-300 whitespace-nowrap">
                                 {transaction?.reason}
                               </td>
                             </tr>

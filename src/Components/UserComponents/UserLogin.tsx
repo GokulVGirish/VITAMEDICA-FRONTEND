@@ -196,7 +196,7 @@ const UserLogin=()=>{
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     Password
                   </label>
-                  <span className="text-xs text-gray-500 cursor-pointer">
+                  <span onClick={()=>navigate(`/forgotPassword/${"user"}`)} className="text-xs text-gray-500 cursor-pointer">
                     Forget Password?
                   </span>
                 </div>
