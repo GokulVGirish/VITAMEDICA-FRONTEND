@@ -1,7 +1,7 @@
 import logo from "@/assets/logo1.png";
 import doctor from "@/assets/cover2.jpg";
 import { useNavigate } from "react-router-dom";
-import { useReducer, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SyncLoader from "react-spinners/SyncLoader";
@@ -12,6 +12,9 @@ import {jwtDecode} from "jwt-decode"
 import { useAppDispatch } from "../../Redux/hoocks";
 import instance from "../../Axios/axios";
 import { AxiosError } from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEyeSlash ,faEye} from "@fortawesome/free-solid-svg-icons";
+
 
 const initialState = {
   name: "",
@@ -53,6 +56,10 @@ const UserSignUp = () => {
   const [errors, setErrors] = useState<partialError | null>();
   const [loading, setLoading] = useState(false);
   const dispatch=useAppDispatch()
+  const passInput1=useRef<HTMLInputElement>(null)
+  const passInput2=useRef<HTMLInputElement>(null)
+  const [pass1Visibility, setPass1Visibility] = useState(false);
+  const [pass2Visibility, setPass2Visibility] = useState(false);
   const override = {
     display: "flex",
     justifyContent: "center",
@@ -213,69 +220,65 @@ const UserSignUp = () => {
               onSuccess={async (e) => {
                 const data = await jwtDecode(e.credential as string);
                 console.log(data);
-                setLoading(true)
-               try{
-                 const response = await instance.post(
-                   "/auth/google/signup",
-                   data
-                 );
-                if(response.data.success){
-                     Cookies.set("accessToken", response.data.accessToken, {
-                       expires: 1 / 24,
-                     });
-                     Cookies.set("refreshToken", response.data.refreshToken, {
-                       expires: 1,
-                     });
-                      toast.success(response.data.message, {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "colored",
-                        transition: Zoom,
-                      });
-                        dispatch(clearErrorMessage());
-                      setTimeout(()=>{
-                        setLoading(false)
-                           navigate("/", { replace: true });
-
-                      },3000)
-
-                }else{
-                      toast.error(response.data.message, {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "colored",
-                        transition: Zoom,
-                      });
+                setLoading(true);
+                try {
+                  const response = await instance.post(
+                    "/auth/google/signup",
+                    data
+                  );
+                  if (response.data.success) {
+                    Cookies.set("accessToken", response.data.accessToken, {
+                      expires: 1 / 24,
+                    });
+                    Cookies.set("refreshToken", response.data.refreshToken, {
+                      expires: 1,
+                    });
+                    toast.success(response.data.message, {
+                      position: "top-right",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "colored",
+                      transition: Zoom,
+                    });
+                    dispatch(clearErrorMessage());
+                    setTimeout(() => {
                       setLoading(false);
+                      navigate("/", { replace: true });
+                    }, 3000);
+                  } else {
+                    toast.error(response.data.message, {
+                      position: "top-right",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "colored",
+                      transition: Zoom,
+                    });
+                    setLoading(false);
+                  }
+                } catch (error) {
+                  if (error instanceof AxiosError) {
+                    toast.error(error.response?.data?.message, {
+                      position: "top-right",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "colored",
+                      transition: Zoom,
+                    });
+                    setLoading(false);
+                  }
                 }
-               }catch(error){
-                if(error instanceof AxiosError){
-                     toast.error(error.response?.data?.message, {
-                       position: "top-right",
-                       autoClose: 5000,
-                       hideProgressBar: false,
-                       closeOnClick: true,
-                       pauseOnHover: true,
-                       draggable: true,
-                       progress: undefined,
-                       theme: "colored",
-                       transition: Zoom,
-                     });
-                     setLoading(false);
-
-                }
-               }
-
               }}
             />
           </div>
@@ -420,18 +423,40 @@ const UserSignUp = () => {
                   Password
                 </label>
               </div>
-              <input
-                name="password"
-                onChange={(e) =>
-                  myDispatch({
-                    type: "SET_FIELD",
-                    field: e.target.name,
-                    value: e.target.value,
-                  })
-                }
-                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                type="password"
-              />
+              <div className="relative">
+                <input
+                  ref={passInput1}
+                  name="password"
+                  onChange={(e) =>
+                    myDispatch({
+                      type: "SET_FIELD",
+                      field: e.target.name,
+                      value: e.target.value,
+                    })
+                  }
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  type="password"
+                />
+                <FontAwesomeIcon
+                  className="absolute right-3 bottom-3"
+                  icon={
+                    !pass1Visibility
+                      ? faEyeSlash
+                      : faEye
+                  }
+                  onClick={() => {
+                    if (passInput1.current) {
+                      if (passInput1.current.type === "password") {
+                        setPass1Visibility(true)
+                        passInput1.current.type = "text";
+                      } else {
+                        setPass1Visibility(false)
+                        passInput1.current.type = "password";
+                      }
+                    }
+                  }}
+                />
+              </div>
               {errors?.password && (
                 <span className="text-red-500 text-xs">{errors.password}</span>
               )}
@@ -443,18 +468,40 @@ const UserSignUp = () => {
                   Confirm Password
                 </label>
               </div>
-              <input
-                name="cpassword"
-                onChange={(e) =>
-                  myDispatch({
-                    type: "SET_FIELD",
-                    field: e.target.name,
-                    value: e.target.value,
-                  })
-                }
-                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                type="password"
-              />
+              <div className="relative">
+                <input
+                  ref={passInput2}
+                  name="cpassword"
+                  onChange={(e) =>
+                    myDispatch({
+                      type: "SET_FIELD",
+                      field: e.target.name,
+                      value: e.target.value,
+                    })
+                  }
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  type="password"
+                />
+                <FontAwesomeIcon
+                  className="absolute  right-3 bottom-3"
+                  icon={
+                    !pass2Visibility
+                      ? faEyeSlash
+                      : faEye
+                  }
+                  onClick={() => {
+                    if (passInput2.current) {
+                      if (passInput2.current.type === "password") {
+                        setPass2Visibility(true)
+                        passInput2.current.type = "text";
+                      } else {
+                        setPass2Visibility(false)
+                        passInput2.current.type = "password";
+                      }
+                    }
+                  }}
+                />
+              </div>
               {errors?.cpassword && (
                 <span className="text-red-500 text-xs">{errors.cpassword}</span>
               )}

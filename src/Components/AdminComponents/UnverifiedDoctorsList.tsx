@@ -56,7 +56,7 @@ const UnverifiefDoctorsList=()=>{
             </div>
 
             <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
-              <thead className="bg-[#05acb4] text-white">
+              <thead className="bg-[#56aac6] text-white">
                 <tr>
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                     Name

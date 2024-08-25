@@ -107,73 +107,76 @@ const DoctorAppointments=()=>{
 
   }
 
-    const appointmentRows = useMemo(
-      () =>
-        appointments?.map((appointment: any) => (
-          <tr
-            key={appointment._id}
-            className="hover:bg-gray-100 transition-all cursor-pointer"
-          >
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              {moment(appointment?.date).format("MMMM D, YYYY")}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              {moment(appointment?.start).format("h:mm A")}-{" "}
-              {moment(appointment?.end).format("h:mm A")}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              {appointment?.userName}
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <span
-                className={`py-1 px-2.5 border-none rounded cursor-default   text-base  font-medium ${
-                  appointment?.status === "completed"
-                    ? "text-green-800 bg-green-100 "
-                    : "text-red-800 bg-red-100 "
-                }   rounded-md`}
-              >
-                {appointment?.status}
-              </span>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              {appointment?.status === "pending" ? (
-                <button
-                  onClick={() =>
-                    handleBookingCancellation(
-                      appointment?.date,
-                      appointment?.start
-                    )
-                  }
-                  className={`mr-2 bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded-full`}
-                >
-                  cancel
-                </button>
-              ) : (
-                <button
-                  className={`mr-2 ${
-                    appointment?.status === "completed"
-                      ? "bg-green-500 hover:bg-green-700"
-                      : "bg-red-500 hover:bg-red-700"
-                  } text-white py-1 px-3 rounded-full`}
-                >
-                  {appointment?.status === "cancelled"
-                    ? "cancelled"
-                    : "completed"}
-                </button>
-              )}
-            </td>
-            <td>
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-                onClick={() => navigate(`/doctor/userProfile/${appointment._id}`)}
-              >
-                view
-              </button>
-            </td>
-          </tr>
-        )),
-      [appointments]
-    );
+   const appointmentRows = useMemo(
+     () =>
+       appointments?.map((appointment: any) => (
+         <tr
+           key={appointment._id}
+           className="hover:bg-gray-100 transition-all cursor-pointer"
+         >
+           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+             {moment(appointment?.date).format("MMMM D, YYYY")}
+           </td>
+           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+             {moment(appointment?.start).format("h:mm A")}-{" "}
+             {moment(appointment?.end).format("h:mm A")}
+           </td>
+           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+             {appointment?.userName}
+           </td>
+           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+             <span
+               className={`py-1 px-2.5 border-none rounded cursor-default text-base font-medium w-24 text-center ${
+                 appointment?.status === "completed"
+                   ? "text-green-800 bg-green-100"
+                   : "text-red-800 bg-red-100"
+               }`}
+             >
+               {appointment?.status}
+             </span>
+           </td>
+           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+             {appointment?.status === "pending" ? (
+               <button
+                 onClick={() =>
+                   handleBookingCancellation(
+                     appointment?.date,
+                     appointment?.start
+                   )
+                 }
+                 className="mr-2 bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded-full w-24 text-center"
+               >
+                 Cancel
+               </button>
+             ) : (
+               <button
+                 className={`mr-2 py-1 px-3 rounded-full w-24 text-center ${
+                   appointment?.status === "completed"
+                     ? "bg-green-500 hover:bg-green-700"
+                     : "bg-red-500 hover:bg-red-700"
+                 } text-white`}
+               >
+                 {appointment?.status === "cancelled"
+                   ? "Cancelled"
+                   : "Completed"}
+               </button>
+             )}
+           </td>
+           <td>
+             <button
+               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded w-20 text-center"
+               onClick={() =>
+                 navigate(`/doctor/userProfile/${appointment._id}`)
+               }
+             >
+               View
+             </button>
+           </td>
+         </tr>
+       )),
+     [appointments]
+   );
+
 
 
     return (
@@ -191,9 +194,9 @@ const DoctorAppointments=()=>{
                     onClick={() => setFilter("today")}
                     className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                       filter === "today"
-                        ? "bg-[#05acb4] text-white"
+                        ? "bg-[#56aac6] text-white"
                         : "bg-gray-300 text-gray-700"
-                    } hover:bg-[#1d9aa0]`}
+                    } hover:bg-[#4993ac]`}
                   >
                     Todays's
                   </button>
@@ -201,9 +204,9 @@ const DoctorAppointments=()=>{
                     onClick={() => setFilter("upcomming")}
                     className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                       filter === "upcomming"
-                        ? "bg-[#05acb4] text-white"
+                        ? "bg-[#56aac6] text-white"
                         : "bg-gray-300 text-gray-700"
-                    } hover:bg-[#1d9aa0]`}
+                    } hover:bg-[#4993ac]`}
                   >
                     Upcomming
                   </button>
@@ -215,7 +218,7 @@ const DoctorAppointments=()=>{
               </div>
 
               <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
-                <thead className="bg-[#05acb4] text-white">
+                <thead className="bg-[#56aac6] text-white">
                   <tr>
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                       Date

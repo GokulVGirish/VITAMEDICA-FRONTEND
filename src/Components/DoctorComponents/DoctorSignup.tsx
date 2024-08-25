@@ -1,12 +1,14 @@
 import logo from '@/assets/logo1.png';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useReducer,useState } from 'react';
+import { useEffect, useReducer,useState ,useRef} from 'react';
 import adminInstance from '../../Axios/doctorInstance';
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SyncLoader from "react-spinners/SyncLoader";
 import Cookies from 'js-cookie';
 import instance from '../../Axios/doctorInstance';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 const initialState={
   name:"",
   email:"",
@@ -42,6 +44,10 @@ const DoctorSignUp=()=>{
   const [myErrors,setMyErrors]=useState<ErrorType>({})
   const [loading,setLoading]=useState(false)
   const [departments,setDepartments]=useState<{_id:string,name:string}[]>([])
+  const passInput1 = useRef<HTMLInputElement>(null);
+  const passInput2 = useRef<HTMLInputElement>(null);
+  const [pass1Visibility, setPass1Visibility] = useState(false);
+  const [pass2Visibility, setPass2Visibility] = useState(false);
   
 
 
@@ -188,7 +194,11 @@ const DoctorSignUp=()=>{
                 className="flex flex-col w-full h-full px-10 py-4 text-center bg-transparent rounded-3xl"
               >
                 <div className="flex w-full justify-center">
-                  <img className="w-80 rounded-lg shadow-lg" src={logo} alt="logo" />
+                  <img
+                    className="w-80 rounded-lg shadow-lg"
+                    src={logo}
+                    alt="logo"
+                  />
                 </div>
                 <p className="mb-4 mt-3 text-grey-700">
                   Welcome to our family Doctor
@@ -289,10 +299,14 @@ const DoctorSignUp=()=>{
                   className="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
                 >
                   <option value="">Select An Department</option>
-                {departments && departments.map((department)=>{
-                       return <option key={department._id} value={department._id}>{department.name}</option>;
-                })}
-               
+                  {departments &&
+                    departments.map((department) => {
+                      return (
+                        <option key={department._id} value={department._id}>
+                          {department.name}
+                        </option>
+                      );
+                    })}
                 </select>
                 {myErrors?.department && (
                   <span className="text-red-500 text-xs">
@@ -302,20 +316,38 @@ const DoctorSignUp=()=>{
                 <label className="mb-2 text-sm text-start text-grey-900">
                   Password*
                 </label>
-                <input
-                  value={state.password}
-                  onChange={(e) =>
-                    dispatch({
-                      type: "SET_FIELD",
-                      field: e.target.name,
-                      value: e.target.value,
-                    })
-                  }
-                  name="password"
-                  type="password"
-                  placeholder="Enter a password"
-                  className="flex shadow-lg items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
-                />
+                <div className="relative">
+                  <input
+                    ref={passInput1}
+                    value={state.password}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "SET_FIELD",
+                        field: e.target.name,
+                        value: e.target.value,
+                      })
+                    }
+                    name="password"
+                    type="password"
+                    placeholder="Enter a password"
+                    className="flex shadow-lg items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+                  />
+                  <FontAwesomeIcon
+                    className="absolute cursor-pointer right-3 bottom-9"
+                    icon={!pass1Visibility ? faEyeSlash : faEye}
+                    onClick={() => {
+                      if (passInput1.current) {
+                        if (passInput1.current.type === "password") {
+                          setPass1Visibility(true);
+                          passInput1.current.type = "text";
+                        } else {
+                          setPass1Visibility(false);
+                          passInput1.current.type = "password";
+                        }
+                      }
+                    }}
+                  />
+                </div>
                 {myErrors?.password && (
                   <span className="text-red-500 text-xs">
                     {myErrors.password}
@@ -325,20 +357,38 @@ const DoctorSignUp=()=>{
                   {" "}
                   Confirm Password*
                 </label>
-                <input
-                  value={state.cpassword}
-                  onChange={(e) =>
-                    dispatch({
-                      type: "SET_FIELD",
-                      field: e.target.name,
-                      value: e.target.value,
-                    })
-                  }
-                  name="cpassword"
-                  type="password"
-                  placeholder="Confirm password"
-                  className="flex shadow-lg items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
-                />
+                <div className="relative">
+                  <input
+                    value={state.cpassword}
+                    ref={passInput2}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "SET_FIELD",
+                        field: e.target.name,
+                        value: e.target.value,
+                      })
+                    }
+                    name="cpassword"
+                    type="password"
+                    placeholder="Confirm password"
+                    className="flex shadow-lg items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+                  />
+                  <FontAwesomeIcon
+                    className="absolute cursor-default right-3 bottom-9"
+                    icon={!pass2Visibility ? faEyeSlash : faEye}
+                    onClick={() => {
+                      if (passInput2.current) {
+                        if (passInput2.current.type === "password") {
+                          setPass2Visibility(true);
+                          passInput2.current.type = "text";
+                        } else {
+                          setPass2Visibility(false);
+                          passInput2.current.type = "password";
+                        }
+                      }
+                    }}
+                  />
+                </div>
                 {myErrors?.cpassword && (
                   <span className="text-red-500 mb-2 text-xs">
                     {myErrors.cpassword}
@@ -346,7 +396,7 @@ const DoctorSignUp=()=>{
                 )}
 
                 <button
-                disabled={loading}
+                  disabled={loading}
                   type="submit"
                   className="w-full px-6 py-4 ext-sm font-bold leading-none text-white bg-black transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-blue-500"
                 >

@@ -3,7 +3,7 @@ import instance from "../Axios/axios";
 import { toast } from "sonner";
 const  razorPay=(order:any,id:string,slotDetails:any,navigate:Function):any=>{
 
-    const amount = String(order.amount*100);
+    const amount = String(parseFloat(order.amount)/100);
     console.log("amount",amount)
 
 
@@ -25,7 +25,7 @@ var options = {
        razorpay_signature: response.razorpay_signature,
        docId: id,
        slotDetails,
-       fees: order.amount.toString(),
+       fees: amount,
      });
   
     if (result.data.success) {

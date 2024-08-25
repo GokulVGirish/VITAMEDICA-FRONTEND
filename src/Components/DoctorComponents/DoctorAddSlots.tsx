@@ -170,7 +170,7 @@ const DoctorAddSlots = () => {
                 </div>
                 <input
                   type="date"
-                  className="block w-full rounded-lg border border-[#0e8e93] bg-[#abf1f4] p-2.5 pl-10 text-gray-900 font-medium outline-none ring-opacity-30 placeholder:text-emerald-800 focus:ring focus:ring-emerald-300 sm:text-sm"
+                  className="block w-full rounded-lg border border-[#0e8e93] bg-[#96d2e6] p-2.5 pl-10 text-gray-900 font-medium outline-none ring-opacity-30 placeholder:text-emerald-800 focus:ring focus:ring-emerald-300 sm:text-sm"
                   placeholder="Select date"
                   value={
                     selectStartDate
@@ -197,8 +197,8 @@ const DoctorAddSlots = () => {
                           s.start.getTime() === slot.start.getTime() &&
                           s.end.getTime() === slot.end.getTime()
                       )
-                        ? "bg-[#05acb4] text-gray-1000"
-                        : "bg-[#abf1f4] text-gray-900"
+                        ? "bg-[#378eac] text-gray-1000"
+                        : "bg-[#96d2e6] text-gray-900"
                     } active:scale-95`}
                     onClick={() => handleSlotClick(slot)}
                   >
@@ -210,7 +210,7 @@ const DoctorAddSlots = () => {
             </div>
 
             <button
-              className="mt-8 w-56 rounded-lg   bg-[#139fa6] px-1 py-2 text-md font-bold text-white transition hover:translate-y-1"
+              className="mt-8 w-56 rounded-lg   bg-[#378eac] px-1 py-2 text-md font-bold text-white transition hover:translate-y-1"
               onClick={handleSubmit}
             >
               Create Slots

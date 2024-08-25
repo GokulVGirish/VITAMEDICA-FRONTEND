@@ -85,24 +85,38 @@ const UserAppointments=()=>{
           duration: 1500,
         });
       }
-         const response =
-           await instance.put(`/appointments/${appointId}/cancel?date=${date}&startTime=${time}
-      `,{reason:cancellationReason});
-         if (response.data.success) {
-          setCancellationReason("")
-          setCancellationReasonModal(false)
-           toast.success(response.data.message, {
-             richColors: true,
-             duration: 1500,
-           });
-           setAppointments((prevState: any) =>
-             prevState?.map((appointment: any) =>
-               appointment._id == appointId
-                 ? { ...appointment, status: "cancelled" }
-                 : appointment
-             )
-           );
-         }
+       try{
+          const response = await instance.put(
+            `/appointments/${appointId}/cancel?date=${date}&startTime=${time}
+      `,
+            { reason: cancellationReason }
+          );
+          if (response.data.success) {
+            setCancellationReason("");
+            setCancellationReasonModal(false);
+            toast.success(response.data.message, {
+              richColors: true,
+              duration: 1500,
+            });
+            setAppointments((prevState: any) =>
+              prevState?.map((appointment: any) =>
+                appointment._id == appointId
+                  ? { ...appointment, status: "cancelled" }
+                  : appointment
+              )
+            );
+          }
+
+       }
+       catch(error){
+        if(error instanceof AxiosError){
+           setCancellationReasonModal(false);
+              setCancellationReason("");
+
+          toast.error(error.response?.data.message,{richColors:true,duration:1500})
+        }
+
+       }
     };
 
     return (
@@ -136,6 +150,9 @@ const UserAppointments=()=>{
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                       actions
                     </th>
+                    <th className="px-6 py-3  border-b-2 border-gray-300  text-xs font-semibold uppercase tracking-wider">
+                      view
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -157,11 +174,11 @@ const UserAppointments=()=>{
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <button
-                            className={`py-1 px-2.5  border-none rounded   text-base  font-medium ${
+                            className={`py-1 px-2.5 border-none rounded text-base font-medium w-24 text-center ${
                               appointment?.status === "completed"
-                                ? "text-green-800 bg-green-100 "
-                                : "text-red-800 bg-red-100 "
-                            }   rounded-md`}
+                                ? "text-green-800 bg-green-100"
+                                : "text-red-800 bg-red-100"
+                            }`}
                           >
                             {appointment?.status}
                           </button>
@@ -176,27 +193,33 @@ const UserAppointments=()=>{
                                   appointment?.start
                                 )
                               }
-                              className={`mr-2 bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded-full`}
+                              className="mr-2 bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded-full w-24 text-center"
                             >
-                              cancel
+                              Cancel
                             </button>
                           ) : (
                             <button
-                              className={`mr-2 ${
+                              className={`mr-2 py-1 px-3 rounded-full w-24 text-center ${
                                 appointment?.status === "completed"
                                   ? "bg-green-500 hover:bg-green-700"
                                   : "bg-red-500 hover:bg-red-700"
-                              } text-white py-1 px-3 rounded-full`}
+                              } text-white`}
                             >
                               {appointment?.status === "cancelled"
-                                ? "cancelled"
-                                : "completed"}
+                                ? "Cancelled"
+                                : "Completed"}
                             </button>
                           )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded w-20 text-center">
+                            View
+                          </button>
                         </td>
                       </tr>
                     ))}
                 </tbody>
+
                 {cancellationReasonModel && (
                   <BookingCancellationReason
                     handleCancel={handleCancel}

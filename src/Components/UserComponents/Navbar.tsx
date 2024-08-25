@@ -90,6 +90,7 @@ const Navbar=()=>{
               </li>
               <li>
                 <span
+                  onClick={() => navigate("/contact")}
                   className={` ${
                     isActive("/contact") ? "text-white" : "text-[#364f6b]"
                   }  cursor-pointer font-bold hover:text-gray-200`}
@@ -158,7 +159,6 @@ const Navbar=()=>{
           {isOpen && (
             <div
               ref={dropdownRef}
-        
               className="z-10 absolute top-20 right-3  bg-white divide-y divide-gray-100 rounded-lg shadow w-36 dark:bg-gray-700"
             >
               <ul

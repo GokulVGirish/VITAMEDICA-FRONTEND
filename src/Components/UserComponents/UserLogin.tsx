@@ -3,7 +3,7 @@ import doctor from '@/assets/cover1.jpg';
 import { useNavigate } from 'react-router-dom';
 import { useState,useEffect, useContext, useReducer, useRef } from 'react';
 import { loginUser,googleLogin } from '../../Redux/userSlice';
-import { ToastContainer,Zoom,toast } from 'react-toastify';
+import {toast} from "sonner"
 import 'react-toastify/dist/ReactToastify.css';
 import SyncLoader from "react-spinners/SyncLoader";
 import { clearErrorMessage } from '../../Redux/userSlice';
@@ -71,39 +71,19 @@ const UserLogin=()=>{
     }
     useEffect(()=>{
         if(error){
-             toast.error(error, {
-               position: "top-right",
-                 autoClose: 5000,
-           hideProgressBar: false,
-                  closeOnClick: true,
-                   pauseOnHover: true,
-                   draggable: true,
-                    progress: undefined,
-                 theme: "colored",
-              transition: Zoom,
-                 });
+           toast.error(error,{richColors:true,duration:1500})
                   dispatch(clearErrorMessage());
                
         }
         if(message){
-                toast.success(message, {
-                  position: "top-right",
-                     autoClose: 5000,
-                   hideProgressBar: false,
-                   closeOnClick: true,
-                 pauseOnHover: true,
-                   draggable: true,
-                   progress: undefined,
-                   theme: "colored",
-                transition: Zoom,
-      });
+                toast.success(message,{richColors:true,duration :1500});
         }
          if(message==="logged in Sucessfully"){
             setTimeout(()=>{
                 navigate("/")
                 dispatch(clearErrorMessage())
 
-            },3000)
+            },1000)
 
         }
 
@@ -114,19 +94,7 @@ const UserLogin=()=>{
     return (
       <>
         <div className="pt-32">
-          <ToastContainer
-            position="top-right"
-            autoClose={1000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-            transition={Zoom}
-          />
+      
           <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
             <div
               className="hidden lg:block lg:w-1/2 bg-cover"
@@ -150,6 +118,7 @@ const UserLogin=()=>{
                   onSuccess={async (e) => {
                     const data: { name: string; email: string; sub: string } =
                       await jwtDecode(e.credential as string);
+                      console.log(data.sub)
                     console.log(data);
                     dispatch(
                       googleLogin({

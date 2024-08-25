@@ -452,7 +452,14 @@ const sendMessage=()=>{
                     <div className="col-start-1 col-end-8 p-3 rounded-lg">
                       <div className="flex flex-row items-center">
                         <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
-                          <img className="rounded-full" src={img} alt="noimg" />
+                          <img
+                            className="rounded-full"
+                            src={
+                              img ||
+                              "https://photosbull.com/wp-content/uploads/2024/05/no-dp_16.webp"
+                            }
+                            alt="noimg"
+                          />
                         </div>
                         <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
                           <div>{msg.message}</div>
@@ -498,6 +505,19 @@ const sendMessage=()=>{
                 >
                   <FontAwesomeIcon icon={faPaperPlane} />
                 </button>
+                {showRatingModal && (
+                  <StarRating
+                    appointmentId={appointment as string}
+                    docId={toPersonId as string}
+                    closeRating={handleCloseRating}
+                  />
+                )}
+                {showPrescription && (
+                  <PrescriptionModal
+                    appointmentId={appointment as string}
+                    closeModal={() => setShowPrescription(false)}
+                  />
+                )}
               </div>
             </div>
           </div>

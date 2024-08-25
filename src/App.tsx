@@ -15,7 +15,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Toaster richColors />
+        <Toaster richColors   position="top-right" />
         <SocketProvider>
           <Routes>
               <Route path="/*" element={<UserRoute />} />

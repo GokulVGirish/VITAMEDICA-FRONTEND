@@ -1,58 +1,46 @@
 import vitamedica from "@/assets/logoVerified.png";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import {toast} from "sonner"
-import logo from '@/assets/cover1.jpg';
+import { toast } from "sonner";
+import logo from "@/assets/cover1.jpg";
 import { AxiosError } from "axios";
 import instance from "../../Axios/axios";
 import { Doctor } from "./UserDoctorsList";
 import SlotBookingModal from "../extra/SlotBookingModal";
+import { motion, AnimatePresence } from "framer-motion";
 
 const UserDoctorDetail = () => {
-    const {id}=useParams()
-    const [doctor,setDoctor]=useState<Doctor|null>(null)
-      const [modalOpen,setModalOpen]=useState(false)
-   
-    console.log("doctor",doctor)
+  const { id } = useParams();
+  const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
+  console.log("doctor", doctor);
 
-    useEffect(()=>{
+  useEffect(() => {
+    const getDoctorDetail = async () => {
+      try {
+        const response = await instance.get(`/doctors/${id}/profile`);
 
-        const getDoctorDetail=async()=>{
-            try{
-                const response=await instance.get(`/doctors/${id}/profile`)
-                
-                if(response.data.success){
-                 
-                  
-                    setDoctor(response.data.doctor)
-
-                }
-
-
-            }
-            catch(error){
-             
-               
-                if(error instanceof AxiosError){
-                    return toast.error(error.response?.data.message,{richColors:true,duration:1500})
-                }else{
-                    return toast.error("unknown error", {
-                      richColors: true,
-                      duration: 1500,
-                    });
-
-                }
-                
-            }
+        if (response.data.success) {
+          setDoctor(response.data.doctor);
         }
-        getDoctorDetail()
-     
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          return toast.error(error.response?.data.message, {
+            richColors: true,
+            duration: 1500,
+          });
+        } else {
+          return toast.error("unknown error", {
+            richColors: true,
+            duration: 1500,
+          });
+        }
+      }
+    };
+    getDoctorDetail();
+  }, [id]);
 
-
-    },[])
-
-    
   return (
     <main
       style={{
@@ -64,7 +52,7 @@ const UserDoctorDetail = () => {
       className="profile-page pt-96"
     >
       <section className="relative block h-500-px">
-        <div className="absolute bg-red-400  w-full h-full bg-center bg-cover">
+        <div className="absolute bg-red-400 w-full h-full bg-center bg-cover">
           <span
             id="blackOverlay"
             className="w-full h-full absolute opacity-50 bg-black"
@@ -87,13 +75,24 @@ const UserDoctorDetail = () => {
           </svg>
         </div>
       </section>
+
       <section className="relative py-16 bg-blueGray-200">
         <div className="container mx-auto px-4">
-          <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
+          <motion.div
+            className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
             <div className="px-6 rounded-lg shadow-md">
               <div className="flex flex-wrap justify-center">
-                <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
-                  <div className=" mx-auto">
+                <motion.div
+                  className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                >
+                  <div className="mx-auto">
                     <img
                       alt="..."
                       src={
@@ -103,59 +102,63 @@ const UserDoctorDetail = () => {
                       className="shadow-xl w-40 h-40 lg:w-32 lg:h-32 rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
                     />
                   </div>
-                </div>
+                </motion.div>
                 <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
                   <div className="py-6 px-3 mt-32 sm:mt-0">
-                    <button
+                    <motion.button
                       onClick={() => setModalOpen(true)}
                       className="bg-[#928EDE] active:bg-pink-600 uppercase text-white font-bold hover:bg-[#7F7BD1] hover:scale-105 hover:shadow-lg shadow text-xs px-4 py-3 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
                     >
                       Book Appointment
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
-                <div className="w-full lg:w-4/12 px-4 lg:order-1">
-                  {/* <div className="flex justify-center py-4 lg:pt-4 pt-8">
-                    <div className="mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                        22
-                      </span>
-                      <span className="text-sm text-blueGray-400">Friends</span>
-                    </div>
-                    <div className="mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                        10
-                      </span>
-                      <span className="text-sm text-blueGray-400">Photos</span>
-                    </div>
-                    <div className="lg:mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                        89
-                      </span>
-                      <span className="text-sm text-blueGray-400">
-                        Comments
-                      </span>
-                    </div>
-                  </div> */}
-                </div>
+                <div className="w-full lg:w-4/12 px-4 lg:order-1"></div>
               </div>
               <div className="text-center mt-12">
-                <h3 className="text-4xl font-semibold leading-normal  text-blueGray-700 mb-2">
+                <motion.h3
+                  className="text-4xl font-semibold leading-normal text-blueGray-700 mb-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
                   {doctor?.name}
-                </h3>
-                <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                </motion.h3>
+                <motion.div
+                  className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                >
                   <i className="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
                   {doctor?.degree}
-                </div>
-                <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                </motion.div>
+                <motion.div
+                  className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                >
                   <i className="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
                   {doctor?.department?.name}
-                </div>
-                <div className="mb-2 text-blueGray-600 mt-10">
+                </motion.div>
+                <motion.div
+                  className="mb-2 text-blueGray-600 mt-10"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                >
                   <img className="h-20 mx-auto" src={vitamedica} />
-                </div>
+                </motion.div>
               </div>
-              <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
+              <motion.div
+                className="mt-10 py-10 border-t border-blueGray-200 text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
                 <div className="flex flex-wrap justify-center">
                   <div className="w-full lg:w-9/12 px-4">
                     <p className="mb-4 text-lg leading-relaxed text-blueGray-700">
@@ -163,19 +166,22 @@ const UserDoctorDetail = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
-     
-      {modalOpen && (
-        <SlotBookingModal
-          id={id as string}
-          closeModal={() => setModalOpen(false)}
-        />
-      )}
+
+      <AnimatePresence>
+        {modalOpen && (
+          <SlotBookingModal
+            id={id as string}
+            closeModal={() => setModalOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </main>
   );
 };
+
 export default UserDoctorDetail;

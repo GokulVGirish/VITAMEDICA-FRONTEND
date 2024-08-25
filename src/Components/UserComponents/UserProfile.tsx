@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import SyncLoader from "react-spinners/SyncLoader";
 import ProfileModal from "../extra/ProfileModal";
 import EmailChangeModal from "../extra/PasswordChangeMoadal";
+import { motion } from "framer-motion";
 export type InitialStateType = {
   name: string;
   email: string;
@@ -251,8 +252,18 @@ const UserProfile = () => {
           theme="colored"
           transition={Zoom}
         />
-        <div className="mx-auto w-full  max-w-[550px] bg-gray-100">
-          <div className="w-full relative flex justify-center pt-12 ">
+        <motion.div
+          className="mx-auto w-full  max-w-[550px] bg-gray-100"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.div
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="w-full relative flex justify-center pt-12 "
+          >
             <img
               className="h-40 w-40  rounded-full border-4 border-gray-700 mx-auto my-4"
               src={
@@ -266,7 +277,7 @@ const UserProfile = () => {
               onClick={() => setModalOpen(true)}
               className="absolute top-44 h-8 w-6 right-48 cursor-pointer"
             />
-          </div>
+          </motion.div>
           <div className="w-full flex justify-center">
             {myErrors?.image && (
               <span className="text-red-500 text-center text-xs">
@@ -520,16 +531,18 @@ const UserProfile = () => {
               )}
             </div>
             <div>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }} 
+                whileTap={{ scale: 0.95 }}
                 type="submit"
                 className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
               >
                 Update
-              </button>
+              </motion.button>
               <SyncLoader cssOverride={override} loading={loading} />
             </div>
           </form>
-        </div>
+        </motion.div>
         {passwordModalOpen && (
           <EmailChangeModal
             modalOpen={(status: boolean) => setPasswordModalOpen(status)}

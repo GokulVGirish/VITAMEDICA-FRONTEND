@@ -92,9 +92,9 @@ const DoctorListing = () => {
                 onClick={() => setFilter("all")}
                 className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                   filter === "all"
-                    ? "bg-[#05acb4] text-white"
+                    ? "bg-[#56aac6] text-white"
                     : "bg-gray-300 text-gray-700"
-                } hover:bg-[#1d9aa0]`}
+                } hover:bg-[#4993ac]`}
               >
                 All
               </button>
@@ -102,9 +102,9 @@ const DoctorListing = () => {
                 onClick={() => setFilter("blocked")}
                 className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                   filter === "blocked"
-                    ? "bg-[#05acb4] text-white"
+                    ? "bg-[#56aac6] text-white"
                     : "bg-gray-300 text-gray-700"
-                } hover:bg-[#1d9aa0]`}
+                } hover:bg-[#4993ac]`}
               >
                 Blocked
               </button>
@@ -112,9 +112,9 @@ const DoctorListing = () => {
                 onClick={() => setFilter("unblocked")}
                 className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                   filter === "unblocked"
-                    ? "bg-[#05acb4] text-white"
+                    ? "bg-[#56aac6] text-white"
                     : "bg-gray-300 text-gray-700"
-                } hover:bg-[#1d9aa0]`}
+                } hover:bg-[#4993ac]`}
               >
                 Unblocked
               </button>
@@ -126,7 +126,7 @@ const DoctorListing = () => {
           </div>
 
           <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
-            <thead className="bg-[#05acb4] text-white">
+            <thead className="bg-[#56aac6] text-white">
               <tr>
                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                   Name

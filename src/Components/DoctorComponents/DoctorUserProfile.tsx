@@ -3,8 +3,8 @@ import { useParams,useNavigate } from "react-router-dom";
 import instance from "../../Axios/doctorInstance";
 import moment from "moment";
 import PdfViewer from "../extra/PdfViewer";
-import PdfDownload from "../extra/PdfDownload";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {toast} from "sonner"
 
 import { SocketContext } from "../../socketio/SocketIo";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
@@ -136,13 +136,27 @@ const DoctorUserProfile=()=>{
               ) : (
                 <button
                   className="text-white py-2 px-4 uppercase rounded bg-blue-400 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                  onClick={() =>
-                    navigate(
-                      `/doctor/videocall/${id}/${appointmentDetails.docId}/${
-                        appointmentDetails?.userId
-                      }/${"doctor"}`,
-                      { state: { img: appointmentDetails?.image } }
-                    )
+                  onClick={() =>{
+                  //   const appointmentDate=new Date(appointmentDetails?.date)
+                  //   const today=new Date()
+                  //  if (
+                  //    appointmentDate.getFullYear() !== today.getFullYear() ||
+                  //    appointmentDate.getMonth() !== today.getMonth() ||
+                  //    appointmentDate.getDate() !== today.getDate()
+                  //  ) {
+                  //    return toast.error("Not the appointment date", {
+                  //      richColors: true,
+                  //      duration: 1500,
+                  //    });
+                  //  }
+                     navigate(
+                       `/doctor/videocall/${id}/${appointmentDetails.docId}/${
+                         appointmentDetails?.userId
+                       }/${"doctor"}`,
+                       { state: { img: appointmentDetails?.image } }
+                     );
+                  }
+                   
                   }
                 >
                   Start Consultation

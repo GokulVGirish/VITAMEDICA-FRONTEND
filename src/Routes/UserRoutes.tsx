@@ -18,6 +18,7 @@ import { useContext,useState,useEffect } from "react"
 import { SocketContext } from "../socketio/SocketIo"
 import CallModal from "../Components/extra/CallModal"
 import ForgotPassword from "../Components/extra/ForgotPassword"
+import ContactPage from "../Pages/UserPages/ContactPage"
 
 
 
@@ -62,6 +63,7 @@ const UserRoute=()=>{
           <Route path="/payment/:id" element={<UserPaymentPage />} />
           <Route path="/paymentSuccess" element={<PaymentSuccessPage />} />
           <Route path="/paymentFailure" element={<PaymentFailurePage />} />
+          <Route path="/contact" element={<ContactPage/>}/>
 
           {/* Profile layout */}
           <Route path="/profile" element={<UserProfileLayout />}>

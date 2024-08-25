@@ -2,11 +2,13 @@
 
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState,useRef } from "react";
 import {toast} from "sonner"
 import instance from "../../Axios/axios";
 import { AxiosError } from "axios";
 import docInstance from "../../Axios/doctorInstance";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 
 const PasswordReset = () => {
     const {search}=useLocation()
@@ -15,6 +17,10 @@ const PasswordReset = () => {
     const request=queryParams.get("request")
     const [password,setPassword]=useState<string>("")
     const [cPassword,setCPassword]=useState<string>("")
+    const passInput1 = useRef<HTMLInputElement>(null);
+    const passInput2 = useRef<HTMLInputElement>(null);
+    const [pass1Visibility, setPass1Visibility] = useState(false);
+    const [pass2Visibility, setPass2Visibility] = useState(false);
     const handleSubmit=async(e:React.FormEvent)=>{
         e.preventDefault()
         console.log("inn")
@@ -124,49 +130,69 @@ const PasswordReset = () => {
             <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
               Reset Your Password
             </h1>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-             
-            </p>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400"></p>
           </div>
 
           <div className="mt-5">
             <form onSubmit={handleSubmit}>
               <div className="grid gap-y-4">
                 <div>
-                  <label
-                 
-                    className="block text-sm font-bold ml-1 mb-2 dark:text-white"
-                  >
+                  <label className="block text-sm font-bold ml-1 mb-2 dark:text-white">
                     Password
                   </label>
                   <div className="relative">
                     <input
-                    value={password}
-                    onChange={(e)=>setPassword(e.target.value)}
-                    type="password"
-
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      type="password"
+                      ref={passInput1}
                       name="password"
                       className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm"
-                 
                       aria-describedby="email-error"
                     />
+                    <FontAwesomeIcon
+                      className="absolute  right-3 bottom-4"
+                      icon={!pass1Visibility ? faEyeSlash : faEye}
+                      onClick={() => {
+                        if (passInput1.current) {
+                          if (passInput1.current.type === "password") {
+                            setPass1Visibility(true);
+                            passInput1.current.type = "text";
+                          } else {
+                            setPass1Visibility(false);
+                            passInput1.current.type = "password";
+                          }
+                        }
+                      }}
+                    />
                   </div>
-                  <label
-                 
-                    className="block text-sm font-bold ml-1 mb-2 mt-3 dark:text-white"
-                  >
+                  <label className="block text-sm font-bold ml-1 mb-2 mt-3 dark:text-white">
                     Confirm Password
                   </label>
                   <div className="relative">
                     <input
                       type="password"
                       value={cPassword}
-                      onChange={(e)=>setCPassword(e.target.value)}
-               
+                      ref={passInput2}
+                      onChange={(e) => setCPassword(e.target.value)}
                       name="cpassword"
                       className="py-3 px-4 block w-full border-2 border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 shadow-sm"
-                 
                       aria-describedby="email-error"
+                    />
+                    <FontAwesomeIcon
+                      className="absolute  right-3 bottom-4"
+                      icon={!pass2Visibility ? faEyeSlash : faEye}
+                      onClick={() => {
+                        if (passInput2.current) {
+                          if (passInput2.current.type === "password") {
+                            setPass2Visibility(true);
+                            passInput2.current.type = "text";
+                          } else {
+                            setPass2Visibility(false);
+                            passInput2.current.type = "password";
+                          }
+                        }
+                      }}
                     />
                   </div>
                   <p
@@ -188,8 +214,6 @@ const PasswordReset = () => {
           </div>
         </div>
       </div>
-
-     
     </main>
   );
 };

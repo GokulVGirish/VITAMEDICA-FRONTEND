@@ -1,4 +1,4 @@
-import logo from '@/assets/logo3.png';
+import logo from '@/assets/logo4.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBookMedical, faChartPie, faWallet } from '@fortawesome/free-solid-svg-icons';
 import { faUserDoctor } from '@fortawesome/free-solid-svg-icons';
@@ -24,15 +24,15 @@ const DoctorSidebar=()=>{
 
 
     return (
-      <div className="hidden md:flex flex-col w-64 bg-[#05acb4]">
-        <div className="flex items-center justify-center h-16 bg-[#05acb4]">
+      <div className="hidden md:flex flex-col w-64 bg-[#56aac6]">
+        <div className="flex items-center justify-center h-16 bg-[#56aac6]">
           <span className="text-white font-bold uppercase">
             <img src={logo} alt="logo" className=" w-44 rounded-lg shadow-xl" />
           </span>
         </div>
 
         <div className="flex flex-col flex-1 overflow-y-auto">
-          <nav className="flex-1 px-2 py-4 bg-[#05acb4]">
+          <nav className="flex-1 px-2 py-4 bg-[#56aac6]">
             <span
               onClick={() => navigate("/doctor")}
               className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
