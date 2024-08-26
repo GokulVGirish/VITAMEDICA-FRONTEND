@@ -152,9 +152,9 @@ const ContactLocationComponent = () => {
                   >
                     <div className="flex items-start">
                       <div className="shrink-0">
-                        <div className="inline-block rounded-md bg-teal-400-100 p-4 text-teal-700">
+                        <div className="inline-block rounded-md bg-teal-400-100 p-4">
                           <FontAwesomeIcon
-                            className="h-6 w-6"
+                            className="h-6 w-6 text-[#364f6b]"
                             icon={contact.icon}
                           />
                         </div>

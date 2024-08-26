@@ -20,6 +20,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserDoctor,faPersonHalfDress,faPerson } from "@fortawesome/free-solid-svg-icons";
 import { RiRefund2Fill } from "react-icons/ri";
 import { GiProfit } from "react-icons/gi";
+import { GiReceiveMoney } from "react-icons/gi";
+import { GiPayMoney } from "react-icons/gi";
 
 ChartJS.register(
   CategoryScale,
@@ -195,7 +197,7 @@ return (
     <div className="grid md:grid-cols-4 md:grid-rows-2 w-full max-w-[1200px] mt-4 gap-4">
       <div className="flex flex-col col-start-1 col-end-3 mt-2 items-center justify-center rounded-xl h-[30vh]">
         <div className="flex items-center border w-full h-[86%] mb-2 border-gray-500 rounded-3xl p-4 bg-white">
-          <img className="h-52 w-52 mr-4" src={logo} alt="No Image" />
+          <GiReceiveMoney className="mx-5 text-[#364f6bc4]" size={110} />
           <div className="flex flex-col justify-center items-start">
             <h1 className="text-3xl border-l-4 border-[#56aac6] pl-2 font-extrabold text-[#364f6b] mb-2">
               {selectedPage} Revenue
@@ -256,7 +258,7 @@ return (
         } flex-col col-start-3 col-end-5  mt-2 items-center justify-center rounded-xl h-[30vh]`}
       >
         <div className="flex items-center border w-full h-[86%] mb-2 border-gray-500 rounded-3xl p-4 bg-white">
-          <RiRefund2Fill className="mx-5 text-gray-500" size={110}/>
+          <GiPayMoney className="mx-5 text-[#364f6bc4]" size={110} />
           <div className="flex flex-col justify-center items-start">
             <h1 className="text-2xl border-l-4 border-[#fe819c] pl-2 font-extrabold text-[#364f6b] mb-2">
               {selectedPage} Refunds

@@ -19,6 +19,8 @@ import { SocketContext } from "../socketio/SocketIo"
 import CallModal from "../Components/extra/CallModal"
 import ForgotPassword from "../Components/extra/ForgotPassword"
 import ContactPage from "../Pages/UserPages/ContactPage"
+import UserAppointmentDetail from "../Components/UserComponents/AppointmentDetail"
+
 
 
 
@@ -70,6 +72,7 @@ const UserRoute=()=>{
             <Route path="" element={<UserProfile />} />
             <Route path="appointment" element={<UserAppointments />} />
             <Route path="wallet" element={<UserWallet />} />
+            <Route path="appointmentDetail/:id" element={<UserAppointmentDetail/>} />
           </Route>
           <Route path="*" element={<ErrorPage side="user" />} />
           {/* Profile layout end */}

@@ -1,6 +1,6 @@
 import vitamedica from "@/assets/logoVerified.png";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import logo from "@/assets/cover1.jpg";
 import { AxiosError } from "axios";
@@ -8,21 +8,47 @@ import instance from "../../Axios/axios";
 import { Doctor } from "./UserDoctorsList";
 import SlotBookingModal from "../extra/SlotBookingModal";
 import { motion, AnimatePresence } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleLeft, faCircleRight, faUser, faUsers } from "@fortawesome/free-solid-svg-icons";
+import moment from "moment";
+import React from "react";
+
+interface Review {
+  appointmentId: number;
+  userId: number;
+  rating: number;
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userName:string
+}
 
 const UserDoctorDetail = () => {
   const { id } = useParams();
   const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [reviews, setReviews] = useState<{
+    _id: string
+    name: string;
+    email: string;
+    averageRating: number;
+    totalReviews: number;
+    reviews: Review[];
+  }>();
   const [modalOpen, setModalOpen] = useState(false);
+  const [currentPage,setCurrentPage]=useState(1)
+  const [totalPages,setTotalPages]=useState(1)
 
   console.log("doctor", doctor);
+  console.log("reviews",reviews)
 
   useEffect(() => {
     const getDoctorDetail = async () => {
       try {
-        const response = await instance.get(`/doctors/${id}/profile`);
+        const response = await instance.get(`/doctors/${id}/profile?page=${currentPage}&limit=3`);
 
         if (response.data.success) {
           setDoctor(response.data.doctor);
+          setReviews(response.data.reviews)
         }
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -40,6 +66,23 @@ const UserDoctorDetail = () => {
     };
     getDoctorDetail();
   }, [id]);
+  const showMoreReviews=useCallback(async()=>{
+   try{
+     const response = await instance.get(
+       `/doctors/${id}/profile/reviews?page=${currentPage}&limit=3`
+     );
+     if(response.data.success){
+         setReviews(response.data.reviews);
+
+     }
+
+   }
+   catch(error){}
+
+  },[currentPage])
+  useEffect(()=>{
+    showMoreReviews()
+  },[showMoreReviews])
 
   return (
     <main
@@ -166,6 +209,108 @@ const UserDoctorDetail = () => {
                     </p>
                   </div>
                 </div>
+                {/* review */}
+                <section className="bg-white px-4 pb-12 md:py-10">
+                  <div className="max-w-screen-xl mx-auto">
+                    <h2 className="font-black text-black text-center text-3xl leading-none uppercase max-w-2xl mx-auto mb-12">
+                      What Patients Are Saying
+                    </h2>
+                    {/* new */}
+
+                    <div className="mt-10 mb-6 pl-2 flex items-center justify-start gap-x-6">
+                      <div className="hidden sm:block -space-x-2 overflow-hidden">
+                        <FontAwesomeIcon className="h-10 w-10" icon={faUsers} />
+                      </div>
+                      <div className="border-none sm:border-l-2 border-black sm:pl-3">
+                        <div className="flex justify-center sm:justify-start items-center">
+                          <h3 className="text-2xl font-semibold mr-2">
+                            {reviews?.averageRating}
+                          </h3>
+                          <svg
+                            className="text-yellow-500 w-6 h-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="text-sm">
+                            Rated by {reviews?.totalReviews || 0} on Vitamedica
+                          </h3>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* new */}
+                    <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:space-x-4">
+                      {/* Testimonial 1 */}
+                      {reviews?.reviews?.map((review) => {
+                        return (
+                          <div
+                            key={review.userId}
+                            className="bg-gray-200 rounded-lg p-8 text-center md:w-1/3"
+                          >
+                            <p className="text-xs mb-2">
+                              Posted on {moment(review?.createdAt).format("MMMM D, YYYY")}
+                            </p>
+
+                            <p className="font-bold uppercase">
+                              {review.userName}
+                            </p>
+                            <p className="text-xl font-light italic text-gray-700">
+                              {review.comment}
+                            </p>
+                            <div className="flex items-center justify-center space-x-2 mt-4">
+                              {Array.from({ length: review.rating }).map(() => {
+                                return (
+                                  <svg
+                                    className="text-yellow-500 w-5 h-5"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                  </svg>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {!reviews && (
+                      <div className="flex justify-center">
+                        <h3 className="text-center">No reviews yet</h3>
+                      </div>
+                    )}
+                  </div>
+                </section>
+                {reviews && (
+                  <div className=" flex items-end justify-center gap-6">
+                    <FontAwesomeIcon
+                      onClick={() => {
+                        if (currentPage > 1) {
+                          setCurrentPage((prevState) => prevState - 1);
+                        }
+                      }}
+                      className="h-11 transition-transform duration-300 ease-in-out transform hover:scale-125 cursor-pointer"
+                      icon={faCircleLeft}
+                    />
+                    <FontAwesomeIcon
+                      onClick={() => {
+                        if (currentPage < Math.ceil(reviews.totalReviews/3)) {
+                          setCurrentPage((prevState) => prevState + 1);
+                        }
+                      }}
+                      className="h-11 transition-transform duration-300 ease-in-out transform hover:scale-125 cursor-pointer"
+                      icon={faCircleRight}
+                    />
+                  </div>
+                )}
+
+                {/* review */}
               </motion.div>
             </div>
           </motion.div>

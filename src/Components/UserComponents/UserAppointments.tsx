@@ -6,6 +6,7 @@ import {toast} from "sonner"
 import { AxiosError } from "axios";
 import Swal from "sweetalert2";
 import BookingCancellationReason from "../extra/BookingCancellationReason";
+import { useNavigate } from "react-router-dom";
 const UserAppointments=()=>{
     const [appointments,setAppointments]=useState<any>(null)
     const [page,setPage]=useState(1)
@@ -16,6 +17,7 @@ const UserAppointments=()=>{
      const [cancellationReasonModel, setCancellationReasonModal] =
        useState(false);
     const [totalPages,setTotalPages]=useState(1)
+    const navigate=useNavigate()
     const limit:number=10
     console.log("appoint",appointments)
     console.log("totalPages",totalPages)
@@ -176,8 +178,8 @@ const UserAppointments=()=>{
                           <button
                             className={`py-1 px-2.5 border-none rounded text-base font-medium w-24 text-center ${
                               appointment?.status === "completed"
-                                ? "text-green-800 bg-green-100"
-                                : "text-red-800 bg-red-100"
+                                ? "text-green-800 bg-green-100":
+                               (appointment?.status==="pending")?"text-yellow-800 bg-yellow-100" : "text-red-800 bg-red-100"
                             }`}
                           >
                             {appointment?.status}
@@ -212,7 +214,12 @@ const UserAppointments=()=>{
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded w-20 text-center">
+                          <button
+                            onClick={() =>
+                              navigate(`/profile/appointmentDetail/${appointment._id}`)
+                            }
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded w-20 text-center"
+                          >
                             View
                           </button>
                         </td>
