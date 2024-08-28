@@ -142,7 +142,7 @@ return (
   <main className="flex min-h-screen flex-col items-center justify-center px-2 py-3">
     <div className="h-[10vh] w-full max-w-[1200px] mb-6">
       <div className="grid gap-4 lg:gap-8 md:grid-cols-3 p-2">
-        <div className="relative p-4 rounded-2xl bg-white shadow dark:bg-gray-800">
+        <div className="relative p-4 rounded-2xl bg-gray-700 shadow ">
           <div className="space-y-2">
             <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-gray-500 dark:text-gray-400">
               <div>
@@ -156,7 +156,7 @@ return (
           </div>
         </div>
 
-        <div className="relative p-4 rounded-2xl bg-white shadow dark:bg-gray-800">
+        <div className="relative p-4 rounded-2xl  bg-gray-700 shadow ">
           <div className="space-y-2">
             <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-gray-500 dark:text-gray-400">
               <div>
@@ -168,7 +168,7 @@ return (
           </div>
         </div>
 
-        <div className="relative p-4 rounded-2xl bg-white shadow dark:bg-gray-800">
+        <div className="relative p-4 rounded-2xl  bg-gray-700 shadow ">
           <div className="space-y-2">
             <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-gray-500 dark:text-gray-400">
               <div>

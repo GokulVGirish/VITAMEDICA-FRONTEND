@@ -15,6 +15,7 @@ export type InitialStateType = {
   dob: string | null;
   gender: string | null;
   password: string;
+  image:string
   address: {
     street: string;
     city: string;
@@ -37,6 +38,7 @@ const UserProfile = () => {
     dob: null,
     gender: null,
     password: "",
+    image:"",
     address: {
       street: "",
       city: "",

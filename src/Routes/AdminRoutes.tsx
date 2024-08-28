@@ -8,6 +8,10 @@ import UnverifiefDoctorsList from "../Components/AdminComponents/UnverifiedDocto
 import DoctorVerify from "../Components/AdminComponents/DoctorVerify";
 import DoctorListing from "../Components/AdminComponents/DoctorListing";
 import ErrorPage from "../Components/extra/ErrorPage";
+import AdminAppointmentListing from "../Components/AdminComponents/AdminAppointmentsList";
+import AdminAppointmentDetail from "../Components/AdminComponents/AdminApointmentDetail";
+import AdminDoctorProfile from "../Components/AdminComponents/AdminDoctorProfile";
+import AdminUserProfile from "../Components/AdminComponents/AdminUserProfile";
 
 const AdminRoute=()=>{
     return (
@@ -17,9 +21,13 @@ const AdminRoute=()=>{
           <Route path="" element={<AdminDash />} />
           <Route path="departments" element={<DepartmentsListing />} />
           <Route path="users" element={<UserListing />} />
+          <Route path="users/:id" element={<AdminUserProfile/>}/>
           <Route path="doctors" element={<DoctorListing />} />
+          <Route path="doctors/:id" element={<AdminDoctorProfile/>}/>
           <Route path="verifyDoctor" element={<UnverifiefDoctorsList />} />
           <Route path="verifyDoctorDetail/:id" element={<DoctorVerify />} />
+          <Route path="appointments" element={<AdminAppointmentListing/>}/>
+          <Route path="appointments/:id" element={<AdminAppointmentDetail/>}/>
         </Route>
         <Route path="*" element={<ErrorPage side="admin" />} />
       </Routes>

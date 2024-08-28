@@ -3,11 +3,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios";
 import { useState ,useEffect} from "react";
 import adminInstance from "../../Axios/adminInstance";
+import { useNavigate } from "react-router-dom";
 
 const DoctorListing = () => {
     const [doctors,setDoctors]=useState<any[]>()
     const [filteredDoctors,setFilteredDoctors]=useState<any[]>([])
     const [filter,setFilter]=useState<"all"|"blocked"|"unblocked">("all")
+    const navigate=useNavigate()
      useEffect(() => {
        const getUsers = async () => {
          const response = await adminInstance.get("/doctors");
@@ -135,6 +137,9 @@ const DoctorListing = () => {
                   Email
                 </th>
                 <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
+                  View
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                   Action
                 </th>
               </tr>
@@ -151,6 +156,13 @@ const DoctorListing = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                       {user.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button
+                      onClick={()=>navigate(`/admin/doctors/${user._id}`)}
+                        className="mr-2 
+                          user.isBlocked bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded-full"
+                      >View</button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button

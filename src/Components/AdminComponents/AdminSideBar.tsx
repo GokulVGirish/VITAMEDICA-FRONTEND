@@ -1,6 +1,6 @@
 import logo from '@/assets/logo4.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChartPie } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarCheck, faChartPie } from '@fortawesome/free-solid-svg-icons';
 import { faUserDoctor } from '@fortawesome/free-solid-svg-icons';
 import { faPersonHalfDress } from '@fortawesome/free-solid-svg-icons/faPersonHalfDress';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
@@ -22,7 +22,11 @@ const AdminSideBar=()=>{
 
 
     }
-    const isActive = (path: string) => location.pathname === path;
+    const isActive = (path: string) => {
+      const pathnameSplitted = location.pathname.split("/");
+      const newPath1 = pathnameSplitted.slice(0, 3);
+      return newPath1.join("/") === path;
+    };
 
 
     return (
@@ -52,6 +56,17 @@ const AdminSideBar=()=>{
               Dashboard
             </span>
             <span
+              onClick={() => navigate("/admin/appointments")}
+              className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
+                isActive("/admin/appointments")
+                  ? `text-white  bg-gray-700 rounded-md`
+                  : `text-[#364f6b]`
+              } hover:font-bold `}
+            >
+              <FontAwesomeIcon icon={faCalendarCheck} />
+              Appointments
+            </span>
+            <span
               onClick={() => navigate("/admin/verifyDoctor")}
               className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
                 isActive("/admin/verifyDoctor")
@@ -62,6 +77,7 @@ const AdminSideBar=()=>{
               <FontAwesomeIcon icon={faPersonHalfDress} />
               Doctor verification
             </span>
+
             <span
               onClick={() => navigate("/admin/departments")}
               className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
