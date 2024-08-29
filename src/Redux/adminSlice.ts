@@ -1,4 +1,4 @@
-import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice,createAsyncThunk, current } from "@reduxjs/toolkit";
 import adminInstance from "../Axios/adminInstance";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
@@ -31,7 +31,7 @@ export const adminLogin=createAsyncThunk<any,{email:string,password:string},{rej
 const initialState={
     loading:false,
     error:"",
-    message:""
+    message:"",
 }
 const adminSlice=createSlice({
     name:"admin",
@@ -41,7 +41,10 @@ const adminSlice=createSlice({
             state.error=""
             state.message=""
 
-        }
+        },
+    
+
+
     },
     extraReducers:(builder)=>{
         builder.addCase(adminLogin.pending,(state)=>{

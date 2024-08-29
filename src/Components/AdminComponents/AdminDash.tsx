@@ -1,5 +1,3 @@
-import logo from "@/assets/money.png";
-import log2 from "@/assets/moneyGone.png";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,10 +16,9 @@ import { useEffect, useState } from "react";
 import adminInstance from "../../Axios/adminInstance";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserDoctor,faPersonHalfDress,faPerson } from "@fortawesome/free-solid-svg-icons";
-import { RiRefund2Fill } from "react-icons/ri";
-import { GiProfit } from "react-icons/gi";
 import { GiReceiveMoney } from "react-icons/gi";
 import { GiPayMoney } from "react-icons/gi";
+import { motion } from "framer-motion";
 
 ChartJS.register(
   CategoryScale,
@@ -194,15 +191,24 @@ return (
       <option value="Yearly">Yearly</option>
     </select>
 
-    <div className="grid md:grid-cols-4 md:grid-rows-2 w-full max-w-[1200px] mt-4 gap-4">
-      <div className="flex flex-col col-start-1 col-end-3 mt-2 items-center justify-center rounded-xl h-[30vh]">
+    <motion.div
+      className="grid md:grid-cols-4 md:grid-rows-2 w-full max-w-[1200px] mt-4 gap-4"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div
+        className="flex flex-col col-start-1 col-end-3 mt-2 items-center justify-center rounded-xl h-[30vh]"
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 300 }}
+      >
         <div className="flex items-center border w-full h-[86%] mb-2 border-gray-500 rounded-3xl p-4 bg-white">
-          <GiReceiveMoney className="mx-5 text-[#364f6bc4]" size={110} />
+          <GiReceiveMoney className="mx-5 text-[#364f6bde]" size={110} />
           <div className="flex flex-col justify-center items-start">
             <h1 className="text-3xl border-l-4 border-[#56aac6] pl-2 font-extrabold text-[#364f6b] mb-2">
               {selectedPage} Revenue
             </h1>
-            <p className="text-2xl  border-2  px-4 roun rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
+            <p className="text-2xl border-2 px-4 rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
               ₹{" "}
               {(() => {
                 if (selectedPage === "Yearly") {
@@ -222,60 +228,64 @@ return (
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {!(selectedPage === "Todays") && (
-        <div
+        <motion.div
           className={`flex flex-col ${
             !(selectedPage === "Yearly")
-              ? "col-start-3 col-end-5  h-[30vh]"
+              ? "col-start-3 col-end-5 h-[30vh]"
               : "col-start-1 col-end-5 row-start-2 h-[32vh]"
           } items-center justify-center p-4 rounded-xl`}
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
         >
-          <div
-            className={`flex border ${
-              !(selectedPage === "Yearly") ? "w-full h-full" : "w-full h-full"
-            } mt-2 border-gray-500 rounded-3xl p-4 bg-white`}
-          >
+          <div className="flex border w-full h-full mt-2 border-gray-500 rounded-3xl p-4 bg-white">
             <Line data={revenueChart} />
           </div>
-        </div>
+        </motion.div>
       )}
 
       {!(selectedPage === "Yearly") && (
-        <div className="flex flex-col col-start-1 mt-6 col-end-3 row-start-2 items-center justify-start rounded-xl h-[26vh]">
+        <motion.div
+          className="flex flex-col col-start-1 mt-6 col-end-3 row-start-2 items-center justify-start rounded-xl h-[26vh]"
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
           <div className="flex border w-full h-full border-gray-500 rounded-3xl p-4 bg-white">
             <Pie data={countChart} />
           </div>
-        </div>
+        </motion.div>
       )}
 
-      <div
+      <motion.div
         className={`flex ${
           selectedPage === "Todays" || selectedPage === "Yearly"
             ? "row-start-1 row-end-2"
             : "row-start-2 row-end-3"
-        } flex-col col-start-3 col-end-5  mt-2 items-center justify-center rounded-xl h-[30vh]`}
+        } flex-col col-start-3 col-end-5 mt-2 items-center justify-center rounded-xl h-[30vh]`}
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 300 }}
       >
         <div className="flex items-center border w-full h-[86%] mb-2 border-gray-500 rounded-3xl p-4 bg-white">
-          <GiPayMoney className="mx-5 text-[#364f6bc4]" size={110} />
+          <GiPayMoney className="mx-5 text-[#364f6bde]" size={110} />
           <div className="flex flex-col justify-center items-start">
             <h1 className="text-2xl border-l-4 border-[#fe819c] pl-2 font-extrabold text-[#364f6b] mb-2">
               {selectedPage} Refunds
             </h1>
-            <p className="text-2xl  border-2  px-4 roun rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
+            <p className="text-2xl border-2 px-4 rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
               ₹{" 0"}
             </p>
             <h1 className="text-2xl border-l-4 mt-3 border-[#fe819c] pl-2 font-extrabold text-[#364f6b] mb-2">
               {selectedPage} Withdrawals
             </h1>
-            <p className="text-2xl  border-2  px-4 roun rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
+            <p className="text-2xl border-2 px-4 rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
               ₹{" 0"}
             </p>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   </main>
 );
 };

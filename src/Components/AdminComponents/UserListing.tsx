@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 type BlockedStatus = {
   isBlocked: boolean;
+  register:string;
   _id: string;
 };
 export type User = InitialStateType & BlockedStatus;

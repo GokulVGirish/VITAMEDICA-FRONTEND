@@ -2,6 +2,7 @@ import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import adminInstance from "../../Axios/adminInstance";
+import { motion } from "framer-motion";
 
 interface Appointment {
   data: [
@@ -59,18 +60,27 @@ const AdminAppointmentListing=()=>{
         };
     return (
       <>
-        <div className=" mb-7 ">
-          <div className=" flex  justify-center items-center">
-            <div className="w-full max-w-4xl">
-              <div className="text-center my-4">
-                <h1 className="text-2xl font-bold">Appointments</h1>{" "}
-              </div>
-
-              <div>
-                <br />
-              </div>
-
-              <table className="min-w-ful bg-white rounded-lg overflow-hidden shadow-lg ">
+        <div className="mb-7 flex justify-center">
+          {" "}
+     
+          <div className="w-full max-w-[75vw] mx-auto">
+            {" "}
+          
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-center my-4"
+            >
+              <h1 className="text-2xl text-center font-bold">Appointments</h1>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              
+            >
+              <table className="min-w-full bg-white rounded-lg overflow-hidden  shadow-lg">
                 <thead className="bg-gray-800 text-white">
                   <tr>
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
@@ -91,23 +101,26 @@ const AdminAppointmentListing=()=>{
                     <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                       Amount
                     </th>
-                    <th className="px-6 py-3  border-b-2 border-gray-300  text-xs font-semibold uppercase tracking-wider">
-                      view
+                    <th className="px-6 py-3 border-b-2 border-gray-300 text-xs font-semibold uppercase tracking-wider">
+                      View
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {appointments &&
                     appointments.map((appointment: any) => (
-                      <tr
+                      <motion.tr
                         key={appointment._id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3 }}
                         className="hover:bg-gray-100 transition-all"
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                           {moment(appointment?.date).format("MMMM D, YYYY")}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                          {moment(appointment?.start).format("h:mm A")}-{" "}
+                          {moment(appointment?.start).format("h:mm A")} -{" "}
                           {moment(appointment?.end).format("h:mm A")}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
@@ -130,37 +143,37 @@ const AdminAppointmentListing=()=>{
                           </button>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            {
-                                appointment?.amount
-                            }
-                          
+                          {appointment?.amount}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <button
                             onClick={() =>
-                              navigate(
-                                `/admin/appointments/${appointment._id}`
-                              )
+                              navigate(`/admin/appointments/${appointment._id}`)
                             }
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded w-20 text-center"
                           >
                             View
                           </button>
                         </td>
-                      </tr>
+                      </motion.tr>
                     ))}
                 </tbody>
               </table>
               {appointments?.length === 0 && (
-                <div className=" flex  min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center  bg-gray-800 rounded-lg ">
+                <div className="flex min-w-full h-10 font-bold shadow-lg text-white px-5 items-center justify-center bg-gray-800 rounded-lg">
                   No Appointments Yet
                 </div>
               )}
-            </div>
+            </motion.div>
           </div>
         </div>
-        <div className=" flex justify-center  mb-10 ">
-          <div className="flex justify-between items-center  gap-10">
+        <div className="flex justify-center mb-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-between items-center gap-10"
+          >
             <button
               disabled={page === 1}
               onClick={handlePrevPage}
@@ -182,10 +195,9 @@ const AdminAppointmentListing=()=>{
               </svg>
               <span className="ml-1 font-bold text-lg">Back</span>
             </button>
-            <h1 className=" text-indigo-500 font-bold">
-              {page} / {Math.ceil(totalPages/10)}
+            <h1 className="text-indigo-500 font-bold">
+              {page} / {Math.ceil(totalPages / 10)}
             </h1>
-
             <button
               onClick={handleNextPage}
               disabled={page === totalPages}
@@ -207,7 +219,7 @@ const AdminAppointmentListing=()=>{
                 />
               </svg>
             </button>
-          </div>
+          </motion.div>
         </div>
       </>
     );

@@ -1,12 +1,11 @@
 import logo from '@/assets/logo1.png';
-import { ToastContainer,Zoom,toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import SyncLoader from "react-spinners/SyncLoader";
 import { useEffect,useState } from 'react';
 import { useAppDispatch,useAppSelector } from '../../Redux/hoocks';
 import { clearErrorMessageAdmin } from '../../Redux/adminSlice';
 import { useNavigate } from 'react-router-dom';
 import { adminLogin } from '../../Redux/adminSlice';
+import {toast} from "sonner"
 
 interface partialError{
     email?:string;
@@ -57,31 +56,12 @@ const AdminLogin=()=>{
     }
     useEffect(()=>{
       if(error){
-            toast.error(error, {
-               position: "top-right",
-                 autoClose: 5000,
-           hideProgressBar: false,
-                  closeOnClick: true,
-                   pauseOnHover: true,
-                   draggable: true,
-                    progress: undefined,
-                 theme: "colored",
-              transition: Zoom,
-                 });
+            toast.error(error, {richColors:true,duration:1500});
 
       }
        if(message){
-                toast.success(message, {
-                  position: "top-right",
-                     autoClose: 5000,
-                   hideProgressBar: false,
-                   closeOnClick: true,
-                 pauseOnHover: true,
-                   draggable: true,
-                   progress: undefined,
-                   theme: "colored",
-                transition: Zoom,
-      });
+            
+        toast.success(message, { richColors: true, duration: 1500 });
         }
         if(message==="logged in sucessfully"){
           console.log("innn")
@@ -89,7 +69,7 @@ const AdminLogin=()=>{
                 navigate("/admin")
                 dispatch(clearErrorMessageAdmin())
 
-            },3000)
+            },1500)
 
 
         }
@@ -102,19 +82,7 @@ const AdminLogin=()=>{
   
     return (
           <div className="container flex flex-col mx-auto bg-transparent rounded-lg ">
-               <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-        transition={Zoom}
-      />
+           
            <div className="flex justify-center w-full h-full my-auto xl:gap-14 lg:justify-normal md:gap-5 draggable">
       <div className="flex items-center justify-center w-full lg:p-12">
         <div className="flex items-center xl:p-10 ">
