@@ -198,6 +198,7 @@ const DoctorsList = () => {
   return (
     <div>
       <DoctorFilterSort
+      setSearchResult={setSearchResult}
         searchResult={
           searchResult as { _id: number; name: string; image: string }[]
         }

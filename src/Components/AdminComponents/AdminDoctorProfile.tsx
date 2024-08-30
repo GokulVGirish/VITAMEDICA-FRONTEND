@@ -23,7 +23,7 @@ const AdminDoctorProfile=()=>{
      const [appointmentsPage, setAppointmentsPage] = useState(1);
      const [appointmentDetailModal,setAppointmentDetailModal]=useState(false)
      const [selectedAppointment,setSelectedAppointment]=useState<string|null>(null)
-     const [loadingAppointments, setLoadingAppointments] = useState(false);
+    
     
      const navigate=useNavigate()
  
@@ -59,7 +59,7 @@ const AdminDoctorProfile=()=>{
      },[getDoctorInfo])
      const fetchDoctorAppointmentInfo=useCallback(async(page:number=1)=>{
       try{
-          setLoadingAppointments(true);
+         
           const response = await adminInstance.get(
             `/doctors/${id}/appointments?page=${page}&limit=10`
           );
@@ -71,14 +71,10 @@ const AdminDoctorProfile=()=>{
 
       }
       catch(error){
-         setLoadingAppointments(false);
+        
 
       }
-      finally{
-        setLoadingAppointments(false);
-
-      }
-
+     
 
      },[appointmentsPage])
      console.log("appointments",appointments)

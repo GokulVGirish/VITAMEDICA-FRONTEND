@@ -64,7 +64,7 @@ const DoctorsScrollX = () => {
                 {doctor.degree}
               </p>
               <p className="text-sm flex justify-center text-gray-600 ml-8 pt-3">
-                <img src={logo} alt="none" className="mr-7"  />
+                <img src={logo} alt="none" className="mr-9"  />
               </p>
               <div className="flex justify-around items-center">
                 <p className="text-lg text-center font-semibold text-black my-2">

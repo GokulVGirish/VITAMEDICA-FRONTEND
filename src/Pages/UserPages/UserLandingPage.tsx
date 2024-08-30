@@ -5,8 +5,7 @@ import DoctorsScrollX from "../../Components/UserComponents/Doctors-Scroll-x"
 import FeedbacksScroll from "../../Components/UserComponents/Feedbacks"
 import Footer from "../../Components/UserComponents/Footer"
 import Testimonial from "../../Components/UserComponents/Testimonial"
-import useVerifyToken from "../../hooks and functions/verifyToken"
-import { useEffect } from "react"
+import NewsSection from "../../Components/UserComponents/NewsSection"
 const UserLangingPage=()=>{
   
     
@@ -14,15 +13,16 @@ const UserLangingPage=()=>{
 
   
     return (
-       <div>
-        <Navbar/>
-        <Banner/>
-        <ThingsExplained/>
-        <DoctorsScrollX/>
-        <FeedbacksScroll/>
-        <Testimonial/>
-        <Footer/>
-       </div>
-    )
+      <div>
+        <Navbar />
+        <Banner />
+        <ThingsExplained />
+        <DoctorsScrollX />
+        <NewsSection />
+        <FeedbacksScroll />
+        <Testimonial />
+        <Footer />
+      </div>
+    );
 }
 export default UserLangingPage
