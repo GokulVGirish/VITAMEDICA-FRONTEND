@@ -12,7 +12,8 @@ const NewsSection = () => {
   const [showArticles, setShowArticles] = useState<any>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const articlesPerPage = 4;
+   const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
+  const articlesPerPage =isMobile?1: 4;
 
   const fetchNews = useCallback(async () => {
     const response = await axios.get(
@@ -82,13 +83,15 @@ const NewsSection = () => {
                 </p>
               </div>
               <div className="flex justify-between items-center p-4 bg-gray-100 border-t border-gray-300">
-                <span
+                <motion.span
                   onClick={() => window.open(article?.url)}
-                  className="text-gray-100 px-2 py-1 rounded-lg bg-[#6561b3] hover:text-[#6561b3] font-medium transition-colors cursor-pointer duration-200"
+                  className="text-gray-100 px-2 py-1 rounded-lg bg-[#6561b3] hover:bg-[#4c489e] font-medium transition-colors cursor-pointer duration-200"
                   title="Read more"
+                  whileHover={{ scale: 1.1, backgroundColor: "#4c489e" }} 
+                  transition={{ duration: 0.3 }} 
                 >
                   Read More
-                </span>
+                </motion.span>
                 <span className="text-gray-400 text-xs">
                   {moment(article?.publishedAt).format("MMM D, YYYY")}
                 </span>

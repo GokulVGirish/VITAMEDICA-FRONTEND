@@ -19,7 +19,12 @@ const DoctorSidebar=()=>{
         navigate("/doctor/login")
 
     }
-     const isActive = (path:string) => location.pathname === path;
+     const isActive = (path:string) => {
+      console.log("pathname",location.pathname)
+      const splittedPathname=location.pathname.split("/").slice(0,3).join("/")
+      console.log("splittedPathname",path,splittedPathname)
+      return path==splittedPathname
+     }
 
 
 
@@ -69,7 +74,7 @@ const DoctorSidebar=()=>{
             <span
               onClick={() => navigate("/doctor/profile")}
               className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
-                isActive("/doctor/profile")
+                isActive("/doctor/profile")||isActive("/doctor/userProfile")
                   ? `text-white  bg-gray-700 rounded-md`
                   : `text-[#364f6b]`
               } hover:font-bold   `}

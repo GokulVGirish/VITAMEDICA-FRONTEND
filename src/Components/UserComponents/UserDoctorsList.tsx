@@ -15,6 +15,10 @@ import rating from "@/assets/rating.png";
 import { useNavigate } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useAppSelector } from "../../Redux/hoocks";
+import { FaHeart } from "react-icons/fa";
+
+
 
 export type Doctor = {
   _id: string;
@@ -30,6 +34,7 @@ export type Doctor = {
 
 const DoctorsList = () => {
   const [doctors, setDoctors] = useState<Doctor[] | null>(null);
+  const [favoriteDoctors,setFavoriteDoctors]=useState<string[]>([])
   const [searchResult, setSearchResult] =
     useState<{ _id: number; name: string; image: string }[]>();
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,8 +44,71 @@ const DoctorsList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true); 
+  const {user}=useAppSelector((state)=>state.user)
 
-  console.log("current pages", currentPage, "totalpages", totalPages);
+ useEffect(()=>{
+  const fetchFavorites = async () => {
+    try {
+      const response = await instance.get(`/doctors/favorites`);
+      setFavoriteDoctors(response.data.favorites)
+      
+      console.log("favorite respnse",response.data)
+
+    } catch (error) {
+      console.error("Failed to fetch favorites", error);
+    }
+  };
+
+  if (user) fetchFavorites();
+ },[user])
+
+ const toggleFavorites=async(docId:string)=>{
+    if (!user) {
+           toast.error("Please Login")
+      return;
+    }
+  try{
+    let response;
+      if (favoriteDoctors?.includes(docId)) {
+        
+       
+        response=await instance.delete(`/doctors/favorites/${docId}`);
+        if(response.data.success){
+           toast.success("removed from wishlist", {
+             richColors: true,
+             duration: 1500,
+           });
+     
+           setFavoriteDoctors((prevPage) =>
+             prevPage?.filter((id) => docId !== id)
+           );
+
+        }
+
+      }else{
+         response=await instance.post(`/doctors/favorites/${docId}`);
+     if(response.data.success){
+      toast.success("added to wishlist",{richColors:true,duration:1500})
+
+      
+         setFavoriteDoctors([...favoriteDoctors, docId]);
+    
+     }
+
+       
+
+      }
+
+  }
+  catch(error){
+
+ 
+
+  }
+
+ }
+
+
 
   useEffect(() => {
     const getDoctors = async () => {
@@ -118,7 +186,7 @@ const DoctorsList = () => {
       }
     }
   };
-  console.log("search term", searchTerm);
+
 
   const doctorDetails = useMemo(
     () =>
@@ -136,7 +204,27 @@ const DoctorsList = () => {
                 key={doctor._id}
                 className="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl"
               >
-                <span>
+                <span className="relative">
+                  <div className="absolute top-3 right-5">
+                    <div
+                      onClick={() => toggleFavorites(doctor._id)}
+                      className={`bg-slate-400 bg-opacity-25 shadow-lg rounded-full p-1 w-10 h-10 flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-110  ${
+                        favoriteDoctors?.includes(doctor._id)
+                          ? "bg-red-100"
+                          : "bg-white"
+                      }`}
+                    >
+                      <FaHeart
+                        className={`transition-colors duration-300 ${
+                          favoriteDoctors?.includes(doctor._id)
+                            ? "text-red-500"
+                            : "text-gray-600"
+                        }`}
+                        size={20}
+                      />
+                    </div>
+                  </div>
+
                   <img
                     onClick={() => navigate(`/doctorDetail/${doctor._id}`)}
                     src={
@@ -167,32 +255,29 @@ const DoctorsList = () => {
                       <p className="text-lg text-center font-semibold text-black cursor-auto my-2">
                         {doctor.department.name}
                       </p>
-                      <p
-                        onClick={() => navigate(`/doctorDetail/${doctor._id}`)}
-                        className="text-sm text-gray-600 cursor-auto ml-2"
-                      >
-                        <div className="flex justify-center sm:justify-start items-center">
-                          <svg
-                            className="text-yellow-500 w-6 h-6"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                          </svg>
-                          <span className="text-2xl flex items-center  font-semibold mr-2">
-                            {doctor?.averageRating || 0} 
-                            <h4 className="text-sm ml-2 ">({doctor?.totalReviews||0} reviews)</h4>
-                          </span>
-                        </div>
-                      </p>
+                      <div className="flex justify-center sm:justify-start items-center text-sm text-gray-600 cursor-auto ml-2">
+                        <svg
+                          className="text-yellow-500 w-6 h-6"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <span className="text-2xl flex items-center font-semibold mr-2">
+                          {doctor?.averageRating || 0}
+                          <h4 className="text-sm ml-2">
+                            ({doctor?.totalReviews || 0} reviews)
+                          </h4>
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </span>
               </div>
             );
           }),
-    [doctors, loading]
+    [doctors, loading,favoriteDoctors]
   );
 
   return (

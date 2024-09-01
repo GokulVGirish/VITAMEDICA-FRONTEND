@@ -13,11 +13,13 @@ const DoctorsScrollX = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
-
+ const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
   const fetchDoctors = useCallback(async () => {
     try {
+            const limit = isMobile ? 1 : 4;
+
       const response = await instance.get(
-        `/doctors/list?page=${currentPage}&limit=3`
+        `/doctors/list?page=${currentPage}&limit=${limit}`
       );
       if (response.data.success) {
         setDoctors(response.data.doctors);
@@ -100,14 +102,18 @@ const DoctorsScrollX = () => {
   );
 
   return (
-    <section className="flex flex-col justify-center max-w-[85vw] min-h-44 px-4 mx-auto sm:px-6">
+    <section className="flex flex-col justify-center md:max-w-[92vw]   max-w-[100vw] min-h-44 px-4 mx-auto sm:px-6">
       <div className="flex flex-wrap items-center justify-center mb-8">
         <h2 className="mr-10 text-4xl font-bold leading-none md:text-4xl">
           Our Doctors
         </h2>
       </div>
 
-      <div className="flex items-center gap-10">
+      <div
+        className={`flex items-center ${
+          isMobile ? "justify-between" : "justify-normal"
+        } gap-10`}
+      >
         <FontAwesomeIcon
           onClick={() => {
             if (currentPage > 1) {
@@ -119,7 +125,7 @@ const DoctorsScrollX = () => {
         />
         <section
           id="Projects"
-          className="w-[90%] mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-9 transition-opacity duration-500"
+          className="w-[90%]  mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-items-center gap-y-20 gap-x-14 mt-10 mb-9 transition-opacity duration-500"
           style={{ opacity: doctors ? 1 : 0 }}
         >
           {doctorDetails}

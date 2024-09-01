@@ -56,11 +56,7 @@ const UserWallet=()=>{
                {wallet?.balance || "00.00"}
                <span className="text-sm">₹</span>
              </p>
-             <div className="flex items-center text-sm text-green-500">
-               <span className="text-gray-400 cursor-pointer px-3 py-2 border-2 rounded-lg">
-                 Withdraw
-               </span>
-             </div>
+             
            </div>
          </div>
        </div>

@@ -12,6 +12,7 @@ import { FiVideo, FiVideoOff, FiMic, FiMicOff } from "react-icons/fi";
 import { FaPhone, FaTimes } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import InstructionModal from "../Components/extra/CuteGirlInstruction";
 
 
 
@@ -44,6 +45,7 @@ const [showRatingModal,setShowRatingModal]=useState(false)
 const [showPrescription,setShowPrescription]=useState(false)
 console.log("appointment",appointment,"callerId",callerId,"userId",toPersonId)
 const socket = useContext(SocketContext);
+const [showInstructionModal,setInstructionModal]=useState(false)
 const room = appointment;
 const navigate=useNavigate()
 
@@ -109,6 +111,7 @@ useEffect(() => {
     setMessages((prevState)=>[...prevState,{sender:from,message}])
 
   })
+  setInstructionModal(true)
 
   return () => {
     socket?.off("calling");
@@ -296,6 +299,9 @@ useEffect(() => {
 }, []);
 
 async function startB() {
+  setInstructionModal(false)
+
+ 
 
 
 
@@ -306,6 +312,7 @@ async function startB() {
       if (localVideo.current) {
         localVideo.current.srcObject = localStream.current;
       }
+  
       socket?.emit("call-request", {
         room,
         from: callerId,
@@ -338,9 +345,9 @@ const hangB = async () => {
 function muteAudio() {
   if (localStream.current) {
     localStream.current.getAudioTracks().forEach((track) => {
-      track.enabled = !track.enabled; // Toggle mute/unmute
+      track.enabled = !track.enabled;
     });
-    setAudio(!audioState); // Update state for UI toggle
+    setAudio(!audioState);
   }
 }
 
@@ -519,6 +526,8 @@ const sendMessage=()=>{
                   />
                 )}
               </div>
+              {showInstructionModal && <InstructionModal role={role as string}/>}
+           
             </div>
           </div>
         </div>

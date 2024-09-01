@@ -1,7 +1,7 @@
 import logo from '@/assets/logo2.png';
 import { useNavigate,useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRightFromBracket, faHouseMedical, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightFromBracket, faHeart, faHouseMedical, faUser } from "@fortawesome/free-solid-svg-icons";
 import { faWallet } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'js-cookie';
 import { useContext } from 'react';
@@ -60,6 +60,17 @@ const UserProfileSideBar=()=>{
             >
           <FontAwesomeIcon icon={faHouseMedical}/>
               Appointments
+            </span>
+            <span
+              onClick={() => navigate("/profile/favorites")}
+              className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
+                isActive("/profile/favorites")
+                  ? `text-white  bg-gray-700 rounded-md`
+                  : `text-[#364f6b]`
+              } hover:font-bold `}
+            >
+          <FontAwesomeIcon icon={faHeart}/>
+              Favorites
             </span>
             <span
               onClick={() => navigate("/profile/wallet")}
