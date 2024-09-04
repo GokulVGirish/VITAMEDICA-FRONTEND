@@ -7,6 +7,8 @@ import logo from "@/assets/logo1.png";
 import moment from "moment";
 import razorPay from "../../PaymentOptions/razorPay";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWallet } from "@fortawesome/free-solid-svg-icons";
 
 
 const PaymentComponent = () => {
@@ -15,6 +17,7 @@ const PaymentComponent = () => {
   } | null>(null);
   console.log("doctor", doctor);
   const [paymentMethod, setPaymentMethod] = useState<string|null>(null);
+  const [walletBalance,setWalletBalance]=useState<number>(0)
   const slotDetailUnparsed=localStorage.getItem("bookingDetails")
   const slotDetails=JSON.parse(slotDetailUnparsed as string)
   const navigate=useNavigate()
@@ -45,6 +48,22 @@ const PaymentComponent = () => {
       }
     };
     getDoctorDetail();
+    const getWalletBalance=async ()=>{
+      try{
+
+        const response=await instance.get("/wallet")
+        setWalletBalance(response.data.walletDetail.balance);
+        console.log("type", typeof response.data.walletDetail.balance);
+
+      }
+      catch(error){
+
+      }
+
+
+
+    }
+    getWalletBalance()
   }, []);
   const handlePayment=async()=>{
    
@@ -70,44 +89,77 @@ const PaymentComponent = () => {
         });
       }
     }
+
      if (!paymentMethod) {
        return toast.error("Select A Payment Method");
      }
-
-  try{
-     const lockResponse = await instance.post("/appointments/lock-slot", {
-       doctorId: doctor?._id,
-       date: slotDetails?.date,
-       slotId: slotDetails?.slotTime?._id,
-     });
-        console.log("lock response", lockResponse.data);
-
-     if (!lockResponse.data.success) {
-   
-       return toast.error(lockResponse.data.message,{richColors:true,duration:1500});
+     if (paymentMethod === "wallet" && walletBalance < Number(doctor?.fees)){
+       return toast.error("Insufficient wallet balance");
      }
-      const response = await instance.post("/appointments/order", {
-        amount: doctor?.fees,
-        currency: "INR",
-        receipt: doctor?._id,
-      });
-    
-      if (response.data.success) {
-        console.log("order",response.data.order);
-        razorPay(response.data.order,id as string,slotDetails,navigate);
+       try {
+         const lockResponse = await instance.post("/appointments/lock-slot", {
+           doctorId: doctor?._id,
+           date: slotDetails?.date,
+           slotId: slotDetails?.slotTime?._id,
+         });
+         console.log("lock response", lockResponse.data);
+
+         if (!lockResponse.data.success) {
+           return toast.error(lockResponse.data.message, {
+             richColors: true,
+             duration: 1500,
+           });
+         }
+      if(paymentMethod==="razorpay"){
+           const response = await instance.post("/appointments/order", {
+             amount: doctor?.fees,
+             currency: "INR",
+             receipt: doctor?._id,
+           });
+
+           if (response.data.success) {
+             console.log("order", response.data.order);
+             razorPay(
+               response.data.order,
+               id as string,
+               slotDetails,
+               navigate,
+               paymentMethod
+             );
+           }
+      }else{
+
+        const result = await instance.post(`/appointments/book/wallet`,{
+          docId:doctor?._id,
+          slotDetails,
+          fees:doctor?.fees
+        });
+        if(result.data.success){
+            localStorage.setItem(
+              "appointmentData",
+              JSON.stringify({
+                date: result.data.appointment.date,
+                start: result.data.appointment.start,
+                end: result.data.appointment.end,
+              })
+            );
+
+            await navigate(`/paymentSuccess`);
+
+
+        }
+
       }
 
-  }
-  catch(error){
-    if(error instanceof AxiosError){
-      toast.error(error.response?.data.message, {
-        richColors: true,
-        duration: 1500,
-      });
-    }
-    console.log(error)
-
-  }
+       } catch (error) {
+         if (error instanceof AxiosError) {
+           toast.error(error.response?.data.message, {
+             richColors: true,
+             duration: 1500,
+           });
+         }
+         console.log(error);
+       }
 
   }
 
@@ -145,13 +197,31 @@ const PaymentComponent = () => {
       </div>
       <div className="p-4 border-t mx-8 mt-2">
         <div>
-          <label className="flex bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3  hover:bg-indigo-30 cursor-pointer">
+          <label className="flex bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3 hover:bg-indigo-30 cursor-pointer">
             <input
               type="radio"
+              name="paymentMethod"
               onChange={(e) => setPaymentMethod(e.target.value)}
-              value={"razorpay"}
+              value="razorpay"
+              checked={paymentMethod === "razorpay"}
             />
             <i className="pl-2">Razorpay</i>
+          </label>
+          <label className="flex justify-between items-center bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3 hover:bg-indigo-30 cursor-pointer">
+            <div className="flex items-center">
+              <input
+                type="radio"
+                name="paymentMethod"
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                value="wallet"
+                checked={paymentMethod === "wallet"}
+              />
+              <i className="pl-2">Wallet</i>
+            </div>
+            <div className="flex items-center">
+            <FontAwesomeIcon icon={faWallet}/>
+              <span className="px-1 ml-2 rounded-lg border-2 bg-white">₹{walletBalance}</span>
+            </div>
           </label>
         </div>
         <button

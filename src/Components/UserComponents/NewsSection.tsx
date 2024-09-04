@@ -19,6 +19,7 @@ const NewsSection = () => {
     const response = await axios.get(
       `https://newsapi.org/v2/top-headlines?country=in&category=health&apiKey=2e5705f4d9bf4b27b316f696ff32e7c4`
     );
+    console.log("response of news",response)
     setArticles(response.data.articles);
     setShowArticles(response.data.articles.slice(0, articlesPerPage));
     setTotalPages(Math.ceil(response.data.articles.length / articlesPerPage));
