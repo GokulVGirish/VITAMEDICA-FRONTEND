@@ -1,7 +1,7 @@
 
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import Cookie from "js-cookie"
-import instance from "../Axios/axios";
+import instance from "../Axios/userInstance";
 import { AxiosError } from "axios";
 import { Socket } from "socket.io-client";
 

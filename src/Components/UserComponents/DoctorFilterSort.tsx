@@ -3,10 +3,6 @@ import instance from "../../Axios/doctorInstance";
 import { useNavigate } from "react-router-dom";
 
 
-
-
-import React from "react";
-
 const DoctorFilterSort = ({
   selctedCategory,
   setSelectedCategory,
@@ -29,7 +25,7 @@ const DoctorFilterSort = ({
   >([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
-  const categoryDropDownRef = useRef<HTMLLIElement | null>(null);
+  const categoryDropDownRef = useRef<HTMLUListElement | null>(null);
   const searchDropdownRef = useRef<HTMLDivElement | null>(null);
   const getDepartments = useCallback(async () => {
     const response = await instance.get("/utility/departments");
@@ -49,27 +45,30 @@ const DoctorFilterSort = ({
     setSelectedCategory(category);
     setDropdownOpen(false);
   };
-  const handleClickOutside = (e: MouseEvent) => {
-    if (
-      categoryDropDownRef.current &&
-      !categoryDropDownRef.current.contains(e.target as Node)
-    ) {
-      setDropdownOpen(false);
-    }
-    if (
-      searchDropdownRef.current &&
-      !searchDropdownRef.current.contains(e.target as Node)
-    ) {
-      setSearchResult([])
-    }
-  };
   useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        categoryDropDownRef.current &&
+        !categoryDropDownRef.current.contains(e.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+
+      if (
+        searchDropdownRef.current &&
+        !searchDropdownRef.current.contains(e.target as Node)
+      ) {
+        setSearchResult([]);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [setDropdownOpen, setSearchResult]);
+
 
   return (
     <form className="max-w-lg mx-auto mt-12">
@@ -103,12 +102,13 @@ const DoctorFilterSort = ({
             className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute"
           >
             <ul
+              ref={categoryDropDownRef}
               className="py-2 text-sm text-gray-700 dark:text-gray-200"
               aria-labelledby="dropdown-button"
             >
               {[{ name: "All Departments", _id: 345 }, ...departments]?.map(
                 (category) => (
-                  <li ref={categoryDropDownRef} key={category._id}>
+                  <li key={category._id}>
                     <button
                       type="button"
                       className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"

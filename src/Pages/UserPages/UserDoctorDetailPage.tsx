@@ -1,4 +1,4 @@
-import UserDoctorDetail from "../../Components/UserComponents/UserDoctorDetail"
+import UserDoctorDetail from "../../Components/UserComponents/DoctorDetail"
 import Navbar from "../../Components/UserComponents/Navbar"
 
 

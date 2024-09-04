@@ -1,17 +1,17 @@
 import { Route,Routes } from "react-router-dom";
 import AdminLoginPage from "../Pages/AdminPages/AdminLoginPage";
 import AdminLayoutPage from "../Pages/AdminPages/AdminLayoutPage";
-import AdminDash from "../Components/AdminComponents/AdminDash";
+import AdminDash from "../Components/AdminComponents/Dashboard";
 import UserListing from "../Components/AdminComponents/UserListing";
 import DepartmentsListing from "../Components/AdminComponents/DepartmentsListing";
 import UnverifiefDoctorsList from "../Components/AdminComponents/UnverifiedDoctorsList";
 import DoctorVerify from "../Components/AdminComponents/DoctorVerify";
 import DoctorListing from "../Components/AdminComponents/DoctorListing";
 import ErrorPage from "../Components/extra/ErrorPage";
-import AdminAppointmentListing from "../Components/AdminComponents/AdminAppointmentsList";
-import AdminAppointmentDetail from "../Components/AdminComponents/AdminApointmentDetail";
-import AdminDoctorProfile from "../Components/AdminComponents/AdminDoctorProfile";
-import AdminUserProfile from "../Components/AdminComponents/AdminUserProfile";
+import AdminAppointmentListing from "../Components/AdminComponents/AppointmentsList";
+import AdminAppointmentDetail from "../Components/AdminComponents/ApointmentDetail";
+import AdminDoctorProfile from "../Components/AdminComponents/DoctorProfile";
+import AdminUserProfile from "../Components/AdminComponents/UserProfile";
 
 const AdminRoute=()=>{
     return (

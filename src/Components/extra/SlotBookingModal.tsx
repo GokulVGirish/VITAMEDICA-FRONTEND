@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import Swal from "sweetalert2";
 import {toast} from "sonner"
-import instance from "../../Axios/axios";
+import instance from "../../Axios/userInstance";
 import { useEffect, useState } from "react";
 import {  useNavigate } from "react-router-dom";
 

@@ -3,8 +3,6 @@ import { useContext ,useEffect,useState} from "react"
 import { useLocation, useParams } from "react-router-dom"
 import { useRef } from "react";
 import Swal from "sweetalert2";
-import { toast } from "sonner";
-import instance from "../Axios/doctorInstance";
 import StarRating from "../Components/extra/RatingStar";
 import PrescriptionModal from "../Components/extra/PrescriptionModal";
 import { useNavigate } from "react-router-dom";
@@ -456,7 +454,7 @@ const sendMessage=()=>{
               <div className="grid grid-cols-12 gap-y-2">
                 {messages.map((msg, index) => {
                   return msg.sender !== callerId ? (
-                    <div className="col-start-1 col-end-8 p-3 rounded-lg">
+                    <div key={index} className="col-start-1 col-end-8 p-3 rounded-lg">
                       <div className="flex flex-row items-center">
                         <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
                           <img
@@ -474,7 +472,7 @@ const sendMessage=()=>{
                       </div>
                     </div>
                   ) : (
-                    <div className="col-start-6 col-end-13 p-3 rounded-lg">
+                    <div key={index} className="col-start-6 col-end-13 p-3 rounded-lg">
                       <div className="flex items-center justify-start flex-row-reverse">
                         <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
                           Me

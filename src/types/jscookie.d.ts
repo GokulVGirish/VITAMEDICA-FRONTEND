@@ -1,4 +1,3 @@
-
 declare module "js-cookie" {
   interface CookieAttributes {
     expires?: number | Date;

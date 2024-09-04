@@ -4,7 +4,7 @@ import { FaPhone, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { SocketContext } from "../../socketio/SocketIo";
-import instance from "../../Axios/axios";
+import instance from "../../Axios/userInstance";
 
 
 

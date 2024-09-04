@@ -1,8 +1,7 @@
 import { useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { User } from "./UserListing";
 import adminInstance from "../../Axios/adminInstance";
-import { ToastContainer, Zoom, toast } from "react-toastify";
+import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios";
 
@@ -15,7 +14,7 @@ const UnverifiefDoctorsList=()=>{
                 const response = await adminInstance.get("/doctors/unverified");
                 if(response.data.success){
                     setDoctors(response.data.doctors)
-                    console.log("response is", response.data.doctors);
+                  
                 }
 
             }
@@ -62,7 +61,7 @@ const UnverifiefDoctorsList=()=>{
                     Name
                   </th>
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
-                    Department
+                    Email
                   </th>
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                     Action
@@ -77,10 +76,10 @@ const UnverifiefDoctorsList=()=>{
                       className="hover:bg-gray-100 transition-all"
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                        {doctor.name}
+                        {doctor?.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                        {doctor.department.name}
+                        {doctor?.email}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button

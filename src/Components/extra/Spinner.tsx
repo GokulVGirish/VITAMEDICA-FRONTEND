@@ -1,4 +1,4 @@
-import { Blocks,Hourglass } from "react-loader-spinner";
+import { Hourglass } from "react-loader-spinner";
 
 const Spinner = () => {
   return (

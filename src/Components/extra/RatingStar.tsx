@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {toast} from "sonner"
-import instance from "../../Axios/axios";
+import instance from "../../Axios/userInstance";
 import { useNavigate } from "react-router-dom";
 
 const  StarRatingComponent=({closeRating,appointmentId,docId}:{closeRating:()=>void;appointmentId:string;docId:string})=> {

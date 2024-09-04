@@ -4,7 +4,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { useState,useRef } from "react";
 import {toast} from "sonner"
-import instance from "../../Axios/axios";
+import instance from "../../Axios/userInstance";
 import { AxiosError } from "axios";
 import docInstance from "../../Axios/doctorInstance";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

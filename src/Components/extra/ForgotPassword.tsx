@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import logo from "@/assets/logo1.png";
 import {toast} from "sonner"
 import { useParams,useNavigate } from 'react-router-dom';
-import instance from '../../Axios/axios';
+import instance from '../../Axios/userInstance';
 import docInstance from '../../Axios/doctorInstance';
 import { AxiosError } from 'axios';
 import Spinner from './Spinner';

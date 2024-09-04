@@ -1,7 +1,7 @@
 import doctor from "@/assets/cover4.jpg";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import instance from "../../Axios/axios";
+import instance from "../../Axios/userInstance";
 import { useNavigate } from "react-router-dom";
 
 const Banner = () => {

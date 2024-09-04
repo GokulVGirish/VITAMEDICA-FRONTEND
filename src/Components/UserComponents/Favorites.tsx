@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { Doctor } from "./UserDoctorsList";
+import { Doctor } from "../../types/doctor";
 import logo from "@/assets/logoVerified.png";
-import instance from "../../Axios/axios";
+import instance from "../../Axios/userInstance";
 import {toast} from "sonner"
-import { prefix } from "@fortawesome/free-solid-svg-icons";
+
 
 
 
@@ -23,6 +23,7 @@ const FavoriteDoctors=()=>{
         try{
             const response=await instance.get(`/doctors/favorites/list?page=${currentPage}&limit=6`)
             if(response.data.success){
+                console.log("response",response.data.doctors)
 
                 setDoctors(response.data.doctors)
                 setTotalCount(response.data.totalCount)
@@ -126,13 +127,13 @@ const FavoriteDoctors=()=>{
                      >
                        {doctor.degree}
                      </p>
-                     <p className="text-sm text-gray-600 ml-9 w-44 pt-3 cursor-auto ">
+                     <p className="text-lg text-center font-semibold text-black cursor-auto my-2">
+                       {doctor.department.join(",")}
+                     </p>
+                     <p className="text-sm text-gray-600 ml-9 w-44  cursor-auto ">
                        <img src={logo} alt="none" />
                      </p>
                      <div className="flex justify-around items-center">
-                       <p className="text-lg text-center font-semibold text-black cursor-auto my-2">
-                         {doctor.department.name}
-                       </p>
                        <div className="flex justify-center sm:justify-start items-center text-sm text-gray-600 cursor-auto ml-2">
                          <svg
                            className="text-yellow-500 w-6 h-6"

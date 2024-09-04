@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import DoctorSidebar from "../../Components/DoctorComponents/DoctorSidebar";
+import DoctorSidebar from "../../Components/DoctorComponents/Sidebar";
 import useVerifyToken from "../../hooks and functions/verifyToken";
 import { SocketContext } from "../../socketio/SocketIo";
 import { useContext } from "react";

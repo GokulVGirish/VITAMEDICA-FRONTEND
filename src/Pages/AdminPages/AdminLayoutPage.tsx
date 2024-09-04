@@ -1,4 +1,4 @@
-import AdminSideBar from "../../Components/AdminComponents/AdminSideBar"
+import AdminSideBar from "../../Components/AdminComponents/SideBar"
 import { Outlet } from "react-router-dom"
 import useVerifyToken from "../../hooks and functions/verifyToken"
 

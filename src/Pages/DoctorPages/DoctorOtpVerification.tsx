@@ -1,4 +1,4 @@
-import DoctorOtp from "../../Components/DoctorComponents/DoctorOtp";
+import DoctorOtp from "../../Components/DoctorComponents/Otp";
 
 const DoctorOtpVerification=()=>{
     return (

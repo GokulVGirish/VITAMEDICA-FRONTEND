@@ -1,6 +1,6 @@
 import Navbar from "../../Components/UserComponents/Navbar"
 import Banner from "../../Components/UserComponents/Banner"
-import ThingsExplained from "../../Components/UserComponents/ThingsExplained"
+import ThingsExplained from "../../Components/UserComponents/VitamedicaFeatures"
 import DoctorsScrollX from "../../Components/UserComponents/Doctors-Scroll-x"
 import FeedbacksScroll from "../../Components/UserComponents/Feedbacks"
 import Footer from "../../Components/UserComponents/Footer"

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { InitialStateType } from "../UserComponents/UserProfile";
+import { InitialStateType } from "../UserComponents/Profile";
 import adminInstance from "../../Axios/adminInstance";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

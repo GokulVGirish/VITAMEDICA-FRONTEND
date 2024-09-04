@@ -1,4 +1,4 @@
-import UserProfileSideBar from "../../Components/UserComponents/UserProfileSideBar"
+import UserProfileSideBar from "../../Components/UserComponents/SideBar"
 import { Outlet } from "react-router-dom"
 import useVerifyToken from "../../hooks and functions/verifyToken";
 const UserProfileLayout=()=>{

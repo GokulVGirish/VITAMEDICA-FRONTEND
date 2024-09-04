@@ -1,10 +1,8 @@
-import doctor2 from "@/assets/cover2.jpg";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Doctor } from "./UserDoctorsList";
-import instance from "../../Axios/axios";
+import { Doctor } from "../../types/doctor";
+import instance from "../../Axios/userInstance";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logoVerified.png";
-import rating from "@/assets/rating.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleRight, faCircleLeft } from "@fortawesome/free-solid-svg-icons";
 
@@ -13,7 +11,7 @@ const DoctorsScrollX = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
- const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
+ const [isMobile] = useState(window.innerWidth <= 640);
   const fetchDoctors = useCallback(async () => {
     try {
             const limit = isMobile ? 1 : 4;
@@ -65,13 +63,13 @@ const DoctorsScrollX = () => {
               >
                 {doctor.degree}
               </p>
-              <p className="text-sm flex justify-center text-gray-600 ml-8 pt-3">
-                <img src={logo} alt="none" className="mr-9"  />
+              <p className="text-lg text-center font-semibold text-black my-2">
+                {doctor.department.join(",")}
+              </p>
+              <p className="text-sm flex justify-center text-gray-600 ml-8 ">
+                <img src={logo} alt="none" className="mr-9" />
               </p>
               <div className="flex justify-around items-center">
-                <p className="text-lg text-center font-semibold text-black my-2">
-                  {doctor.department.name}
-                </p>
                 <p
                   onClick={() => navigate(`/doctorDetail/${doctor._id}`)}
                   className="text-sm text-gray-600 ml-2"

@@ -1,4 +1,4 @@
-import DoctorLogin from "../../Components/DoctorComponents/DoctorLogin";
+import DoctorLogin from "../../Components/DoctorComponents/Login";
 import withAuthentication from "../../hooks and functions/withAuthentication";
 import bg from "@/assets/bg-1.jpg";
 

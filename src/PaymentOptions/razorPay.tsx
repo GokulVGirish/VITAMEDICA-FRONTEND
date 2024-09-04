@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import instance from "../Axios/axios";
+import instance from "../Axios/userInstance";
 import { toast } from "sonner";
 const  razorPay=(order:any,id:string,slotDetails:any,navigate:Function):any=>{
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { useCallback, useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import instance from "../../Axios/axios";
+import instance from "../../Axios/userInstance";
 import moment from "moment";
 import PdfViewer from "../extra/PdfViewer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

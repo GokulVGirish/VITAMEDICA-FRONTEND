@@ -6,7 +6,7 @@ const MIN_DIMENSION=150
 const ASPECT_RATIO=1
 const MAX_FILE_SIZE = 5 * 1024 * 1024; 
 import instance from "../../Axios/doctorInstance";
-import userInstance from "../../Axios/axios";
+import userInstance from "../../Axios/userInstance";
 import {toast} from "sonner"
 import Spinner from "./Spinner";
 

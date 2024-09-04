@@ -1,4 +1,4 @@
-import DoctorSignUp from "../../Components/DoctorComponents/DoctorSignup"
+import DoctorSignUp from "../../Components/DoctorComponents/Signup"
 import withAuthentication from "../../hooks and functions/withAuthentication"
 import bg from "@/assets/bg-1.jpg";
 

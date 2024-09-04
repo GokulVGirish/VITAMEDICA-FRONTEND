@@ -1,6 +1,6 @@
 
 import Navbar from "../../Components/UserComponents/Navbar"
-import DoctorsList from "../../Components/UserComponents/UserDoctorsList"
+import DoctorsList from "../../Components/UserComponents/DoctorsList"
 const BookAppointmentsList=()=>{
     return(
         <div>

@@ -1,7 +1,7 @@
 
 
 import { useNavigate } from 'react-router-dom';
-import instance from '../Axios/axios';
+import instance from '../Axios/userInstance';
 import doctorInstance from '../Axios/doctorInstance';
 import adminInstance from '../Axios/adminInstance';
 import { useEffect } from 'react';

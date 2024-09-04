@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
-import instance from "../../Axios/axios";
+import instance from "../../Axios/userInstance";
 import { AxiosError } from "axios";
 import logo from "@/assets/logo1.png";
 import moment from "moment";

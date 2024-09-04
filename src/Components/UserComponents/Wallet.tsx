@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import instance from "../../Axios/axios";
+import instance from "../../Axios/userInstance";
 import moment from "moment";
 const UserWallet=()=>{
 

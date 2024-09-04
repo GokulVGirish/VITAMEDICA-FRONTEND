@@ -1,4 +1,4 @@
-import UserSignUp from "../../Components/UserComponents/UserSignUp";
+import UserSignUp from "../../Components/UserComponents/SignUp";
 import withAuthentication from "../../hooks and functions/withAuthentication";
 const UserSignUpPage=()=>{
   
