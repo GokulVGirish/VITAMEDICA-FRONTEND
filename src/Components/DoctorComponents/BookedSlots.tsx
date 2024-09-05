@@ -7,6 +7,7 @@ import {toast} from "sonner"
 import Swal from "sweetalert2";
 import BookingCancellationReason from "../extra/CancellationReason";
 
+
 interface PropsType {
   availableDates: Date[] 
 
@@ -139,7 +140,7 @@ const DoctorExistingSlots=({availableDates}:PropsType)=>{
 
     return (
       <div>
-        <section className=" bg-white rounded-lg mx-10 my-3  text-gray-800 sm:py-2">
+        <section  className=" bg-white rounded-lg mx-10 my-3  text-gray-800 sm:py-2">
           <div className="mx-auto  flex max-w-md flex-col  lg:justify-around rounded-lg lg:max-w-screen-xl lg:flex-row">
             <div className="border rounded-lg h-[400px] border-gray-100 flex justify-center lg:justify-normal  shadow-gray-500/20 mt-8 mb-8 max-w-md bg-white shadow-sm sm:rounded-lg sm:shadow-lg lg:mt-0">
               <form className="p-4  sm:p-8">

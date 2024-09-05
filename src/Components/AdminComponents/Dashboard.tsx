@@ -19,6 +19,7 @@ import { faUserDoctor,faPersonHalfDress,faPerson } from "@fortawesome/free-solid
 import { GiReceiveMoney } from "react-icons/gi";
 import { GiPayMoney } from "react-icons/gi";
 import { motion } from "framer-motion";
+import { IoIosPeople } from "react-icons/io";
 
 ChartJS.register(
   CategoryScale,
@@ -51,6 +52,9 @@ const AdminDash = () => {
   const [unverifiedDoctors,setUnverifiedDoctors]=useState(0)
   const [doctors,setDoctors]=useState(0)
   const [users,setUsers]=useState(0)
+
+  const [totalRefund,setTotalRefund]=useState<{total:number,count:number}>()
+  const [totalWithdrawals,setTotalWithdrawals]=useState<{total:number,count:number}>()
  
 
   useEffect(() => {
@@ -74,6 +78,9 @@ const AdminDash = () => {
             setUnverifiedDoctors(response?.data.unverifiedDocs)
             setDoctors(response?.data.doctors)
             setUsers(response?.data.users)
+            setTotalRefund(response?.data.refunds)
+            setTotalWithdrawals(response?.data.withdrawals)
+       
         }
         else if (
           response?.data.success &&
@@ -81,9 +88,13 @@ const AdminDash = () => {
         ) {
           setChartDataString(response?.data.revenue);
           setAppointCountInfo(response?.data.count);
+          setTotalRefund(response?.data.refunds);
+          setTotalWithdrawals(response?.data.withdrawals);
         } else if (selectedPage === "Yearly") {
           setChartDataString([]);
           setChartDataNumber(response?.data.revenue);
+          setTotalRefund(response?.data.refunds);
+          setTotalWithdrawals(response?.data.withdrawals);
         }
       } catch (error) {
         console.error("Error fetching yearly revenue:", error);
@@ -273,15 +284,29 @@ return (
             <h1 className="text-2xl border-l-4 border-[#fe819c] pl-2 font-extrabold text-[#364f6b] mb-2">
               {selectedPage} Refunds
             </h1>
-            <p className="text-2xl border-2 px-4 rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
-              ₹{" 0"}
-            </p>
+            <div className=" flex gap-2">
+              <p className="text-2xl border-2 px-4 rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
+                ₹{totalRefund?.total}
+              </p>
+              <div className="flex gap-2 text-[#364f6bde] self-end items-center">
+                <IoIosPeople size={22} />
+                <p className="text-xs font-semibold">{totalRefund?.count}</p>
+              </div>
+            </div>
             <h1 className="text-2xl border-l-4 mt-3 border-[#fe819c] pl-2 font-extrabold text-[#364f6b] mb-2">
               {selectedPage} Withdrawals
             </h1>
-            <p className="text-2xl border-2 px-4 rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
-              ₹{" 0"}
-            </p>
+            <div className="flex gap-2">
+              <p className="text-2xl border-2 px-4 rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
+                ₹{totalWithdrawals?.total}
+              </p>
+              <div className="flex text-[#364f6bde] gap-2 self-end items-center">
+                <IoIosPeople size={22} />
+                <p className="text-xs font-semibold">
+                  {totalWithdrawals?.count}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>

@@ -3,7 +3,7 @@ import instance from "../../Axios/doctorInstance";
 import moment from "moment";
 import Swal from "sweetalert2";
 import {toast} from "sonner"
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BookingCancellationReason from "../extra/CancellationReason";
 const DoctorAppointments=()=>{
 

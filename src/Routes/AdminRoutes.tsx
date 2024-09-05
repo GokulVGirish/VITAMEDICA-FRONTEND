@@ -12,6 +12,8 @@ import AdminAppointmentListing from "../Components/AdminComponents/AppointmentsL
 import AdminAppointmentDetail from "../Components/AdminComponents/ApointmentDetail";
 import AdminDoctorProfile from "../Components/AdminComponents/DoctorProfile";
 import AdminUserProfile from "../Components/AdminComponents/UserProfile";
+import RefundsListing from "../Components/AdminComponents/RefundsListing";
+import WithdrawalListing from "../Components/AdminComponents/WithdrawalsListing";
 
 const AdminRoute=()=>{
     return (
@@ -28,6 +30,8 @@ const AdminRoute=()=>{
           <Route path="verifyDoctorDetail/:id" element={<DoctorVerify />} />
           <Route path="appointments" element={<AdminAppointmentListing/>}/>
           <Route path="appointments/:id" element={<AdminAppointmentDetail/>}/>
+          <Route path="refunds" element={<RefundsListing/>}/>
+          <Route path="withdrawals" element={<WithdrawalListing/>}/>
         </Route>
         <Route path="*" element={<ErrorPage side="admin" />} />
       </Routes>

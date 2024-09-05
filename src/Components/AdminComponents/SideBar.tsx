@@ -1,6 +1,6 @@
 import logo from '@/assets/logo4.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarCheck, faChartPie } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarCheck, faChartPie, faHandHoldingDollar, faMoneyBillTransfer } from '@fortawesome/free-solid-svg-icons';
 import { faUserDoctor } from '@fortawesome/free-solid-svg-icons';
 import { faPersonHalfDress } from '@fortawesome/free-solid-svg-icons/faPersonHalfDress';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
@@ -54,6 +54,28 @@ const AdminSideBar=()=>{
             >
               <FontAwesomeIcon icon={faChartPie} />
               Dashboard
+            </span>
+            <span
+              onClick={() => navigate("/admin/refunds")}
+              className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
+                isActive("/admin/refunds")
+                  ? `text-white  bg-gray-700 rounded-md`
+                  : `text-[#364f6b]`
+              } hover:font-bold `}
+            >
+              <FontAwesomeIcon icon={faMoneyBillTransfer} />
+              Refunds
+            </span>
+            <span
+              onClick={() => navigate("/admin/withdrawals")}
+              className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
+                isActive("/admin/withdrawals")
+                  ? `text-white  bg-gray-700 rounded-md`
+                  : `text-[#364f6b]`
+              } hover:font-bold `}
+            >
+              <FontAwesomeIcon icon={faHandHoldingDollar} />
+              Withdrawals
             </span>
             <span
               onClick={() => navigate("/admin/appointments")}

@@ -69,7 +69,7 @@ const Banner = () => {
   return (
     <>
       <section
-        className="relative bg-cover bg-center bg-no-repeat"
+        className="relative bg-cover bg-center shadow-lg  bg-no-repeat"
         style={{ backgroundImage: `url(${doctor})` }}
       >
         <div className="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:h-screen lg:items-center lg:px-8">

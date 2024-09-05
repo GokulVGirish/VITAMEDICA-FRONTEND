@@ -3,6 +3,8 @@ import { Line,Doughnut } from "react-chartjs-2";
 import { useEffect,useState } from "react";
 import instance from "../../Axios/doctorInstance";
 import { GiReceiveMoney } from "react-icons/gi";
+import bg from "@/assets/bg-2.jpg";
+import DigitalClock from "../extra/DIgitalClock";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend,ArcElement,BarElement);
 
@@ -117,7 +119,18 @@ const countChart = {
 
 
 return (
-  <main className="flex min-h-screen flex-col items-center justify-center px-6 pt-20 pb-40 bg-gray-100">
+  <main
+    style={{
+      backgroundImage: `url(${bg})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      width: "100%",
+      height: "100%",
+    }}
+    className="flex min-h-screen flex-col items-center justify-center  px-6 pt-20 pb-40  "
+  >
+    <DigitalClock/>
     <select
       onChange={(e) => setSelectedPage(e.target.value)}
       className="bg-gray-50 border  border-gray-300 mt-10  text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[150px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
