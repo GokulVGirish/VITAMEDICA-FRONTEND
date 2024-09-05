@@ -159,6 +159,12 @@ const RefundDetailModal = ({
                     </div>
                     <div className="flex flex-col items-center">
                       <span className="block text-lg font-medium text-gray-700">
+                        Reason:{" "}
+                        {data?.reason}
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className="block text-lg font-medium text-gray-700">
                         Refunded Amount: ₹{data?.amount}
                       </span>
                     </div>

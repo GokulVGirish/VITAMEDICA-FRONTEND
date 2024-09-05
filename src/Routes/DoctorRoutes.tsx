@@ -5,7 +5,7 @@ import DoctorLayoutPage from "../Pages/DoctorPages/DoctorLayout"
 import DoctorDash from "../Components/DoctorComponents/Dashboard"
 import DoctorProfile from "../Components/DoctorComponents/Profile"
 import DoctorOtpVerification from "../Pages/DoctorPages/DoctorOtpVerification"
-import { useAppSelector } from "../Redux/hoocks"
+import { useAppDispatch, useAppSelector } from "../Redux/hoocks"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons"
 import DoctorDocumentUpload from "../Components/DoctorComponents/DocumentUpload"
@@ -16,6 +16,9 @@ import DoctorAppointments from "../Components/DoctorComponents/Appointments"
 import DoctorProtectedRoutes from "./ProtectedRoutes/doctorProtectedRoutes"
 import DoctorUserProfile from "../Components/DoctorComponents/UserProfile"
 import VideoCall from "../communication/videoCall"
+import { useContext, useEffect } from "react"
+import { SocketContext } from "../socketio/SocketIo"
+import { verifyDoctor } from "../Redux/doctorSlice"
 
 
 
@@ -78,6 +81,8 @@ const Dummy = () => {
 
 const DoctorRoute=()=>{
       const location = useLocation();
+      const socket=useContext(SocketContext)
+      const dispatch=useAppDispatch()
   const validPaths = [
     "/doctor",
     "/doctor/addSlot",
@@ -92,6 +97,18 @@ const DoctorRoute=()=>{
   
    
    const showDummy = isBasePath 
+   
+   useEffect(()=>{
+     socket?.on("doctorVerified", () => {
+       dispatch(verifyDoctor("Verified"));
+     });
+
+     return ()=>{
+      socket?.off("doctorVerified");
+     }
+    
+   },[])
+  
   
 
     return (

@@ -111,8 +111,7 @@ const doctorSlice=createSlice({
 
         },
         verifyDoctor:(state,action)=>{
-          state.docStatus=action.payload.status
-
+          state.docStatus=action.payload
         }
 
     },

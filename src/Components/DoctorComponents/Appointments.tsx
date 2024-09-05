@@ -126,9 +126,11 @@ const DoctorAppointments=()=>{
            </td>
            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
              <span
-               className={`py-1 px-2.5 border-none rounded cursor-default text-base font-medium w-24 text-center ${
+               className={`py-1 px-2.5 border-none rounded text-base font-medium w-24 text-center ${
                  appointment?.status === "completed"
                    ? "text-green-800 bg-green-100"
+                   : appointment?.status === "pending"
+                   ? "text-yellow-800 bg-yellow-100"
                    : "text-red-800 bg-red-100"
                }`}
              >

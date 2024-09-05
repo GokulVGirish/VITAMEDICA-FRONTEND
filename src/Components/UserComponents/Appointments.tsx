@@ -70,7 +70,9 @@ const UserAppointments=()=>{
        
     }
     catch(error){
+      console.log("error2", error);
       if(error instanceof AxiosError){
+        console.log("error",error.response?.data.message)
           toast.error(error.response?.data.message, {
             richColors: true,
             duration: 1500,
