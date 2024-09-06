@@ -12,6 +12,8 @@ import Cookies from "js-cookie";
 import axios, { AxiosError } from "axios";
 import { clearErrorMessage } from "../../Redux/doctorSlice";
 import instance from "../../Axios/doctorInstance";
+import { useContext } from "react";
+import { SocketContext } from "../../socketio/SocketIo";
 const DoctorOtp = () => {
   const [seconds, setSeconds] = useState(120);
   const [otp, setOtp] = useState<string>("");
@@ -21,6 +23,7 @@ const DoctorOtp = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const ref=useRef(false)
+  const Socket=useContext(SocketContext)
   const accessToken = Cookies.get("accessToken");
   if(!ref.current){
      dispatch(clearErrorMessage());

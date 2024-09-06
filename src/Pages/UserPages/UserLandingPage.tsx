@@ -6,6 +6,7 @@ import FeedbacksScroll from "../../Components/UserComponents/Feedbacks"
 import Footer from "../../Components/UserComponents/Footer"
 import Testimonial from "../../Components/UserComponents/Testimonial"
 import NewsSection from "../../Components/UserComponents/NewsSection"
+import CopartnersSliding from "../../Components/UserComponents/CopartnersSliding"
 const UserLangingPage=()=>{
   
     
@@ -21,6 +22,7 @@ const UserLangingPage=()=>{
         <NewsSection />
         <FeedbacksScroll />
         <Testimonial />
+        <CopartnersSliding/>
         <Footer />
       </div>
     );

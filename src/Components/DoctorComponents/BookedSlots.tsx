@@ -140,88 +140,69 @@ const DoctorExistingSlots=({availableDates}:PropsType)=>{
 
     return (
       <div>
-        <section  className=" bg-white rounded-lg mx-10 my-3  text-gray-800 sm:py-2">
-          <div className="mx-auto  flex max-w-md flex-col  lg:justify-around rounded-lg lg:max-w-screen-xl lg:flex-row">
-            <div className="border rounded-lg h-[400px] border-gray-100 flex justify-center lg:justify-normal  shadow-gray-500/20 mt-8 mb-8 max-w-md bg-white shadow-sm sm:rounded-lg sm:shadow-lg lg:mt-0">
-              <form className="p-4  sm:p-8">
-                <div className="text-left mx-auto lg:mx-0 mt-4">
-                  <h2 className="text-xl font-bold">Select Date</h2>
-                  {/* {availbleDates.length === 0 && (
-                    <h2 className="text-red-500">No AvailableSlots</h2>
-                  )} */}
-                  <DatePicker
-                    includeDates={availableDates}
-                    minDate={date}
-                    onChange={(date) => setSelectedSlotDate(date)}
-                    inline
-                  />
-                </div>
-              </form>
+        <section className=" mt-4 flex items-center justify-center">
+          <div className="flex flex-col lg:flex-row gap-12 w-full max-w-screen-lg bg-white shadow-lg rounded-lg p-8">
+            <div className="lg:flex-1 flex flex-col items-center justify-center bg-gray-100 p-6 rounded-lg shadow-sm">
+              <h2 className="text-2xl font-bold uppercase mb-6 text-gray-700">
+                Added &nbsp; Slots
+              </h2>
+              <div className="w-full flex justify-center">
+                <DatePicker
+                  includeDates={availableDates}
+                  minDate={date}
+                  onChange={(date) => setSelectedSlotDate(date)}
+                  inline
+                  className="bg-white p-4 rounded-lg shadow-inner"
+                />
+              </div>
             </div>
 
-            <div className="border rounded-lg border-gray-100 shadow-gray-500/20 mt-8 mb-8 max-w-md bg-white shadow-sm sm:rounded-lg sm:shadow-lg lg:mt-0">
-              <div className="relative border-b border-gray-300 p-4 py-8 sm:px-8">
-                <h3 className="mb-1 inline-block text-3xl font-medium">
-                  <span className="mr-4">Slot Timings!</span>
-                  {/* {slots.length === 0 && (
-                    <h2 className="text-red-500 text-sm">Select a Date</h2>
-                  )} */}
-                </h3>
-              </div>
-              <form className="p-4 sm:p-8">
-                {/* <div className="mt-4 grid grid-cols-4 gap-2 lg:max-w-xl">
-                       {slots &&
-                         slots.map((slot, index) => (
-                           <button
-                             key={index}
-                             className={`rounded-lg px-4 py-2 font-medium ${
-                               true
-                                 ? "bg-emerald-700 text-white"
-                                 : "bg-emerald-100 text-emerald-900"
-                             } active:scale-95    `}
-                           >
-                             {moment(slot.start).format("h:mm A")} -{" "}
-                             {moment(slot.end).format("h:mm A")}
-                           </button>
-                         ))}
-                     </div> */}
-                <div>
-                  {slots &&
-                    slots.map((slot: any) => {
-                      return (
+         
+            {selectedSlotDate && (
+              <div className="lg:flex-1 flex flex-col justify-between bg-white p-6 rounded-lg shadow-sm">
+                <div className="flex flex-col">
+                  <h3 className="text-2xl font-semibold mb-4 text-gray-700">
+                    Available Slots
+                  </h3>
+                  <form className="space-y-4">
+                    {slots &&
+                      slots.map((slot: any) => (
                         <label
                           key={slot._id}
-                          className={`flex ${
-                            slot.availability ? "bg-gray-100" : "bg-red-400"
-                          } bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3  hover:bg-indigo-300 cursor-pointer `}
+                          className={`flex items-center justify-between p-4 rounded-md transition duration-200 cursor-pointer ${
+                            slot.availability
+                              ? "bg-gray-100 hover:bg-indigo-100"
+                              : "bg-red-400 text-white"
+                          }`}
                         >
                           <input
                             type="radio"
                             onClick={() => setSelectedTimeSlot(slot)}
-                            name="Country"
+                            name="slot"
+                            className="form-radio h-5 w-5"
                           />
-                          <i className="pl-2">
-                            {" "}
+                          <span className="text-base flex-1 pl-4">
                             {moment(slot.start).format("h:mm A")} -{" "}
                             {moment(slot.end).format("h:mm A")}
-                          </i>
+                          </span>
                         </label>
-                      );
-                    })}
+                      ))}
+                  </form>
                 </div>
-              </form>
-              <div className="px-3 flex justify-center py-3">
-                {selectedSlotDate && (
+
+           
+                <div className="text-center mt-6">
                   <button
                     onClick={handleCancelTimeSlots}
-                    className="py-2.5 px-6 rounded-lg text-sm font-medium text-white bg-[#378eac]"
+                    className="py-2 px-10  bg-[#378eac] text-white rounded-lg shadow hover:bg-[#287892] transition duration-200"
                   >
                     Cancel
                   </button>
-                )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
+
           {cancellationReasonModel && (
             <BookingCancellationReason
               handleCancel={handleCancel}

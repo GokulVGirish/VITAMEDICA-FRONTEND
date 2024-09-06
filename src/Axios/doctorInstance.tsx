@@ -1,9 +1,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
+const apiUrl = import.meta.env.VITE_DOCTOR_API_URL
 
 const instance = axios.create({
-  baseURL: "http://localhost:4000/api/doctors",
+  baseURL: apiUrl,
   headers: {
     "Content-Type": "application/json",
   },
@@ -13,29 +14,29 @@ instance.defaults.withCredentials = true;
 instance.interceptors.request.use(
   (request) => {
     const accessToken =Cookies.get("accessToken")
-    console.log("Request Interceptor Called"); // Debugging line
+    console.log("Request Interceptor Called"); 
     console.log("access",accessToken)
     if (accessToken) {
       console.log("inside herre")
-      console.log("Setting Access Token:", accessToken); // Debugging line
+      console.log("Setting Access Token:", accessToken); 
       request.headers.Authorization = `Bearer ${accessToken}`;
     }
-    console.log("Request Headers:", request.headers); // Debugging line
+    console.log("Request Headers:", request.headers);
     return request;
   },
   (error) => {
-    console.log("Request Interceptor Error:", error); // Debugging line
+    console.log("Request Interceptor Error:", error); 
     return Promise.reject(error);
   }
 );
 
 instance.interceptors.response.use(
   (response) => {
-    console.log("Response Interceptor Called"); // Debugging line
+    console.log("Response Interceptor Called"); 
     return response;
   },
   (error) => {
-    console.log("Response Interceptor Error:", error); // Debugging line
+    console.log("Response Interceptor Error:", error);
     if (
       error.response &&
       error.response.status === 401 &&

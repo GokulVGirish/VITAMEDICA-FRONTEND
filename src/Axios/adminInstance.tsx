@@ -1,13 +1,14 @@
 import axios from "axios"
 import Cookies from "js-cookie"
 
-const adminInstance=axios.create({
-    baseURL:"http://localhost:4000/api/admin",
-    headers:{
-        "Content-Type":"application/json"
-    }
-    
-})
+const apiUrl = import.meta.env.VITE_ADMIN_API_URL;
+
+const adminInstance = axios.create({
+  baseURL: apiUrl,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 adminInstance.defaults.withCredentials=true
 
 adminInstance.interceptors.request.use(

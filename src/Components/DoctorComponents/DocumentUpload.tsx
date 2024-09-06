@@ -3,7 +3,8 @@ import { useAppSelector ,useAppDispatch} from "../../Redux/hoocks";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { doctorDocumentUpload } from "../../Redux/doctorSlice";
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
+import Spinner from "../extra/Spinner";
 
 const DoctorDocumentUpload: React.FC = () => {
   const [file1, setFile1] = useState<File | null>(null);
@@ -14,7 +15,7 @@ const DoctorDocumentUpload: React.FC = () => {
   const [preview3, setPreview3] = useState<string | null>(null);
   const [file4, setFile4] = useState<File | null>(null);
   const [preview4, setPreview4] = useState<string | null>(null);
-  const {docStatus}=useAppSelector((state)=>state.doctor)
+  const {docStatus,loading}=useAppSelector((state)=>state.doctor)
   const navigate=useNavigate()
   const dispatch=useAppDispatch()
 
@@ -124,7 +125,9 @@ const DoctorDocumentUpload: React.FC = () => {
   if(docStatus==="Pending"){
     return (
       <section className="container w-full mx-auto items-center pt-10 pb-32">
-        <h1 className="text-center text-3xl font-bold mb-4">Upload necessary documents</h1>
+        <h1 className="text-center text-3xl font-bold mb-4">
+          Upload necessary documents
+        </h1>
         <ToastContainer
           position="top-right"
           autoClose={5000}
@@ -358,12 +361,16 @@ const DoctorDocumentUpload: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-center w-full">
-              <button onClick={handleSubmit} className="bg-black text-white px-4 py-3 rounded-lg">
+              <button
+                onClick={handleSubmit}
+                className="bg-black text-white px-4 py-3 rounded-lg"
+              >
                 Upload
               </button>
             </div>
           </div>
         </div>
+        {loading && <Spinner />}
       </section>
     );
  

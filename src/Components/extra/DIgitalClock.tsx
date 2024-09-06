@@ -1,5 +1,4 @@
-
-
+import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import moment, { Moment } from "moment";
 
@@ -20,8 +19,21 @@ const DigitalClock: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full rounded-lg bg-gray-700 text-white p-4">
-      <div className="bg-gray-700 p-4 rounded-lg text-center">
+    <div className="flex relative flex-col items-center justify-center w-full rounded-lg bg-gray-700 text-white p-4">
+      <motion.div
+        className="absolute top-0 left-0 w-20 h-20 bg-[#56aac6] rounded-full opacity-40"
+        animate={{ y: [0, 20, -20, 0], x: [0, 20, -20, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute bottom-0 right-0 w-32 h-32 bg-[#36778d] rounded-full opacity-30"
+        animate={{ y: [0, -15, 15, 0], x: [0, -15, 15, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+      
+        className="bg-gray-700 p-4 rounded-lg text-center"
+      >
         <div className="text-5xl font-extrabold tracking-tight">
           {is24HourFormat ? time.format("HH:mm") : time.format("hh:mm A")}
         </div>
@@ -37,7 +49,7 @@ const DigitalClock: React.FC = () => {
             {is24HourFormat ? "Switch To 12 Hour" : "Switch To 24 Hour"} Format
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

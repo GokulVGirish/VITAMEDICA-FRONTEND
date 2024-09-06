@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import {toast} from "sonner"
 import ProfileModal from "../extra/ProfileModal";
 import Spinner from "../extra/Spinner";
+import { useAppDispatch } from "../../Redux/hoocks";
+import { updateName } from "../../Redux/userSlice";
 
 export type InitialStateType = {
   name: string;
@@ -48,6 +50,7 @@ const UserProfile = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [showUpdateButton,setShowUpdateButton]=useState(false)
+  const dispatch=useAppDispatch()
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -182,6 +185,7 @@ const UserProfile = () => {
       const response = await instance.put("/profile", formData);
       if (response.data.success) {
         setLoading(false)
+        dispatch(updateName(response.data.data.name));
         toast.success(response.data.message, {
           richColors: true,
           duration: 1500,

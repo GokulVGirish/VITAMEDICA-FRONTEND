@@ -10,6 +10,8 @@ import instance from "../../Axios/userInstance";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import Spinner from "../extra/Spinner";
+import { SocketContext  } from "../../socketio/SocketIo";
+import { useContext } from "react";
 const Otp = () => {
   const [seconds, setSeconds] = useState(120);
   const [otp, setOtp] = useState<string>("");
@@ -18,6 +20,7 @@ const Otp = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const accessToken = Cookies.get("accessToken");
+  const socket=useContext(SocketContext)
 
   useEffect(() => {
     const verify = async () => {

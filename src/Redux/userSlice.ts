@@ -121,6 +121,11 @@ const userSlice=createSlice({
             state.loading=false
 
         },
+        updateName:(state,action)=>{
+            state.user=action.payload
+
+
+        }
        
     },
     extraReducers:(builder)=>{
@@ -132,6 +137,7 @@ const userSlice=createSlice({
         }).addCase(verifyOtpSigup.fulfilled,(state,action)=>{
             state.message=action.payload.message
             state.loading=false
+            state.user=action.payload.name
 
         }).addCase(verifyOtpSigup.rejected,(state,action)=>{
             state.error=action.payload as string
@@ -173,4 +179,4 @@ const userSlice=createSlice({
 })
 const userReducer=userSlice.reducer
 export default userReducer
-export const {clearUser,clearErrorMessage}=userSlice.actions
+export const {clearUser,clearErrorMessage,updateName}=userSlice.actions

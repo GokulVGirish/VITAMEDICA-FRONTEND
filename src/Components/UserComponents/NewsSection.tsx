@@ -17,7 +17,7 @@ const NewsSection = () => {
 
   const fetchNews = useCallback(async () => {
     const response = await axios.get(
-      `https://newsapi.org/v2/top-headlines?country=in&category=health&apiKey=2e5705f4d9bf4b27b316f696ff32e7c4`
+      `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=2e5705f4d9bf4b27b316f696ff32e7c4`
     );
     console.log("response of news",response)
     setArticles(response.data.articles);
@@ -43,7 +43,7 @@ const NewsSection = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        Health Articles <RiArticleLine />
+        Whats Happening Around The World <RiArticleLine />
       </motion.h1>
       <div className="container mx-auto flex items-center gap-2 px-4 md:px-8">
         {page !== 1 && (
@@ -69,12 +69,16 @@ const NewsSection = () => {
               style={{
                 backgroundImage: `url(${logo})`,
               }}
-              className="bg-white shadow-sm rounded-md bg-cover overflow-hidden flex flex-col"
+              className="bg-white shadow-sm rounded-md bg-cover overflow-hidden flex flex-col transition-transform transform hover:scale-105 hover:shadow-lg duration-300"
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
             >
+              <img
+                src={article?.urlToImage}
+                className="h-40 w-full object-cover"
+              />
               <div className="flex-1 p-4">
                 <h2 className="text-xl font-semibold mb-1 text-gray-800 hover:text-gray-500 transition-colors duration-200">
                   {article?.title}
@@ -88,8 +92,8 @@ const NewsSection = () => {
                   onClick={() => window.open(article?.url)}
                   className="text-gray-100 px-2 py-1 rounded-lg bg-[#6561b3] hover:bg-[#4c489e] font-medium transition-colors cursor-pointer duration-200"
                   title="Read more"
-                  whileHover={{ scale: 1.1, backgroundColor: "#4c489e" }} 
-                  transition={{ duration: 0.3 }} 
+                  whileHover={{ scale: 1.1, backgroundColor: "#4c489e" }}
+                  transition={{ duration: 0.3 }}
                 >
                   Read More
                 </motion.span>

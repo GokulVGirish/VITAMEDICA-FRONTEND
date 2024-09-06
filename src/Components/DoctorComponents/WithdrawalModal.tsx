@@ -32,6 +32,7 @@ const WithdrawalModal = ({
         duration: 1500,
       });
     }
+   
 
     if (numericAmount > walletBalance) {
       return toast.error("Amount exceeds wallet balance", {
@@ -39,6 +40,12 @@ const WithdrawalModal = ({
         duration: 1500,
       });
     }
+     if (numericAmount < 1000) {
+       return toast.error("You should have a minimum balance of 1000", {
+         richColors: true,
+         duration: 1500,
+       });
+     }
 
     try {
       const response = await instance.post(`/wallet/withdraw/${amount}`);

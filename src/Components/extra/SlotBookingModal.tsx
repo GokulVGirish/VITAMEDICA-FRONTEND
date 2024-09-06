@@ -149,7 +149,7 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
         
                console.log("OK button clicked");
              } else if (result.dismiss === Swal.DismissReason.cancel) {
-               // Handle "Cancel" button click
+        
                console.log("Cancel button clicked");
              }
            });
@@ -162,109 +162,78 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
        role="dialog"
        aria-modal="true"
      >
-       <div className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-all backdrop-blur-sm"></div>
-       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-         <div className="flex min-h-full justify-center px-2 py-12 text-center ">
-           <div className="relative w-[95%] sm:w-[80%] min-h-[60vh] rounded-2xl bg-gray-400 text-slate-100 text-left shadow-xl transition-all">
-             <div className="px-5 py-4">
-               <button
-                 type="button"
-                 className="rounded-md p-1 inline-flex items-center justify-center text-gray-700 hover:bg-gray-700 focus:outline-none absolute top-2 right-2"
-                 onClick={closeModal}
-               >
-                 <span className="sr-only">Close menu</span>
-                 <FontAwesomeIcon onClick={closeModal} icon={faCircleXmark} />
-               </button>
-             </div>
+       <div className="fixed inset-0 bg-gray-800 bg-opacity-75 backdrop-blur-sm"></div>
+       <div className="fixed inset-0 z-10 flex items-center justify-center px-4 py-6">
+         <div className="relative w-full max-w-4xl mx-auto bg-white rounded-xl shadow-lg">
+           <div className="absolute top-2 right-2">
+             <button
+               type="button"
+               className="text-gray-600 hover:text-gray-900 focus:outline-none"
+               onClick={closeModal}
+             >
+               <FontAwesomeIcon icon={faCircleXmark} className="text-2xl" />
+             </button>
+           </div>
 
-             <section className="py-12 bg-white rounded-lg mx-10 my-10  text-gray-800 sm:py-24">
-               <div className="mx-auto  flex max-w-md flex-col lg:justify-around rounded-lg lg:max-w-screen-xl lg:flex-row">
-                
-                 <div className="border rounded-lg border-gray-100 flex justify-center lg:justify-normal  shadow-gray-500/20 mt-8 mb-8 max-w-md bg-white shadow-sm sm:rounded-lg sm:shadow-lg lg:mt-0">
-                   <form className="p-4  sm:p-8">
-                     <div className="text-left mx-auto lg:mx-0 mt-4">
-                       <h2 className="text-xl font-bold">Select Date</h2>
-                       {availbleDates.length === 0 && (
-                         <h2 className="text-red-500">No AvailableSlots</h2>
-                       )}
-                       <DatePicker
-                       minDate={today}
-                         onChange={(date) => setSelectedDate(date)}
-                         includeDates={availbleDates}
-                         inline
-                       />
-                     </div>
-                   </form>
-                 </div>
-
-                 <div className="border rounded-lg border-gray-100 shadow-gray-500/20 mt-8 mb-8 max-w-md bg-white shadow-sm sm:rounded-lg sm:shadow-lg lg:mt-0">
-                   <div className="relative border-b border-gray-300 p-4 py-8 sm:px-8">
-                     <h3 className="mb-1 inline-block text-3xl font-medium">
-                       <span className="mr-4">Slot Timings!</span>
-                       {slots.length === 0 && (
-                         <h2 className="text-red-500 text-sm">Select a Date</h2>
-                       )}
-                     </h3>
-                   </div>
-                   <form className="p-4 sm:p-8">
-                     {/* <div className="mt-4 grid grid-cols-4 gap-2 lg:max-w-xl">
-                       {slots &&
-                         slots.map((slot, index) => (
-                           <button
-                             key={index}
-                             className={`rounded-lg px-4 py-2 font-medium ${
-                               true
-                                 ? "bg-emerald-700 text-white"
-                                 : "bg-emerald-100 text-emerald-900"
-                             } active:scale-95    `}
-                           >
-                             {moment(slot.start).format("h:mm A")} -{" "}
-                             {moment(slot.end).format("h:mm A")}
-                           </button>
-                         ))}
-                     </div> */}
-                     <div>
-                       {slots &&
-                         slots.map((slot) => {
-                           return (
-                             <label
-                               key={slot._id}
-                               className={`flex ${
-                                 slot.availability&&!slot.locked
-                                   ? "bg-gray-100"
-                                   : "bg-red-400"
-                               } bg-gray-100 text-gray-700 rounded-md px-3 py-2 my-3  hover:bg-indigo-300 cursor-pointer `}
-                             >
-                               <input
-                                 type="radio"
-                                 onClick={() =>
-                                   handleTimeSelect(slot)
-                                   
-                                 }
-                                 name="Country"
-                               />
-                               <i className="pl-2">
-                                 {" "}
-                                 {moment(slot.start).format("h:mm A")} -{" "}
-                                 {moment(slot.end).format("h:mm A")}
-                               </i>
-                             </label>
-                           );
-                         })}
-                     </div>
-                   </form>
-                   <div className="px-3 flex justify-center py-3">
-                     <button
-                       onClick={handleBooking}
-                       className="py-2.5 px-6 rounded-lg text-sm font-medium text-white bg-[#928EDE]"
-                     >
-                       Confirm
-                     </button>
-                   </div>
+           <section className="flex flex-col gap-5  lg:flex-row bg-white rounded-lg p-6">
+             <div className="flex justify-center lg:w-1/2">
+               <div className="border border-gray-200 rounded-lg shadow-md p-6 bg-gray-50 w-full max-w-md">
+                 <div className="flex flex-col justify-center h-full items-center">
+                   <h2 className="text-lg font-semibold mb-4">Select Date</h2>
+                   {availbleDates.length === 0 && (
+                     <h2 className="text-red-500">No Available Slots</h2>
+                   )}
+                   <DatePicker
+                     minDate={today}
+                     onChange={(date) => setSelectedDate(date)}
+                     includeDates={availbleDates}
+                     inline
+                   />
                  </div>
                </div>
-             </section>
-           </div>
+             </div>
+
+             <div className="lg:w-1/2 mt-6 lg:mt-0">
+               <div className="border border-gray-200 rounded-lg shadow-md bg-gray-50 p-6">
+                 <h3 className="text-lg font-semibold mb-4">Slot Timings</h3>
+                 {slots.length === 0 && (
+                   <h2 className="text-red-500 text-sm">Select a Date</h2>
+                 )}
+                 <div className="space-y-3">
+                   {slots &&
+                     slots.map((slot) => (
+                       <label
+                         key={slot._id}
+                         className={`flex items-center p-3 rounded-lg cursor-pointer ${
+                           slot.availability && !slot.locked
+                             ? "bg-gray-100 hover:bg-indigo-100"
+                             : "bg-red-400"
+                         }`}
+                       >
+                         <input
+                           type="radio"
+                           onClick={() => handleTimeSelect(slot)}
+                           name="time-slot"
+                           className="mr-2"
+                         />
+                         <span>
+                           {moment(slot.start).format("h:mm A")} -{" "}
+                           {moment(slot.end).format("h:mm A")}
+                         </span>
+                       </label>
+                     ))}
+                 </div>
+                 <div className="mt-6 flex justify-center">
+                   <button
+                     onClick={handleBooking}
+                     className="py-2 px-8  bg-[#928EDE]  text-white rounded-lg hover:bg-[#706cbc]  transition"
+                   >
+                     Confirm
+                   </button>
+                 </div>
+               </div>
+             </div>
+           </section>
          </div>
        </div>
      </div>
