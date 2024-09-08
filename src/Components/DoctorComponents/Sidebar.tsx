@@ -1,6 +1,6 @@
 import logo from '@/assets/logo4.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBookMedical, faChartPie, faWallet } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faBookMedical, faChartPie, faWallet } from '@fortawesome/free-solid-svg-icons';
 import { faUserDoctor } from '@fortawesome/free-solid-svg-icons';
 import { faPersonHalfDress } from '@fortawesome/free-solid-svg-icons/faPersonHalfDress';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
@@ -93,6 +93,17 @@ const DoctorSidebar=()=>{
             >
               <FontAwesomeIcon icon={faWallet} />
               Wallet
+            </span>
+            <span
+              onClick={() => navigate("/doctor/notifications")}
+              className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
+                isActive("/doctor/notifications")
+                  ? `text-white  bg-gray-700 rounded-md`
+                  : `text-[#364f6b]`
+              } hover:font-bold  `}
+            >
+              <FontAwesomeIcon icon={faBell} />
+              Notifications
             </span>
 
             <span

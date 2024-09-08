@@ -1,33 +1,29 @@
-import { Route,Routes,useLocation,useNavigate } from "react-router-dom"
-import DoctorLoginPage from "../Pages/DoctorPages/DoctorLoginPage"
-import DoctorSignUpPage from "../Pages/DoctorPages/DoctorSignUpPage"
-import DoctorLayoutPage from "../Pages/DoctorPages/DoctorLayout"
-import DoctorDash from "../Components/DoctorComponents/Dashboard"
-import DoctorProfile from "../Components/DoctorComponents/Profile"
-import DoctorOtpVerification from "../Pages/DoctorPages/DoctorOtpVerification"
-import { useAppDispatch, useAppSelector } from "../Redux/hoocks"
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import DoctorLoginPage from "../Pages/DoctorPages/DoctorLoginPage";
+import DoctorSignUpPage from "../Pages/DoctorPages/DoctorSignUpPage";
+import DoctorLayoutPage from "../Pages/DoctorPages/DoctorLayout";
+import DoctorDash from "../Components/DoctorComponents/Dashboard";
+import DoctorProfile from "../Components/DoctorComponents/Profile";
+import DoctorOtpVerification from "../Pages/DoctorPages/DoctorOtpVerification";
+import { useAppDispatch, useAppSelector } from "../Redux/hoocks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons"
-import DoctorDocumentUpload from "../Components/DoctorComponents/DocumentUpload"
-import DoctorAddSlots from "../Components/DoctorComponents/AddSlots"
-import ErrorPage from "../Components/extra/ErrorPage"
-import DoctorWallet from "../Components/DoctorComponents/Wallet"
-import DoctorAppointments from "../Components/DoctorComponents/Appointments"
-import DoctorProtectedRoutes from "./ProtectedRoutes/doctorProtectedRoutes"
-import DoctorUserProfile from "../Components/DoctorComponents/UserProfile"
-import VideoCall from "../communication/videoCall"
-import { useContext, useEffect } from "react"
-import { SocketContext } from "../socketio/SocketIo"
-import { verifyDoctor } from "../Redux/doctorSlice"
-
-
-
-
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import DoctorDocumentUpload from "../Components/DoctorComponents/DocumentUpload";
+import DoctorAddSlots from "../Components/DoctorComponents/AddSlots";
+import ErrorPage from "../Components/extra/ErrorPage";
+import DoctorWallet from "../Components/DoctorComponents/Wallet";
+import DoctorAppointments from "../Components/DoctorComponents/Appointments";
+import DoctorProtectedRoutes from "./ProtectedRoutes/doctorProtectedRoutes";
+import DoctorUserProfile from "../Components/DoctorComponents/UserProfile";
+import VideoCall from "../communication/videoCall";
+import { useContext, useEffect } from "react";
+import { SocketContext } from "../socketio/SocketIo";
+import { verifyDoctor } from "../Redux/doctorSlice";
+import { toast } from "sonner";
 
 const Dummy = () => {
   const status = useAppSelector((state) => state.doctor.docStatus);
-  const navigate=useNavigate()
-
+  const navigate = useNavigate();
 
   if (status === "Verified") {
     return null;
@@ -43,10 +39,10 @@ const Dummy = () => {
           <span className="text-2xl font-bold">
             Documents Uploaded For Verification
           </span>
-          <p className="text-center font-semibold">Waiting For Admin Approval</p>
-          <FontAwesomeIcon size="4x" icon={faCircleCheck}/>
-         
-        
+          <p className="text-center font-semibold">
+            Waiting For Admin Approval
+          </p>
+          <FontAwesomeIcon size="4x" icon={faCircleCheck} />
         </div>
       </>
     );
@@ -65,7 +61,7 @@ const Dummy = () => {
             VITAMEDICA
           </p>
           <button
-          onClick={()=>navigate("/doctor/uploadDocs")}
+            onClick={() => navigate("/doctor/uploadDocs")}
             id="modal-close"
             className="p-3 bg-[#4F46E5] rounded-lg w-1/2 text-white"
           >
@@ -79,98 +75,97 @@ const Dummy = () => {
   return null;
 };
 
-const DoctorRoute=()=>{
-      const location = useLocation();
-      const socket=useContext(SocketContext)
-      const dispatch=useAppDispatch()
+const DoctorRoute = () => {
+  const location = useLocation();
+  const socket = useContext(SocketContext);
+  const dispatch = useAppDispatch();
   const validPaths = [
     "/doctor",
     "/doctor/addSlot",
     "/doctor/wallet",
     "/doctor/appointment",
-    "/doctor/profile"
-    
- 
+    "/doctor/profile",
   ];
 
-   const isBasePath = validPaths.includes(location.pathname);
-  
-   
-   const showDummy = isBasePath 
-   
-   useEffect(()=>{
-     socket?.on("doctorVerified", () => {
-       dispatch(verifyDoctor("Verified"));
-     });
+  const isBasePath = validPaths.includes(location.pathname);
 
-     return ()=>{
+  const showDummy = isBasePath;
+
+  useEffect(() => {
+    socket?.on("doctorVerified", () => {
+      toast.success("Doctor Is Verified", {
+        richColors: true,
+        duration: 1500,
+        onAutoClose: () => {
+          dispatch(verifyDoctor({ status: "Verified" }));
+        },
+      });
+    });
+
+    return () => {
       socket?.off("doctorVerified");
-     }
-    
-   },[])
-  
-  
+    };
+  }, []);
 
-    return (
-      <div className="relative">
-        {showDummy && <Dummy />}
-     
+  return (
+    <div className="relative">
+      {showDummy && <Dummy />}
 
-        <Routes>
-        
-          <Route path="/" element={<DoctorLayoutPage />}>
-            <Route
-              index
-              element={
-                <DoctorProtectedRoutes>
-                  <DoctorDash />
-                </DoctorProtectedRoutes>
-              }
-            />
-            <Route
-              path="profile"
-              element={
-                <DoctorProtectedRoutes>
-                  <DoctorProfile />
-                </DoctorProtectedRoutes>
-              }
-            />
-            <Route path="/uploadDocs" element={<DoctorDocumentUpload />} />
-            <Route
-              path="addSlot"
-              element={
-                <DoctorProtectedRoutes>
-                  <DoctorAddSlots />
-                </DoctorProtectedRoutes>
-              }
-            />
-            <Route
-              path="wallet"
-              element={
-                <DoctorProtectedRoutes>
-                  <DoctorWallet />
-                </DoctorProtectedRoutes>
-              }
-            />
-            <Route
-              path="appointment"
-              element={
-                <DoctorProtectedRoutes>
-                  <DoctorAppointments />
-                </DoctorProtectedRoutes>
-              }
-            />
-            <Route path="userProfile/:id" element={<DoctorUserProfile/>}/>
-             
-      
-          </Route>
-          <Route path="/login" element={<DoctorLoginPage />} />
-          <Route path="/signup" element={<DoctorSignUpPage />} />
-          <Route path="/videocall/:appointment/:callerId/:toPersonId/:role" element={<VideoCall/>}/>
-          <Route path="/otpVerify" element={<DoctorOtpVerification />} />
-          <Route path="*" element={<ErrorPage side="doctor" />} />
-        </Routes>
-      </div>
-    );
-}
-export default DoctorRoute
+      <Routes>
+        <Route path="/" element={<DoctorLayoutPage />}>
+          <Route
+            index
+            element={
+              <DoctorProtectedRoutes>
+                <DoctorDash />
+              </DoctorProtectedRoutes>
+            }
+          />
+          <Route
+            path="profile"
+            element={
+              <DoctorProtectedRoutes>
+                <DoctorProfile />
+              </DoctorProtectedRoutes>
+            }
+          />
+          <Route path="/uploadDocs" element={<DoctorDocumentUpload />} />
+          <Route
+            path="addSlot"
+            element={
+              <DoctorProtectedRoutes>
+                <DoctorAddSlots />
+              </DoctorProtectedRoutes>
+            }
+          />
+          <Route
+            path="wallet"
+            element={
+              <DoctorProtectedRoutes>
+                <DoctorWallet />
+              </DoctorProtectedRoutes>
+            }
+          />
+          <Route
+            path="appointment"
+            element={
+              <DoctorProtectedRoutes>
+                <DoctorAppointments />
+              </DoctorProtectedRoutes>
+            }
+          />
+          <Route path="userProfile/:id" element={<DoctorUserProfile />} />
+        </Route>
+        <Route path="/login" element={<DoctorLoginPage />} />
+        <Route path="/signup" element={<DoctorSignUpPage />} />
+        <Route
+          path="/videocall/:appointment/:callerId/:toPersonId/:role"
+          element={<VideoCall />}
+        />
+        <Route path="/otpVerify" element={<DoctorOtpVerification />} />
+        <Route path="*" element={<ErrorPage side="doctor" />} />
+      </Routes>
+    </div>
+  );
+};
+export default DoctorRoute;

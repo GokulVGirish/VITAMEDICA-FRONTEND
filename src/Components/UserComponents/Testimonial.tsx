@@ -1,7 +1,7 @@
 import image from "@/assets/me.jpg";
 function Testimonial() {
   return (
-    <section className="flex flex-col items-center p-4">
+    <section className="flex flex-col items-center  p-4 border-b border-gray-300 bg-gradient-to-b from-white to-gray-100 shadow-sm rounded-lg">
       <p className="max-w-4xl text-xl font-medium text-center md:text-2xl lg:text-3xl">
         "VITAMEDICA is dedicated to delivering exceptional healthcare services,
         aiming to enhance the well-being and quality of life for individuals,Our

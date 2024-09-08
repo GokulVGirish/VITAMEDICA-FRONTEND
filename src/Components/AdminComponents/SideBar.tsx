@@ -91,7 +91,7 @@ const AdminSideBar=()=>{
             <span
               onClick={() => navigate("/admin/verifyDoctor")}
               className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
-                isActive("/admin/verifyDoctor")
+                isActive("/admin/verifyDoctor")||isActive("/admin/verifyDoctorDetail")
                   ? `text-white  bg-gray-700 rounded-md`
                   : `text-[#364f6b]`
               } hover:font-bold `}

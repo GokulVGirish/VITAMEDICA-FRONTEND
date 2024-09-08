@@ -1,18 +1,21 @@
 import adminInstance from "../../Axios/adminInstance";
-import { ToastContainer, Zoom, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User } from "./UserListing";
 import DoctorRejectModal from "../extra/DoctorRejectModal";
+import { toast } from "sonner";
+import {motion} from "framer-motion"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamation } from "@fortawesome/free-solid-svg-icons";
+
 
 const DoctorVerify = () => {
     const {id}=useParams()
     const [doctor,setDoctor]=useState<any>()
       const [isOpen, setIsOpen] = useState(false);
     const navigate=useNavigate()
+    console.log("doctors",doctor)
      useEffect(()=>{
         const getDoctorDocs=async()=>{
             try{
@@ -43,15 +46,8 @@ const DoctorVerify = () => {
             const response = await adminInstance.put(`/doctors/${id}/verify`);
             if(response.data.success){
                  toast.success("Doctor verified", {
-                   position: "top-right",
-                   autoClose: 5000,
-                   hideProgressBar: false,
-                   closeOnClick: true,
-                   pauseOnHover: true,
-                   draggable: true,
-                   progress: undefined,
-                   theme: "colored",
-                   transition: Zoom,
+                   richColors:true,
+                   duration:1500
                  });
                  setTimeout(()=>{
                     navigate("/admin")
@@ -62,7 +58,7 @@ const DoctorVerify = () => {
         }
         catch(error){
             if(error instanceof AxiosError){
-                console.log(error)
+              toast.error(error.response?.data.message,{richColors:true,duration:1500})
             }
         
       }
@@ -72,106 +68,147 @@ const DoctorVerify = () => {
 
     return (
       <section>
-        <div className="container max-w-xl p-6 mx-auto space-y-12 lg:px-8 lg:max-w-7xl">
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-            transition={Zoom}
-          />
-          <div>
-            <h2 className="text-3xl font-bold text-center sm:text-5xl">
-              Documents
+        <div className="container max-w-6xl p-8 mx-auto space-y-16 lg:px-10 lg:max-w-7xl">
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+            Verification Pending 
             </h2>
           </div>
-          <div className="flex flex-col gap-7 justify-center lg:items-center">
-            <div aria-hidden="true" className="mt-10 lg:mt-0">
-              <img
-                onClick={() =>
-                  handleImageClick(doctor?.documents?.certificateImage)
-                }
-                width="600"
-                height="600"
-                src={
-                  doctor?.documents?.certificateImage ||
-                  "https://t3.ftcdn.net/jpg/05/14/75/82/360_F_514758236_i8rnB85PVdEaK19yGaK0TpaYEYMyxOL5.jpg"
-                }
-                className="mx-auto rounded-lg shadow-lg dark-bg-gray-500"
-                alt="Feature representation"
-                style={{ color: "transparent" }}
-              />
-            </div>
-            <div aria-hidden="true" className="mt-10 lg:mt-0">
-              <img
-                width="600"
-                height="600"
-                onClick={() =>
-                  handleImageClick(doctor?.documents?.qualificationImage)
-                }
-                src={
-                  doctor?.documents?.qualificationImage ||
-                  "https://t3.ftcdn.net/jpg/05/14/75/82/360_F_514758236_i8rnB85PVdEaK19yGaK0TpaYEYMyxOL5.jpg"
-                }
-                className="mx-auto rounded-lg shadow-lg dark-bg-gray-500"
-                alt="Feature representation"
-                style={{ color: "transparent" }}
-              />
-            </div>
-            <div aria-hidden="true" className="mt-10 lg:mt-0">
-              <img
-                width="600"
-                height="600"
-                onClick={() =>
-                  handleImageClick(doctor?.documents?.aadarFrontImage)
-                }
-                src={
-                  doctor?.documents?.aadarFrontImage ||
-                  "https://t3.ftcdn.net/jpg/05/14/75/82/360_F_514758236_i8rnB85PVdEaK19yGaK0TpaYEYMyxOL5.jpg"
-                }
-                className="mx-auto rounded-lg shadow-lg dark-bg-gray-500"
-                alt="Feature representation"
-                style={{ color: "transparent" }}
-              />
-            </div>
-            <div aria-hidden="true" className="mt-10 lg:mt-0">
-              <img
-                width="600"
-                height="600"
-                onClick={() =>
-                  handleImageClick(doctor?.documents?.aadarBackImage)
-                }
-                src={
-                  doctor?.documents?.aadarBackImage ||
-                  "https://t3.ftcdn.net/jpg/05/14/75/82/360_F_514758236_i8rnB85PVdEaK19yGaK0TpaYEYMyxOL5.jpg"
-                }
-                className="mx-auto rounded-lg shadow-lg dark-bg-gray-500"
-                alt="Feature representation"
-                style={{ color: "transparent" }}
-              />
-            </div>
-            <div className=" flex justify-around">
-              <button
-                onClick={handleVerify}
-                className={`mr-2 font-bold  bg-green-500 hover:bg-green-700  text-white py-1 px-4  md:py-4 md:px-16 rounded-full`}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg max-w-md mx-auto"
+          >
+            <motion.h3
+              className="text-2xl font-semibold text-gray-800 mb-2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              Dr {doctor?.name?.split("")?.shift()?.toUpperCase()}
+              {doctor?.name?.split("")?.slice(1)}
+            </motion.h3>
+
+            <motion.p
+              className="text-sm text-gray-500 mb-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.4 }}
+            >
+              Department:&nbsp;
+              <span className="font-medium text-gray-700">
+                {doctor?.department
+                  ?.map((department: any) => department?.name)
+                  .join(", ")}
+              </span>
+            </motion.p>
+
+            <motion.p
+              className="text-sm text-gray-500 mb-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.4 }}
+            >
+              Email:&nbsp;
+              <span className="font-medium text-gray-700">{doctor?.email}</span>
+            </motion.p>
+
+            <motion.p
+              className="text-sm text-gray-500"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.4 }}
+            >
+              Phone:&nbsp;
+              <span className="font-medium text-gray-700">{doctor?.phone}</span>
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4"
+          >
+            {[
+              {
+                src: doctor?.documents?.certificateImage,
+                fallback:
+                  "https://t3.ftcdn.net/jpg/05/14/75/82/360_F_514758236_i8rnB85PVdEaK19yGaK0TpaYEYMyxOL5.jpg",
+                label: "Certificate",
+                alt: "Certificate",
+              },
+              {
+                src: doctor?.documents?.qualificationImage,
+                fallback:
+                  "https://t3.ftcdn.net/jpg/05/14/75/82/360_F_514758236_i8rnB85PVdEaK19yGaK0TpaYEYMyxOL5.jpg",
+                label: "Qualification",
+                alt: "Qualification",
+              },
+              {
+                src: doctor?.documents?.aadarFrontImage,
+                fallback:
+                  "https://t3.ftcdn.net/jpg/05/14/75/82/360_F_514758236_i8rnB85PVdEaK19yGaK0TpaYEYMyxOL5.jpg",
+                label: "Aadhar Front",
+                alt: "Aadhar Front",
+              },
+              {
+                src: doctor?.documents?.aadarBackImage,
+                fallback:
+                  "https://t3.ftcdn.net/jpg/05/14/75/82/360_F_514758236_i8rnB85PVdEaK19yGaK0TpaYEYMyxOL5.jpg",
+                label: "Aadhar Back",
+                alt: "Aadhar Back",
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                className="relative group"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
               >
-                Verify Doctor
-              </button>
-              <button
-                onClick={()=>setIsOpen(true)}
-                className={`mr-2 font-bold  bg-red-500 hover:bg-red-700 text-white py-1 px-4  md:py-4 md:px-16 rounded-full`}
-              >
-                Reject Doctor
-              </button>
-            </div>
+                <motion.img
+                  onClick={() => handleImageClick(item.src)}
+                  src={item.src || item.fallback}
+                  className="w-full h-64 object-cover rounded-lg shadow-md"
+                  alt={item.alt}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.2 }}
+                />
+                <motion.p
+                  className="absolute bottom-3 left-3 text-sm font-medium text-white bg-black bg-opacity-50 px-3 py-1 rounded"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.3, duration: 0.5 }}
+                >
+                  {item.label}
+                </motion.p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <div className="flex justify-center gap-6 mt-12">
+            <button
+              onClick={handleVerify}
+              className="py-3 px-8 bg-green-600 hover:bg-green-700 text-white rounded-full text-lg font-semibold transition shadow-md transform hover:scale-105"
+            >
+              Verify Doctor
+            </button>
+            <button
+              onClick={() => setIsOpen(true)}
+              className="py-3 px-8 bg-red-600 hover:bg-red-700 text-white rounded-full text-lg font-semibold transition shadow-md transform hover:scale-105"
+            >
+              Reject Doctor
+            </button>
           </div>
-          {isOpen && <DoctorRejectModal id={id as string} closeModal={()=>setIsOpen(false)}/>}
+
+          {isOpen && (
+            <DoctorRejectModal
+              id={id as string}
+              closeModal={() => setIsOpen(false)}
+            />
+          )}
         </div>
       </section>
     );

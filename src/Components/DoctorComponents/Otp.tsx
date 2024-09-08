@@ -23,7 +23,7 @@ const DoctorOtp = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const ref=useRef(false)
-  const Socket=useContext(SocketContext)
+  const socket=useContext(SocketContext)
   const accessToken = Cookies.get("accessToken");
   if(!ref.current){
      dispatch(clearErrorMessage());
@@ -147,7 +147,7 @@ const DoctorOtp = () => {
       setErrors({ error: "Enter an otp" });
       return;
     }
-    dispatch(verifyOtpSigup({ otp }));
+    dispatch(verifyOtpSigup({ otp ,socket}));
   };
      const handleResend = async () => {
       setLoading(true)

@@ -1,22 +1,39 @@
-import React from "react";
+import React, { ChangeEvent, useRef } from "react";
 import { useCallback, useEffect, useState, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import instance from "../../Axios/userInstance";
 import moment from "moment";
 import PdfViewer from "../extra/PdfViewer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "sonner";
-import { faFilePdf, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { AxiosError } from "axios";
+import { faCircleExclamation, faCircleXmark, faCloudArrowUp, faFilePdf, faPaperclip, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import  { AxiosError } from "axios";
+import { SocketContext } from "../../socketio/SocketIo";
+import imageInstance from "../../Axios/imageIntsance";
+import ImagePreviewSendTime from "../extra/ImagePreviewSendTime";
+import Spinner from "../extra/Spinner";
 
 const UserAppointmentDetail = () => {
   const [appointmentDetails, setAppointmentDetails] = useState<any>(null);
   const [pdfModal, setPdfModal] = useState(false);
   console.log("appointments", appointmentDetails);
-  const [messages,setMessages]=useState<any>()
-  const callerId=43
-  const navigate = useNavigate();
-  const { id } = useParams();
+   const [messages, setMessages] = useState<any[]>([]);
+   const [newMessage, setNewMessage] = useState("");
+   const socket=useContext(SocketContext)
+     const { id } = useParams();
+     const [loading,setLoading]=useState(false)
+     const[isMedicalRecordUploaded,setIsMedicalRecordUploaded]=useState(false)
+  //  message
+    const messagesEndRef = useRef<HTMLDivElement | null>(null);
+     const [imageFile, setImageFile] = useState<File | null>(null);
+     const [showModal, setShowModal] = useState<boolean>(false);
+     const [imagePreview, setImagePreview] = useState<string | null>(null);
+   //message
+
+
+  const medicalRecordsRef=useRef<HTMLInputElement|null>(null)
+   const [imageFiles, setImageFiles] = useState<File[]>([]);
+   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const fetchAppointmentDetail=useCallback(async()=>{
 
@@ -24,6 +41,8 @@ const UserAppointmentDetail = () => {
       const response = await instance.get(`/appointments/${id}/detail`);
       if (response.data.success) {
         setAppointmentDetails(response.data.data)
+        setMessages(response.data.messages)
+        
 
       }
 
@@ -35,13 +54,164 @@ const UserAppointmentDetail = () => {
 
   }
 
-  },[id])
+  },[id,isMedicalRecordUploaded])
   useEffect(()=>{
     fetchAppointmentDetail()
 
-  },[])
+  },[fetchAppointmentDetail])
   console.log(appointmentDetails)
 
+
+ useEffect(() => {
+   if (socket && id) {
+     socket.emit("join_appointment", { appointmentId: id });
+
+     socket.on("receive_message", (message) => {
+       console.log("Message received:", message);
+       setMessages((prevMessages) => [...prevMessages, message]);
+     });
+   }
+
+   return () => {
+     socket?.off("receive_message");
+   };
+ }, [id, socket]);
+    console.log("appointmetDetails", appointmentDetails);
+
+    const sendMessage = () => {
+      if (!newMessage.trim()) {
+        return toast.error("type a message", {
+          richColors: true,
+          duration: 1500,
+        });
+      }
+      socket?.emit("send_message", {
+        appointmentId: id,
+        sender: "user",
+        message: newMessage,
+        type:"txt"
+      });
+       
+      setNewMessage("");
+    };
+console.log("messages",messages)
+ 
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom(); 
+  }, [messages]);
+
+   const handleFileChange = (e: ChangeEvent<HTMLInputElement>): void => {
+     const selectedFile = e.target.files ? e.target.files[0] : null;
+     if (selectedFile) {
+       setImageFile(selectedFile);
+       const reader = new FileReader();
+       reader.onloadend = () => setImagePreview(reader.result as string);
+       reader.readAsDataURL(selectedFile);
+       setShowModal(true);
+     }
+   };
+  const handleSendImage = async () => {
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append("image", imageFile);
+      try {
+        setLoading(true);
+        const response = await imageInstance.put(`/${id}/${"user"}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        if (response.data.success) {
+          const imageUrl = response.data.url;
+          socket?.emit("send_message", {
+            appointmentId: id,
+            sender: "user",
+            message: imageUrl,
+            type: "img",
+          });
+          setShowModal(false);
+          setImageFile(null);
+          setImagePreview(null);
+        }
+      } catch (error) {
+        setShowModal(false);
+        setImageFile(null);
+        setImagePreview(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+
+    if (!files) return;
+
+    const selectedFiles = Array.from(files);
+
+
+    if (selectedFiles.length + imageFiles.length > 3) {
+
+      return toast.error("You can only upload a maximum of 3 images",{richColors:true,duration:1500});
+    }
+
+    const newImagePreviews = selectedFiles.map((file) =>
+      URL.createObjectURL(file)
+    );
+
+
+    setImageFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+    setImagePreviews((prevPreviews) => [...prevPreviews, ...newImagePreviews]);
+  };
+  const handleRemoveImage=(indx:number)=>{
+    const updatedFiles=imageFiles.filter((_,index)=>index!==index)
+    const updatedPreviews=imagePreviews.filter((_,index)=>indx!==index)
+    setImageFiles(updatedFiles)
+    setImagePreviews(updatedPreviews)
+
+  }
+  const handleMedicalRecordsUpload=async()=>{
+    if(imageFiles.length===0) return toast.error("Add records", {
+      richColors: true,
+      duration: 1500,
+    });
+    const formData=new FormData()
+    imageFiles.forEach((image)=>{
+      formData.append("medicalRecords",image)
+    })
+   try{
+     setLoading(true);
+     const response = await instance.post(
+       `/appointments/medicalRecords/${id}`,
+       formData,
+       {
+         headers: {
+           "Content-Type": "multipart/form-data",
+         },
+       }
+     );
+     if (response.data.success) {
+       setLoading(false);
+
+       setIsMedicalRecordUploaded(true);
+       toast.success("success", { richColors: true, duration: 1500 });
+     }
+
+   }catch(error){
+    setLoading(false)
+
+   }finally{
+    setImageFiles([])
+    setImagePreviews([])
+   }
+
+  }
+  console.log("appointment detail",appointmentDetails)
 
   return (
     <div className="px-16 py-3 ">
@@ -99,7 +269,7 @@ const UserAppointmentDetail = () => {
           </div>
         </div>
 
-        <div className="mt-20 text-center border-b pb-12">
+        <div className="mt-20 text-center  pb-3">
           <h1 className="text-4xl font-medium text-gray-700">
             {appointmentDetails?.docName.toUpperCase()}
           </h1>
@@ -125,14 +295,19 @@ const UserAppointmentDetail = () => {
           </p>
         </div>
         {appointmentDetails?.status === "completed" && (
-          <>
+          <div className=" border-t-2">
             {/* message */}
-            <div className="flex flex-col mt-2 md:mt-0   flex-shrink-0 rounded-2xl bg-[#081f36] h-[280px] md:h-[500px] w-full p-4">
+            <span className="block p-2 my-3 border-t  bg-yellow-100 border border-yellow-300 rounded-lg text-yellow-800 text-sm font-medium">
+              <FontAwesomeIcon className="mr-2" icon={faCircleExclamation} />
+              Chatting is only available for 2 days from the day of the
+              appointment.
+            </span>
+            <div className="flex flex-col mt-2 md:mt-0 flex-shrink-0 rounded-2xl bg-[#081f36] h-[280px] md:h-[500px] w-full p-4">
               <div className="flex flex-col h-full overflow-x-auto mb-4">
                 <div className="flex flex-col h-full">
                   <div className="grid grid-cols-12 gap-y-2">
-                    {messages?.map((msg: any, index: any) => {
-                      return msg.sender !== callerId ? (
+                    {messages?.map((msg: any, index: any) =>
+                      msg.sender === "doctor" ? (
                         <div
                           key={index}
                           className="col-start-1 col-end-8 p-3 rounded-lg"
@@ -142,13 +317,22 @@ const UserAppointmentDetail = () => {
                               <img
                                 className="rounded-full"
                                 src={
+                                  appointmentDetails?.docImage ||
                                   "https://photosbull.com/wp-content/uploads/2024/05/no-dp_16.webp"
                                 }
                                 alt="noimg"
                               />
                             </div>
                             <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
-                              <div>{msg.message}</div>
+                              {msg.type === "img" ? (
+                                <img
+                                  src={msg.message}
+                                  alt="Sent image"
+                                  className="w-48 h-48 object-cover rounded-lg"
+                                />
+                              ) : (
+                                <div>{msg.message}</div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -162,25 +346,57 @@ const UserAppointmentDetail = () => {
                               Me
                             </div>
                             <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
-                              <div>{msg.message}</div>
+                              {msg.type === "img" ? (
+                                <img
+                                  src={msg.message}
+                                  alt="Sent image"
+                                  className="w-48 h-48 object-cover rounded-lg"
+                                />
+                              ) : (
+                                <div>{msg.message}</div>
+                              )}
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
+                      )
+                    )}
+                    <div ref={messagesEndRef}></div>
                   </div>
                 </div>
               </div>
               <div className="flex flex-row items-center h-16 rounded-xl bg-[#3a5e81] w-full px-4">
-                <div></div>
+                <label
+                  htmlFor="fileInput"
+                  className="flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-white  transition-colors duration-300 ease-in-out transform hover:scale-110 cursor-pointer"
+                >
+                  <FontAwesomeIcon icon={faPaperclip} />
+                </label>
+                <input
+                  id="fileInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
                 <div className="flex-grow ml-4">
                   <div className="relative w-full">
                     <input
                       type="text"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          sendMessage();
+                        }
+                      }}
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Type a message..."
-                      className="flex w-full border rounded-xl  focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                      className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
                     />
-                    <button className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600">
+                    <button
+                      onClick={sendMessage}
+                      className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"
+                    >
                       <FontAwesomeIcon icon={faPaperPlane} />
                     </button>
                   </div>
@@ -188,16 +404,93 @@ const UserAppointmentDetail = () => {
               </div>
             </div>
             {/* message */}
-          </>
+          </div>
         )}
+        {/* "modal" */}
+        {showModal && (
+          <ImagePreviewSendTime
+            loading={loading}
+            imagePreview={imagePreview as string}
+            setShowModal={setShowModal}
+            handleSendImage={handleSendImage}
+            side="user"
+          />
+        )}
+        {/* modal */}
 
-        <div className="mt-12 flex flex-col justify-center">
-          <p className="text-gray-600 text-3xl text-center font-bold lg:px-16">
+        <div className="mt-12 flex flex-col border-t-2 justify-center">
+          <p className="text-gray-600 text-3xl pt-3 mb-3 text-center font-bold lg:px-16">
             Medical Records
           </p>
-          <button className="text-indigo-500 py-2 px-4 font-medium mt-4">
-            Show more
-          </button>
+          {appointmentDetails?.medicalRecords.length === 0 ? (
+            <button
+              onClick={() => medicalRecordsRef.current?.click()}
+              className="text-indigo-500 py-2 px-4 font-medium mt-4"
+            >
+              {imageFiles.length === 3
+                ? ""
+                : imageFiles.length > 0
+                ? " add more records"
+                : "add records"}
+            </button>
+          ) : (
+            <div className="flex justify-center">
+              <div className="flex gap-3 overflow-x-auto p-3 justify-center items-center rounded-lg bg-gray-100 shadow-md max-w-fit">
+                {appointmentDetails?.medicalRecords?.map(
+                  (image: string, index: any) => (
+                    <div
+                      key={index}
+                      className="flex-shrink-0 w-56 h-56 rounded-md overflow-hidden shadow-sm transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-md"
+                    >
+                      <img
+                        src={image}
+                        alt={`Medical Record ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+          )}
+          <input
+            ref={medicalRecordsRef}
+            type="file"
+            multiple
+            onChange={handleImageChange}
+            accept="image/*"
+            className="hidden"
+          />
+          <div className="flex  justify-center space-x-4 overflow-x-auto py-2">
+            {imagePreviews.map((preview, index) => (
+              <div key={index} className="relative group">
+                <img
+                  src={preview}
+                  alt={`Preview ${index + 1}`}
+                  className="h-32 w-32 object-cover rounded-lg shadow-md transition-transform duration-300 ease-in-out transform hover:scale-105"
+                />
+                <button
+                  onClick={() => handleRemoveImage(index)}
+                  className="absolute top-0 right-0 transform translate-x-2 -translate-y-2 bg-white rounded-full p-1 shadow-md hover:bg-gray-200 transition-colors"
+                >
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    className="text-red-500"
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
+          {imageFiles.length > 0 && (
+            <div className="flex justify-center">
+              <button
+                onClick={handleMedicalRecordsUpload}
+                className="inline-block px-4 py-2 bg-[#928EDE] text-white rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:scale-105 hover:bg-[#8375d4] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#928EDE]"
+              >
+                <FontAwesomeIcon icon={faCloudArrowUp} /> Upload
+              </button>
+            </div>
+          )}
         </div>
       </div>
       {pdfModal && (
@@ -206,6 +499,7 @@ const UserAppointmentDetail = () => {
           closeModal={() => setPdfModal(false)}
         />
       )}
+      {loading && <Spinner />}
     </div>
   );
 };

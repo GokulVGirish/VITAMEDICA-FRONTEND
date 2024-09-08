@@ -3,13 +3,16 @@ import Cookies from "js-cookie";
 import instance from "../Axios/doctorInstance";
 import { AxiosError } from "axios";
 import { Socket } from "socket.io-client";
-export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: string}>("doctor/verifyOtp",async(otp,thunkAPI)=>{
+export const verifyOtpSigup=createAsyncThunk<any,{otp:string,socket:Socket|null},{rejectValue: string}>("doctor/verifyOtp",async(data,thunkAPI)=>{
     try{
-        const response = await instance.post("/auth/signup/verify-otp", otp);
-        console.log("hellosss")
-        console.log("data response", response.data);
+      const {otp,socket}=data
+        const response = await instance.post("/auth/signup/verify-otp", {otp});
         Cookies.set("accessToken", response.data.accessToken);
         Cookies.set("refreshToken", response.data.refreshToken);
+        if(socket){
+            socket.emit("loggedin", response.data.docId);
+
+        }
         
         return response.data
 

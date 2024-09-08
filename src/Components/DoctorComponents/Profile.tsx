@@ -10,6 +10,7 @@ import PasswordChangeModal from "../extra/PasswordChangeMoadal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBuildingColumns,
+  faExclamationCircle,
   faMoneyCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -39,6 +40,7 @@ export type Doctor = {
   status?: "Pending" | "Submitted" | "Verified";
   fees: string | null;
   degree: string | null;
+  complete?:boolean;
 };
 const DoctorProfile = () => {
     const [userData, setUserData] = useState<Doctor>({
@@ -167,6 +169,7 @@ const DoctorProfile = () => {
              const response = await instance.put("/profile",userData);
              setLoading(false)
              if (response.data.success) {
+               setUserData((prevState)=>({...prevState,complete:true}));
                toast.success(response.data.message, {
                  richColors: true,
                  duration: 1500,
@@ -202,7 +205,24 @@ const DoctorProfile = () => {
 
   return (
     <>
-      <div className="flex items-center mt-52  justify-center p-24 h-full  ">
+      {userData?.complete===false && (
+        <div className="absolute top-5 right-5 flex items-center justify-center h-52 w-56 bg-yellow-50 border-l-4 border-yellow-400 shadow-md rounded-lg p-4 text-yellow-800">
+          <div className="flex items-start space-x-2">
+            <FontAwesomeIcon
+              icon={faExclamationCircle}
+              className="text-yellow-500 mt-1"
+            />
+            <div className="text-sm font-semibold">
+              <p className="mb-1">Complete Your Profile</p>
+              <p className="text-yellow-700 font-normal">
+                Become visible to patients by adding details to your profile. A
+                well-rounded profile helps attract more appointments!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="flex  items-center relative mt-52  justify-center p-24 h-full  ">
         <div className="mx-auto w-full  max-w-[550px] bg-gray-100">
           <div className="w-full relative flex justify-center pt-10 ">
             <img
@@ -405,9 +425,10 @@ const DoctorProfile = () => {
                     onChange={(e) =>
                       setUserData({
                         ...userData,
-                        bankDetails:{
-                          ...userData.bankDetails,accountNumber:e.target.value
-                        }
+                        bankDetails: {
+                          ...userData.bankDetails,
+                          accountNumber: e.target.value,
+                        },
                       })
                     }
                     className="w-full rounded-md border border-gray-300 bg-gray-50 py-3 px-4 text-base font-medium text-gray-700 outline-none focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 transition"
@@ -430,9 +451,10 @@ const DoctorProfile = () => {
                     onChange={(e) =>
                       setUserData({
                         ...userData,
-                        bankDetails:{
-                          ...userData?.bankDetails,ifsc:e.target.value
-                        }
+                        bankDetails: {
+                          ...userData?.bankDetails,
+                          ifsc: e.target.value,
+                        },
                       })
                     }
                     value={userData?.bankDetails?.ifsc}
