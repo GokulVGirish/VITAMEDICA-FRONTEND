@@ -38,6 +38,7 @@ const DoctorUserProfile = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading,setLoading]=useState(false)
+  console.log("appointmentDetails",appointmentDetails)
 
   const fetchAppointmentData = useCallback(async () => {
     const response = await instance.get(`/appointments/${id}`);
@@ -125,12 +126,26 @@ const DoctorUserProfile = () => {
       message: newMessage,
       type: "txt",
     });
+     socket?.emit("send_notification", {
+       receiverId: appointmentDetails?.userId,
+       content: `You  have received a message from Dr ${appointmentDetails?.docName}`,
+       appointmentId: id,
+       type: "message",
+     });
 
     setNewMessage("");
   };
   console.log("messages", messages);
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  
+
+  
+    
+        messagesEndRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+         
   };
 
   useEffect(() => {
@@ -321,13 +336,11 @@ const DoctorUserProfile = () => {
               )}
           </div>
         </div>
+
         {appointmentDetails?.status === "completed" && (
-          <div className="border-t-2">
+          <div className="border-t-2 pt-4 ">
             {/* message */}
-            <span className="block p-2 my-3 bg-yellow-100 border border-yellow-300 rounded-lg text-yellow-800 text-sm font-medium">
-              <FontAwesomeIcon className="mr-2" icon={faCircleExclamation}/>Chatting is only available for 2 days from the day of the
-              appointment.
-            </span>
+
             <div className="flex flex-col mt-5 md:mt-0 flex-shrink-0 rounded-2xl bg-[#081f36] h-[280px] md:h-[500px] w-full p-4">
               <div className="flex flex-col h-full overflow-x-auto mb-4">
                 <div className="flex flex-col h-full">
@@ -430,6 +443,12 @@ const DoctorUserProfile = () => {
                 </div>
               </div>
             </div>
+            <span className="block p-2 my-3  bg-yellow-100 border border-yellow-300 rounded-lg text-yellow-800 text-sm font-medium">
+              <FontAwesomeIcon className="mr-2" icon={faCircleExclamation} />
+              Chatting is only available for 2 days from the day of the
+              appointment.
+            </span>
+
             {/* message */}
           </div>
         )}
@@ -445,7 +464,7 @@ const DoctorUserProfile = () => {
         )}
         {/* modal */}
 
-        <div className="mt-12 border-t-2 flex flex-col justify-center">
+        <div className="mt-3 border-t-2 flex flex-col justify-center">
           <p className="text-gray-600 pt-3 text-3xl mb-3 text-center font-bold lg:px-16">
             Medical Records
           </p>

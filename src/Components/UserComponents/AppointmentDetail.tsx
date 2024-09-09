@@ -12,6 +12,7 @@ import { SocketContext } from "../../socketio/SocketIo";
 import imageInstance from "../../Axios/imageIntsance";
 import ImagePreviewSendTime from "../extra/ImagePreviewSendTime";
 import Spinner from "../extra/Spinner";
+import { useAppSelector } from "../../Redux/hoocks";
 
 const UserAppointmentDetail = () => {
   const [appointmentDetails, setAppointmentDetails] = useState<any>(null);
@@ -23,6 +24,7 @@ const UserAppointmentDetail = () => {
      const { id } = useParams();
      const [loading,setLoading]=useState(false)
      const[isMedicalRecordUploaded,setIsMedicalRecordUploaded]=useState(false)
+     const {user}=useAppSelector((state)=>state.user)
   //  message
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
      const [imageFile, setImageFile] = useState<File | null>(null);
@@ -91,6 +93,13 @@ const UserAppointmentDetail = () => {
         message: newMessage,
         type:"txt"
       });
+
+      socket?.emit("send_notification",{
+        receiverId:appointmentDetails?.docId,
+        content:`You  have received a message from ${user}`,
+        appointmentId:id,
+        type:"message"
+      })
        
       setNewMessage("");
     };
@@ -98,7 +107,11 @@ console.log("messages",messages)
  
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+   messagesEndRef.current?.scrollIntoView({
+     behavior: "smooth",
+     block: "center",
+   });
+  
   };
 
   useEffect(() => {
@@ -294,14 +307,11 @@ console.log("messages",messages)
             {moment(appointmentDetails?.end).format("h:mm A")}
           </p>
         </div>
+
         {appointmentDetails?.status === "completed" && (
-          <div className=" border-t-2">
+          <div className=" border-t-2 pt-4">
             {/* message */}
-            <span className="block p-2 my-3 border-t  bg-yellow-100 border border-yellow-300 rounded-lg text-yellow-800 text-sm font-medium">
-              <FontAwesomeIcon className="mr-2" icon={faCircleExclamation} />
-              Chatting is only available for 2 days from the day of the
-              appointment.
-            </span>
+
             <div className="flex flex-col mt-2 md:mt-0 flex-shrink-0 rounded-2xl bg-[#081f36] h-[280px] md:h-[500px] w-full p-4">
               <div className="flex flex-col h-full overflow-x-auto mb-4">
                 <div className="flex flex-col h-full">
@@ -403,6 +413,11 @@ console.log("messages",messages)
                 </div>
               </div>
             </div>
+            <span className="block p-2 my-3 border-t  bg-yellow-100 border border-yellow-300 rounded-lg text-yellow-800 text-sm font-medium">
+              <FontAwesomeIcon className="mr-2" icon={faCircleExclamation} />
+              Chatting is only available for 2 days from the day of the
+              appointment.
+            </span>
             {/* message */}
           </div>
         )}
@@ -418,7 +433,7 @@ console.log("messages",messages)
         )}
         {/* modal */}
 
-        <div className="mt-12 flex flex-col border-t-2 justify-center">
+        <div className="mt-3 flex flex-col border-t-2 justify-center">
           <p className="text-gray-600 text-3xl pt-3 mb-3 text-center font-bold lg:px-16">
             Medical Records
           </p>

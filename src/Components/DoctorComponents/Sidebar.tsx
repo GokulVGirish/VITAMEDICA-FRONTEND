@@ -94,7 +94,7 @@ const DoctorSidebar=()=>{
               <FontAwesomeIcon icon={faWallet} />
               Wallet
             </span>
-            <span
+            {/* <span
               onClick={() => navigate("/doctor/notifications")}
               className={`flex cursor-pointer   hover:rounded-md hover:text-white items-center px-4 py-2 gap-5  ${
                 isActive("/doctor/notifications")
@@ -104,7 +104,7 @@ const DoctorSidebar=()=>{
             >
               <FontAwesomeIcon icon={faBell} />
               Notifications
-            </span>
+            </span> */}
 
             <span
               onClick={handleLogout}

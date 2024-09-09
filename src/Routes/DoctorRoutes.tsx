@@ -7,7 +7,7 @@ import DoctorProfile from "../Components/DoctorComponents/Profile";
 import DoctorOtpVerification from "../Pages/DoctorPages/DoctorOtpVerification";
 import { useAppDispatch, useAppSelector } from "../Redux/hoocks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import DoctorDocumentUpload from "../Components/DoctorComponents/DocumentUpload";
 import DoctorAddSlots from "../Components/DoctorComponents/AddSlots";
 import ErrorPage from "../Components/extra/ErrorPage";
@@ -16,10 +16,12 @@ import DoctorAppointments from "../Components/DoctorComponents/Appointments";
 import DoctorProtectedRoutes from "./ProtectedRoutes/doctorProtectedRoutes";
 import DoctorUserProfile from "../Components/DoctorComponents/UserProfile";
 import VideoCall from "../communication/videoCall";
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { SocketContext } from "../socketio/SocketIo";
 import { verifyDoctor } from "../Redux/doctorSlice";
 import { toast } from "sonner";
+import NotificationComponent from "../Components/extra/Notification";
+import instance from "../Axios/doctorInstance";
 
 const Dummy = () => {
   const status = useAppSelector((state) => state.doctor.docStatus);
@@ -78,6 +80,9 @@ const Dummy = () => {
 const DoctorRoute = () => {
   const location = useLocation();
   const socket = useContext(SocketContext);
+   const [isNotificationModalOpen, setIsNotificationModalOpen] =
+     useState(false);
+     const [notificationCount,setNotificationCount]=useState<number>(0)
   const dispatch = useAppDispatch();
   const validPaths = [
     "/doctor",
@@ -102,14 +107,61 @@ const DoctorRoute = () => {
       });
     });
 
+    socket?.on("receive_notification", ({ content }) => {
+      console.log("in here notificationsss")
+
+      toast.success(content,{richColors:true,duration:1000})
+      setNotificationCount((prevState)=>prevState+1)
+
+    });
+
     return () => {
+      socket?.off("receive_notification");
       socket?.off("doctorVerified");
     };
-  }, []);
+  }, [socket]);
+
+    const notificationHandler = (open: boolean) => {
+      setIsNotificationModalOpen(open);
+    };
+
+     const fetchNotificationCount = useCallback(async () => {
+       try {
+         const response = await instance.get("/profile/notifications/count");
+         setNotificationCount(response.data.count)
+       } catch (error) {}
+     }, []);
+
+     useEffect(() => {
+       fetchNotificationCount();
+     }, [fetchNotificationCount]);
+
+
 
   return (
     <div className="relative">
       {showDummy && <Dummy />}
+      <div className="fixed bottom-10 right-10 z-30">
+        <button
+          onClick={() => notificationHandler(true)}
+          className="relative focus:ring-4 focus:ring-offset-2 rounded-full p-5 bg-gradient-to-r from-[#56aac6] to-[#4b99b5] text-white shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
+        >
+          <FontAwesomeIcon icon={faBell} className="text-2xl" />
+        
+            <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+              {notificationCount}
+            </span>
+       
+        </button>
+      </div>
+
+      {isNotificationModalOpen && (
+        <NotificationComponent
+        setNotificationCount={setNotificationCount}
+        isUser={false}
+          notificationHandler={() => notificationHandler(false)}
+        />
+      )}
 
       <Routes>
         <Route path="/" element={<DoctorLayoutPage />}>
