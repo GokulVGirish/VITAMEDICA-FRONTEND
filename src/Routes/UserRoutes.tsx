@@ -1,4 +1,4 @@
-import { Route,Routes } from "react-router-dom"
+import { Route,Routes, useLocation } from "react-router-dom"
 import UserLangingPage from "../Pages/UserPages/UserLandingPage"
 import UserLoginPage from "../Pages/UserPages/UserLoginPage"
 import UserSignUpPage from "../Pages/UserPages/UserSignUpPage"
@@ -26,6 +26,7 @@ import { faBell } from "@fortawesome/free-solid-svg-icons"
 import NotificationComponent from "../Components/extra/Notification"
 import {toast} from "sonner"
 import instance from "../Axios/userInstance"
+import { useAppSelector } from "../Redux/hoocks"
 
 
 
@@ -37,6 +38,8 @@ const UserRoute=()=>{
   const [showCallModal, setShowCallModal] = useState(false);
    const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
     const [notificationCount, setNotificationCount] = useState<number>(0);
+    const pathname=useLocation().pathname
+    const {user}=useAppSelector((state)=>state.user)
 
 
      socket?.on("call-request", (data: any) => {
@@ -69,15 +72,26 @@ const UserRoute=()=>{
       setIsNotificationModalOpen(open)
     };
   const fetchNotificationCount = useCallback(async () => {
+    if(!user) return 
     try {
       const response = await instance.get("/profile/notifications/count");
       setNotificationCount(response.data.count);
     } catch (error) {}
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchNotificationCount();
   }, [fetchNotificationCount]);
+
+   const nonValidPaths = [
+     "/login",
+     "/signup",
+     "/otpVerify",
+     "/forgotPassword",
+     "/reset-password",
+   ];
+
+  const dontShow = nonValidPaths.includes(pathname);
 
     return (
       <div className="relative">
@@ -87,24 +101,28 @@ const UserRoute=()=>{
             onClose={() => setShowCallModal(false)}
           />
         )}
-        <div className="fixed bottom-10 right-10 z-30">
-          <button
-            onClick={() => notificationHandler(true)}
-            className="relative focus:ring-4 focus:ring-offset-2 rounded-full p-5 bg-gradient-to-r from-[#928EDE] to-[#6A67CE] text-white shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
-          >
-            <FontAwesomeIcon icon={faBell} className="text-2xl" />
-        
+
+        {dontShow ||user===null? (
+          <></>
+        ) : (
+          <div className="fixed bottom-10 right-10 z-30">
+            <button
+              onClick={() => notificationHandler(true)}
+              className="relative focus:ring-4 focus:ring-offset-2 rounded-full p-5 bg-gradient-to-r from-[#928EDE] to-[#6A67CE] text-white shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
+            >
+              <FontAwesomeIcon icon={faBell} className="text-2xl" />
+
               <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
                 {notificationCount}
               </span>
-       
-          </button>
-        </div>
+            </button>
+          </div>
+        )}
 
         {isNotificationModalOpen && (
           <NotificationComponent
-           setNotificationCount={setNotificationCount}
-          isUser={true}
+            setNotificationCount={setNotificationCount}
+            isUser={true}
             notificationHandler={() => notificationHandler(false)}
           />
         )}

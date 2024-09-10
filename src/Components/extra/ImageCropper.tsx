@@ -165,7 +165,7 @@ const ImageCropper=({setAvatar,closeModal,side}:{setAvatar(url:string):void;clos
             >
               Crop Image
             </button>
-           {spinner && <Spinner/>}
+           {spinner && <Spinner isUser={side==="user"?true:false}/>}
           </div>
         )}
         {crop && (

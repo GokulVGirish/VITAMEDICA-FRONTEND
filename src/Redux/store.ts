@@ -4,6 +4,8 @@ import { persistReducer, persistStore } from "redux-persist";
 import userReducer from "./userSlice";
 import adminReducer from "./adminSlice";
 import doctorReducer from "./doctorSlice";
+import { setDispatch } from "../Axios/userInstance";
+
 import {
   FLUSH,
   REHYDRATE,
@@ -12,6 +14,7 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
+import { setDoctorDispatchFunction } from "../Axios/doctorInstance";
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -35,10 +38,14 @@ const store = configureStore({
       },
     }),
 });
+setDispatch(store.dispatch);
+
+setDoctorDispatchFunction(store.dispatch)
 
 export const persistor = persistStore(store);
 
 export default store;
+
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

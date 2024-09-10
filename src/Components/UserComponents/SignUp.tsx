@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useReducer, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { GoogleLogin } from "@react-oauth/google";
-import { clearErrorMessage } from "../../Redux/userSlice";
+import { clearErrorMessage, updateName } from "../../Redux/userSlice";
 import { jwtDecode } from "jwt-decode";
 import { useAppDispatch } from "../../Redux/hoocks";
 import instance from "../../Axios/userInstance";
@@ -13,6 +13,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "sonner";
 import Spinner from "../extra/Spinner";
+import { useContext } from "react";
+import  { SocketContext } from "../../socketio/SocketIo";
 
 
 const initialState = {
@@ -63,6 +65,7 @@ const UserSignUp = () => {
   const passInput2 = useRef<HTMLInputElement>(null);
   const [pass1Visibility, setPass1Visibility] = useState(false);
   const [pass2Visibility, setPass2Visibility] = useState(false);
+  const socket=useContext(SocketContext)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -228,9 +231,9 @@ const UserSignUp = () => {
 
     }
   };
-
+//k
   return (
-    <div className="py-10">
+    <div className="py-10 ">
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
         <div
           className="hidden lg:block lg:w-1/2 bg-cover"
@@ -255,7 +258,7 @@ const UserSignUp = () => {
                 setLoading(true);
                 try {
                   const response = await instance.post(
-                    "/auth/google/signup",
+                    "/auth/google/login",
                     data
                   );
                   if (response.data.success) {
@@ -269,6 +272,8 @@ const UserSignUp = () => {
                       richColors: true,
                       duration: 1500,
                     });
+                    socket?.emit("loggedin", response.data.userId);
+                    dispatch(updateName(response.data.name));
 
                     dispatch(clearErrorMessage());
                     setTimeout(() => {
@@ -297,112 +302,118 @@ const UserSignUp = () => {
             <span className="border-b w-1/5 lg:w-1/4"></span>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Name
-              </label>
-              <input
-                name="name"
-                onChange={(e) =>
-                  myDispatch({
-                    type: "SET_FIELD",
-                    field: e.target.name,
-                    value: e.target.value,
-                  })
-                }
-                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                type="text"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Name
+                </label>
+                <input
+                  name="name"
+                  onChange={(e) =>
+                    myDispatch({
+                      type: "SET_FIELD",
+                      field: e.target.name,
+                      value: e.target.value,
+                    })
+                  }
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  type="text"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Email Address
+                </label>
+                <input
+                  name="email"
+                  onChange={(e) =>
+                    myDispatch({
+                      type: "SET_FIELD",
+                      field: e.target.name,
+                      value: e.target.value,
+                    })
+                  }
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  type="text"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Phone
+                </label>
+                <input
+                  name="phone"
+                  onChange={(e) =>
+                    myDispatch({
+                      type: "SET_FIELD",
+                      field: e.target.name,
+                      value: e.target.value,
+                    })
+                  }
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  type="text"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Gender
+                </label>
+                <select
+                  value={state.gender}
+                  onChange={(e) =>
+                    myDispatch({ type: "SET_GENDER", value: e.target.value })
+                  }
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Blood Group
+                </label>
+                <select
+                  value={state.bloodGroup}
+                  onChange={(e) =>
+                    myDispatch({
+                      type: "SET_BLOOD_GROUP",
+                      value: e.target.value,
+                    })
+                  }
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                >
+                  <option value="">Select Blood Group</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Date of Birth
+                </label>
+                <input
+                  name="dob"
+                  onChange={(e) =>
+                    myDispatch({
+                      type: "SET_FIELD",
+                      field: e.target.name,
+                      value: e.target.value,
+                    })
+                  }
+                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  type="date"
+                />
+              </div>
             </div>
-            <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Email Address
-              </label>
-              <input
-                name="email"
-                onChange={(e) =>
-                  myDispatch({
-                    type: "SET_FIELD",
-                    field: e.target.name,
-                    value: e.target.value,
-                  })
-                }
-                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                type="text"
-              />
-            </div>
-            <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Phone
-              </label>
-              <input
-                name="phone"
-                onChange={(e) =>
-                  myDispatch({
-                    type: "SET_FIELD",
-                    field: e.target.name,
-                    value: e.target.value,
-                  })
-                }
-                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                type="text"
-              />
-            </div>
-            <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Gender
-              </label>
-              <select
-                value={state.gender}
-                onChange={(e) =>
-                  myDispatch({ type: "SET_GENDER", value: e.target.value })
-                }
-                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-              >
-                <option value="">Select Gender</option>
-                <option value="male">male</option>
-                <option value="female">female</option>
-              </select>
-            </div>
-            <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Blood Group
-              </label>
-              <select
-                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                value={state.bloodGroup}
-                onChange={(e) =>
-                  myDispatch({ type: "SET_BLOOD_GROUP", value: e.target.value })
-                }
-              >
-                <option value="">Select Blood Group</option>
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-                <option value="O+">O+</option>
-                <option value="O-">O-</option>
-              </select>
-            </div>
-            <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                date of birth
-              </label>
-              <input
-                name="dob"
-                onChange={(e) =>
-                  myDispatch({
-                    type: "SET_FIELD",
-                    field: e.target.name,
-                    value: e.target.value,
-                  })
-                }
-                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                type="date"
-              />
-            </div>
+
             <div className="mt-4">
               <div className="flex justify-between">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -428,22 +439,20 @@ const UserSignUp = () => {
                   icon={!pass1Visibility ? faEyeSlash : faEye}
                   onClick={() => {
                     if (passInput1.current) {
-                      if (passInput1.current.type === "password") {
-                        setPass1Visibility(true);
-                        passInput1.current.type = "text";
-                      } else {
-                        setPass1Visibility(false);
-                        passInput1.current.type = "password";
-                      }
+                      passInput1.current.type =
+                        passInput1.current.type === "password"
+                          ? "text"
+                          : "password";
+                      setPass1Visibility(!pass1Visibility);
                     }
                   }}
                 />
               </div>
             </div>
+
             <div className="mt-4">
               <div className="flex justify-between">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
-                  {" "}
                   Confirm Password
                 </label>
               </div>
@@ -462,22 +471,21 @@ const UserSignUp = () => {
                   type="password"
                 />
                 <FontAwesomeIcon
-                  className="absolute  right-3 bottom-3"
+                  className="absolute right-3 bottom-3"
                   icon={!pass2Visibility ? faEyeSlash : faEye}
                   onClick={() => {
                     if (passInput2.current) {
-                      if (passInput2.current.type === "password") {
-                        setPass2Visibility(true);
-                        passInput2.current.type = "text";
-                      } else {
-                        setPass2Visibility(false);
-                        passInput2.current.type = "password";
-                      }
+                      passInput2.current.type =
+                        passInput2.current.type === "password"
+                          ? "text"
+                          : "password";
+                      setPass2Visibility(!pass2Visibility);
                     }
                   }}
                 />
               </div>
             </div>
+
             <div className="mt-8">
               <button
                 type="submit"
@@ -487,6 +495,7 @@ const UserSignUp = () => {
                 SignUp
               </button>
             </div>
+
             <div className="mt-4 flex items-center justify-between">
               <span className="border-b w-1/5 md:w-1/4"></span>
               <span
@@ -499,7 +508,7 @@ const UserSignUp = () => {
             </div>
           </form>
         </div>
-        {loading && <Spinner/>}
+        {loading && <Spinner isUser={true} />}
       </div>
     </div>
   );

@@ -370,7 +370,7 @@ const DoctorDocumentUpload: React.FC = () => {
             </div>
           </div>
         </div>
-        {loading && <Spinner />}
+        {loading && <Spinner isUser={false} />}
       </section>
     );
  

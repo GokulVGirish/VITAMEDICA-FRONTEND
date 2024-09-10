@@ -4,6 +4,9 @@ import { useEffect,createContext, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import {toast} from "sonner"
+import { clearUser } from "../Redux/userSlice";
+import { useAppDispatch } from "../Redux/hoocks";
+import { clearDoctor } from "../Redux/doctorSlice";
 
 
 export const SocketContext=createContext<Socket|null>(null)
@@ -14,6 +17,7 @@ const SocketProvider=({children}:{children:ReactNode})=>{
     const [socket,setSocket]=useState<Socket|null>(null)
     const navigate=useNavigate()
     const accessToken=Cookies.get("accessToken")
+    const dispatch=useAppDispatch()
     useEffect(() => {
       
       const socketInstance = io("http://localhost:4000", {
@@ -36,8 +40,10 @@ const SocketProvider=({children}:{children:ReactNode})=>{
             Cookies.remove("refreshToken");
 
             if (role === "doctor") {
+              dispatch(clearDoctor())
               navigate("/doctor/login");
             } else {
+              dispatch(clearUser())
               navigate("/login");
             }
         }})
@@ -46,9 +52,10 @@ const SocketProvider=({children}:{children:ReactNode})=>{
    
 
       return () => {
+        setSocket(null); 
         socketInstance.disconnect();
       };
-    }, []);
+    }, [accessToken,dispatch,navigate]);
 
 
     return(
@@ -63,6 +70,7 @@ const SocketProvider=({children}:{children:ReactNode})=>{
     )
  
 }
+//g
    export default SocketProvider;
 
 

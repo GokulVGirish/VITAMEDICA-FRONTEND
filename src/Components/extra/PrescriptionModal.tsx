@@ -133,7 +133,7 @@ const PrescriptionModal = ({appointmentId,closeModal}:{appointmentId:string;clos
             >
               add Prescription
             </button>
-            {loading && <Spinner/>}
+            {loading && <Spinner isUser={false}/>}
           </div>
         </div>
       </div>

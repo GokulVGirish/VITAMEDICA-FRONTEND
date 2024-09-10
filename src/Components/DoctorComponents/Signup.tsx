@@ -268,13 +268,13 @@ const [loading,setLoading]=useState(false)
     return (
       <div className="container flex flex-col mx-auto rounded-lg  ">
         <div className="flex justify-center w-full h-full my-auto xl:gap-14 lg:justify-normal md:gap-5 draggable">
-          <div className="flex items-center justify-center w-full ">
+          <div className="flex items-center justify-center w-full h-[100vh] ">
             <div className="flex items-center  ">
               <form
                 onSubmit={handleSubmit}
                 className="flex flex-col w-full h-full px-10 py-4 text-center bg-transparent rounded-3xl"
               >
-                <div className="flex w-full justify-center">
+                <div className="flex w-full justify-center mb-5">
                   <img
                     className="w-80 rounded-lg shadow-lg"
                     src={logo}
@@ -285,79 +285,84 @@ const [loading,setLoading]=useState(false)
                   Welcome to our family Doctor
                 </p>
 
-                <div className="flex items-center mb-3">
-                  <hr className="h-0 border-b border-solid border-grey-500 grow" />
-                  <p className="mx-4 text-grey-600">or</p>
-                  <hr className="h-0 border-b border-solid border-grey-500 grow" />
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1">
+                    <label className="mb-2 text-sm text-start text-grey-900">
+                      Name*
+                    </label>
+                    <input
+                      value={state.name}
+                      onChange={(e) =>
+                        dispatch({
+                          type: "SET_FIELD",
+                          field: e.target.name,
+                          value: e.target.value,
+                        })
+                      }
+                      name="name"
+                      type="text"
+                      placeholder="enter name"
+                      className="w-full px-5 py-4 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="mb-2 text-sm text-start text-grey-900">
+                      Email*
+                    </label>
+                    <input
+                      value={state.email}
+                      onChange={(e) =>
+                        dispatch({
+                          type: "SET_FIELD",
+                          field: e.target.name,
+                          value: e.target.value,
+                        })
+                      }
+                      name="email"
+                      type="text"
+                      placeholder="example@gmail.com"
+                      className="w-full px-5 py-4 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
+                    />
+                  </div>
                 </div>
-                <label className="mb-2 text-sm text-start text-grey-900">
-                  Name*
-                </label>
-                <input
-                  value={state.name}
-                  onChange={(e) =>
-                    dispatch({
-                      type: "SET_FIELD",
-                      field: e.target.name,
-                      value: e.target.value,
-                    })
-                  }
-                  name="name"
-                  type="text"
-                  placeholder="enter name"
-                  className="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
-                />
 
-                <label className="mb-2 text-sm text-start text-grey-900">
-                  Email*
-                </label>
-                <input
-                  value={state.email}
-                  onChange={(e) =>
-                    dispatch({
-                      type: "SET_FIELD",
-                      field: e.target.name,
-                      value: e.target.value,
-                    })
-                  }
-                  name="email"
-                  type="text"
-                  placeholder="example@gmail.com"
-                  className="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
-                />
-
-                <label className="mb-2 text-sm text-start text-grey-900">
-                  Phone*
-                </label>
-                <input
-                  value={state.phone}
-                  type="text"
-                  onChange={(e) =>
-                    dispatch({
-                      type: "SET_FIELD",
-                      field: e.target.name,
-                      value: e.target.value,
-                    })
-                  }
-                  name="phone"
-                  placeholder="enter phone"
-                  className="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
-                />
-
-                <label className="mb-2 text-sm text-start text-grey-900">
-                  Gender*
-                </label>
-                <select
-                  value={state.gender}
-                  onChange={(e) =>
-                    dispatch({ type: "SET_GENDER", value: e.target.value })
-                  }
-                  className="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
-                >
-                  <option value="">Select Gender</option>
-                  <option value="male">male</option>
-                  <option value="female">female</option>
-                </select>
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1">
+                    <label className="mb-2 text-sm text-start text-grey-900">
+                      Phone*
+                    </label>
+                    <input
+                      value={state.phone}
+                      onChange={(e) =>
+                        dispatch({
+                          type: "SET_FIELD",
+                          field: e.target.name,
+                          value: e.target.value,
+                        })
+                      }
+                      name="phone"
+                      type="text"
+                      placeholder="enter phone"
+                      className="w-full px-5 py-4 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="mb-2 text-sm text-start text-grey-900">
+                      Gender*
+                    </label>
+                    <select
+                      value={state.gender}
+                      onChange={(e) =>
+                        dispatch({ type: "SET_GENDER", value: e.target.value })
+                      }
+                      className="w-full px-5 py-4 text-sm font-medium outline-none focus:bg-grey-400 mb-7 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="male">male</option>
+                      <option value="female">female</option>
+                    </select>
+                  </div>
+                </div>
 
                 <label className="mb-2 text-sm text-start text-grey-900">
                   Department*
@@ -370,88 +375,88 @@ const [loading,setLoading]=useState(false)
                   onChange={handleSelectChange}
                 />
 
-                <label className="mb-2 text-sm text-start text-grey-900">
-                  Password*
-                </label>
-                <div className="relative">
-                  <input
-                    ref={passInput1}
-                    value={state.password}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "SET_FIELD",
-                        field: e.target.name,
-                        value: e.target.value,
-                      })
-                    }
-                    name="password"
-                    type="password"
-                    placeholder="Enter a password"
-                    className="flex shadow-lg items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
-                  />
-                  <FontAwesomeIcon
-                    className="absolute cursor-pointer right-3 bottom-9"
-                    icon={!pass1Visibility ? faEyeSlash : faEye}
-                    onClick={() => {
-                      if (passInput1.current) {
-                        if (passInput1.current.type === "password") {
-                          setPass1Visibility(true);
-                          passInput1.current.type = "text";
-                        } else {
-                          setPass1Visibility(false);
-                          passInput1.current.type = "password";
-                        }
+                <div className="flex flex-col md:flex-row mt-3 gap-4">
+                  <div className="flex-1 relative">
+                    <label className="mb-2 text-sm text-start text-grey-900">
+                      Password*
+                    </label>
+                    <input
+                      ref={passInput1}
+                      value={state.password}
+                      onChange={(e) =>
+                        dispatch({
+                          type: "SET_FIELD",
+                          field: e.target.name,
+                          value: e.target.value,
+                        })
                       }
-                    }}
-                  />
-                </div>
-
-                <label className="mb-2 text-sm text-start text-grey-900">
-                  {" "}
-                  Confirm Password*
-                </label>
-                <div className="relative">
-                  <input
-                    value={state.cpassword}
-                    ref={passInput2}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "SET_FIELD",
-                        field: e.target.name,
-                        value: e.target.value,
-                      })
-                    }
-                    name="cpassword"
-                    type="password"
-                    placeholder="Confirm password"
-                    className="flex shadow-lg items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
-                  />
-                  <FontAwesomeIcon
-                    className="absolute cursor-default right-3 bottom-9"
-                    icon={!pass2Visibility ? faEyeSlash : faEye}
-                    onClick={() => {
-                      if (passInput2.current) {
-                        if (passInput2.current.type === "password") {
-                          setPass2Visibility(true);
-                          passInput2.current.type = "text";
-                        } else {
-                          setPass2Visibility(false);
-                          passInput2.current.type = "password";
+                      name="password"
+                      type="password"
+                      placeholder="Enter a password"
+                      className="w-full px-5 py-4 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
+                    />
+                    <FontAwesomeIcon
+                      className="absolute cursor-pointer right-3 bottom-11"
+                      icon={!pass1Visibility ? faEyeSlash : faEye}
+                      onClick={() => {
+                        if (passInput1.current) {
+                          if (passInput1.current.type === "password") {
+                            setPass1Visibility(true);
+                            passInput1.current.type = "text";
+                          } else {
+                            setPass1Visibility(false);
+                            passInput1.current.type = "password";
+                          }
                         }
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1 relative">
+                    <label className="mb-2 text-sm text-start text-grey-900">
+                      Confirm Password*
+                    </label>
+                    <input
+                      ref={passInput2}
+                      value={state.cpassword}
+                      onChange={(e) =>
+                        dispatch({
+                          type: "SET_FIELD",
+                          field: e.target.name,
+                          value: e.target.value,
+                        })
                       }
-                    }}
-                  />
+                      name="cpassword"
+                      type="password"
+                      placeholder="Confirm password"
+                      className="w-full px-5 py-4 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
+                    />
+                    <FontAwesomeIcon
+                      className="absolute cursor-pointer right-3 bottom-11"
+                      icon={!pass2Visibility ? faEyeSlash : faEye}
+                      onClick={() => {
+                        if (passInput2.current) {
+                          if (passInput2.current.type === "password") {
+                            setPass2Visibility(true);
+                            passInput2.current.type = "text";
+                          } else {
+                            setPass2Visibility(false);
+                            passInput2.current.type = "password";
+                          }
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
 
                 <button
                   disabled={loading}
                   type="submit"
-                  className="w-full px-6 py-4 ext-sm font-bold leading-none text-white bg-black transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-blue-500"
+                  className="w-full px-6 py-4 self-center text-sm font-bold leading-none text-white bg-black transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-blue-500"
                 >
                   Sign In
                 </button>
                 <SyncLoader cssOverride={override} loading={loading} />
-                <p className="text-sm cursor-pointer leading-relaxed text-grey-900">
+                <p className="text-sm cursor-pointer mt-3 leading-relaxed text-grey-900">
                   Not registered yet?{" "}
                   <span
                     className="font-bold text-grey-700"

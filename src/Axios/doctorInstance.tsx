@@ -2,6 +2,13 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 const apiUrl = import.meta.env.VITE_DOCTOR_API_URL
+import { clearDoctor } from "../Redux/doctorSlice";
+
+let dispatchFunction:any=null
+export const setDoctorDispatchFunction=(dispatch:any)=>{
+  dispatchFunction=dispatch
+
+}
 
 const instance = axios.create({
   baseURL: apiUrl,
@@ -43,6 +50,9 @@ instance.interceptors.response.use(
       (error.response.data.message === "Sorry User Blocked" ||
         error.response.data.message === "Un authorized access")
     ) {
+      if(dispatchFunction){
+        dispatchFunction(clearDoctor());
+      }
       Cookies.remove("accessToken");
       Cookies.remove("refreshToken");
       toast.error(error.response.data.message, {

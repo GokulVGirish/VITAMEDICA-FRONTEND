@@ -242,10 +242,12 @@ const UserProfile = () => {
               alt=""
             />
 
-            <FaEdit
+            <div
               onClick={() => setModalOpen(true)}
-              className="absolute top-44 h-8 w-6 right-48 cursor-pointer"
-            />
+              className="absolute top-44 right-48 cursor-pointer flex items-center justify-center h-12 w-12 bg-[#928EDE] text-black rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out"
+            >
+              <FaEdit className="h-6 w-6" />
+            </div>
           </motion.div>
           <div className="w-full flex justify-center"></div>
           <form onSubmit={handleSubmit}>
@@ -471,7 +473,7 @@ const UserProfile = () => {
             modalOpen={(status: boolean) => setPasswordModalOpen(status)}
           />
         )}
-        {loading && <Spinner />}
+        {loading && <Spinner isUser={true} />}
         {modalOpen && (
           <ProfileModal
             setAvatar={(url: string) => setImageURL(url)}

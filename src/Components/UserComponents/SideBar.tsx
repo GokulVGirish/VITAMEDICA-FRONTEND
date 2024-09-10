@@ -6,16 +6,21 @@ import { faWallet } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'js-cookie';
 import { useContext } from 'react';
 import { SocketContext } from '../../socketio/SocketIo';
+import { useAppDispatch } from '../../Redux/hoocks';
+import { clearDoctor } from '../../Redux/doctorSlice';
 
 
 const UserProfileSideBar=()=>{
     const navigate=useNavigate()
     const location=useLocation()
+    const dispatch=useAppDispatch()
     const socket=useContext(SocketContext)
       function handleLogout() {
         socket?.emit("logout");
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
+        dispatch(clearDoctor())
+
         navigate("/login");
       }
        const isActive = (path: string) =>{ 

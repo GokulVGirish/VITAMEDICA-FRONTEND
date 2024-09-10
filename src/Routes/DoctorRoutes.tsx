@@ -80,9 +80,9 @@ const Dummy = () => {
 const DoctorRoute = () => {
   const location = useLocation();
   const socket = useContext(SocketContext);
-   const [isNotificationModalOpen, setIsNotificationModalOpen] =
-     useState(false);
-     const [notificationCount,setNotificationCount]=useState<number>(0)
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const { doctor } = useAppSelector((state) => state.doctor);
+  const [notificationCount, setNotificationCount] = useState<number>(0);
   const dispatch = useAppDispatch();
   const validPaths = [
     "/doctor",
@@ -90,9 +90,12 @@ const DoctorRoute = () => {
     "/doctor/wallet",
     "/doctor/appointment",
     "/doctor/profile",
+    "/doctor/userProfile",
   ];
 
-  const isBasePath = validPaths.includes(location.pathname);
+  const isBasePath = validPaths.includes(
+    location.pathname.split("/").slice(0, 3).join("/")
+  );
 
   const showDummy = isBasePath;
 
@@ -108,11 +111,15 @@ const DoctorRoute = () => {
     });
 
     socket?.on("receive_notification", ({ content }) => {
-      console.log("in here notificationsss")
-
-      toast.success(content,{richColors:true,duration:1000})
-      setNotificationCount((prevState)=>prevState+1)
-
+      console.log("in here notificationsss");
+      if (
+        !(
+          location.pathname.split("/").slice(0, 3).join("/") ===
+          "/doctor/userProfile"
+        )
+      )
+        toast.success(content, { richColors: true, duration: 1000 });
+      setNotificationCount((prevState) => prevState + 1);
     });
 
     return () => {
@@ -121,44 +128,44 @@ const DoctorRoute = () => {
     };
   }, [socket]);
 
-    const notificationHandler = (open: boolean) => {
-      setIsNotificationModalOpen(open);
-    };
+  const notificationHandler = (open: boolean) => {
+    setIsNotificationModalOpen(open);
+  };
 
-     const fetchNotificationCount = useCallback(async () => {
-       try {
-         const response = await instance.get("/profile/notifications/count");
-         setNotificationCount(response.data.count)
-       } catch (error) {}
-     }, []);
+  const fetchNotificationCount = useCallback(async () => {
+    if (!doctor) return;
+    try {
+      const response = await instance.get("/profile/notifications/count");
+      setNotificationCount(response.data.count);
+    } catch (error) {}
+  }, [doctor]);
 
-     useEffect(() => {
-       fetchNotificationCount();
-     }, [fetchNotificationCount]);
-
-
+  useEffect(() => {
+    fetchNotificationCount();
+  }, [fetchNotificationCount]);
 
   return (
     <div className="relative">
       {showDummy && <Dummy />}
-      <div className="fixed bottom-10 right-10 z-30">
-        <button
-          onClick={() => notificationHandler(true)}
-          className="relative focus:ring-4 focus:ring-offset-2 rounded-full p-5 bg-gradient-to-r from-[#56aac6] to-[#4b99b5] text-white shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
-        >
-          <FontAwesomeIcon icon={faBell} className="text-2xl" />
-        
+      {showDummy && doctor !== null && (
+        <div className="fixed bottom-10 right-10 z-30">
+          <button
+            onClick={() => notificationHandler(true)}
+            className="relative focus:ring-4 focus:ring-offset-2 rounded-full p-5 bg-gradient-to-r from-[#56aac6] to-[#4b99b5] text-white shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FontAwesomeIcon icon={faBell} className="text-2xl" />
+
             <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
               {notificationCount}
             </span>
-       
-        </button>
-      </div>
+          </button>
+        </div>
+      )}
 
       {isNotificationModalOpen && (
         <NotificationComponent
-        setNotificationCount={setNotificationCount}
-        isUser={false}
+          setNotificationCount={setNotificationCount}
+          isUser={false}
           notificationHandler={() => notificationHandler(false)}
         />
       )}

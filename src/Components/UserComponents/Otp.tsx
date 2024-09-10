@@ -139,7 +139,7 @@ const Otp = () => {
         duration: 1500,
       });
     }
-    dispatch(verifyOtpSigup({ otp }));
+    dispatch(verifyOtpSigup({ otp ,socket}));
   };
   return (
     <div className="flex flex-1 flex-col justify-center space-y-5 max-w-md mx-auto pt-24">
@@ -188,7 +188,7 @@ const Otp = () => {
               <div className="font-mono uppercase text-lg  leading-none">
                 Seconds
               </div>
-              {loading||loadingM && <Spinner/>}
+              {loading||loadingM && <Spinner isUser={true}/>}
             </div>
           </div>
         </div>

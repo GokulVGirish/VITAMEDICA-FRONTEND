@@ -6,12 +6,17 @@ import { AxiosError } from "axios";
 import { Socket } from "socket.io-client";
 
 
-export const verifyOtpSigup=createAsyncThunk<any,{otp:string},{rejectValue: string}>("user/verifyOtp",async(otp,thunkAPI)=>{
+export const verifyOtpSigup=createAsyncThunk<any,{otp:string,socket:Socket|null},{rejectValue: string}>("user/verifyOtp",async(data,thunkAPI)=>{
     try{
-        const response = await instance.post("/auth/signup/verify-otp", otp);
+        const {otp,socket}=data
+        const response = await instance.post("/auth/signup/verify-otp", {otp});
         Cookie.set("accessToken",response.data.accessToken)
         Cookie.set("refreshToken",response.data.refreshToken)
         console.log("response of signup",response.data)
+         if (socket) {
+           socket.emit("loggedin", response.data.userId);
+         }
+
     
         return response.data
 
@@ -40,17 +45,16 @@ export const loginUser=createAsyncThunk<any,{email:string,password:string,socket
           });
 
 
-    // Extract token and other necessary data from response
     const { accessToken, refreshToken, userId } = response.data;
  
      
 
-    // Set cookies
+ 
        Cookie.set("accessToken", accessToken);
        Cookie.set("refreshToken", refreshToken);
        console.log("socket data",data.socket)
 
-    // Emit register event with only necessary data
+  
          if (data.socket) {
            data.socket.emit("loggedin",  userId );
          }
@@ -73,12 +77,16 @@ export const loginUser=createAsyncThunk<any,{email:string,password:string,socket
     }
 
 })
-export const googleLogin=createAsyncThunk<any,{email:string;name:string,sub:string},{rejectValue: string}>("user/googleLogin",async(data,thunkAPI)=>{
+export const googleLogin=createAsyncThunk<any,{email:string;name:string,sub:string,socket:Socket|null},{rejectValue: string}>("user/googleLogin",async(data,thunkAPI)=>{
+    const {email,name,sub,socket}=data
     try{
-        const response = await instance.post("/auth/google/login", data);
+        const response = await instance.post("/auth/google/login", {email,name,sub});
          Cookie.set("accessToken", response.data.accessToken);
 
          Cookie.set("refreshToken", response.data.refreshToken);
+          if (data.socket) {
+            data.socket.emit("loggedin", response.data.userId);
+          }
          return response.data;
 
     }

@@ -1,6 +1,7 @@
 import { Hourglass } from "react-loader-spinner";
 
-const Spinner = () => {
+
+const Spinner = ({isUser}:{isUser:boolean}) => {
   return (
     <div
       className="relative z-30"
@@ -19,7 +20,7 @@ const Spinner = () => {
               ariaLabel="hourglass-loading"
               wrapperStyle={{}}
               wrapperClass=""
-              colors={["#7a75da", "#72a1ed"]}
+              colors={[isUser?"#7a75da":"#56aac6", "#72a1ed"]}
             />
           </div>
         </div>

@@ -13,10 +13,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../extra/Spinner";
 
-interface partialError {
-  email?: string;
-  password?: string;
-}
+
+
 
 const UserLogin = () => {
   const navigate = useNavigate();
@@ -67,7 +65,7 @@ const UserLogin = () => {
     if (message) {
       toast.success(message, { richColors: true, duration: 1500 });
     }
-    if (message === "logged in Sucessfully") {
+    if (message === "logged in Sucessfully"||message==="Signed Up Sucessfully") {
       setTimeout(() => {
         navigate("/");
         dispatch(clearErrorMessage());
@@ -108,6 +106,7 @@ const UserLogin = () => {
                       name: data.name,
                       email: data.email,
                       sub: data.sub,
+                      socket:socket
                     })
                   );
                 }}
@@ -201,6 +200,7 @@ const UserLogin = () => {
           </div>
         </div>
       </div>
+      {loading && <Spinner isUser={true}/>}
     </>
   );
 };

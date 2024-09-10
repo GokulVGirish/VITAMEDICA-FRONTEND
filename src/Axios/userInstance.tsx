@@ -2,6 +2,14 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 const apiUrl = import.meta.env.VITE_USER_API_URL
+import store from "../Redux/store";
+import { clearUser } from "../Redux/userSlice";
+
+let dispatchFunction: any = null;
+
+export const setDispatch = (dispatch: any) => {
+  dispatchFunction = dispatch;
+};
 
 
 const instance = axios.create({
@@ -30,6 +38,14 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response)=>response,
     (error)=>{
+      if( error.response &&
+          error.response.status === 401){
+          if (dispatchFunction) {
+            dispatchFunction(clearUser());
+          }
+
+
+          }
         if (
           error.response &&
           error.response.status === 401 &&
