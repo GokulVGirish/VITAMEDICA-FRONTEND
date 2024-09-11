@@ -86,7 +86,7 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
             duration: 1500,
           });
         }
-         const now = new Date(); // Current date and time
+         const now = new Date(); 
 
       
          const currentHours = now.getHours();
@@ -120,10 +120,12 @@ const SlotBookingModal=({closeModal,id}:PropsType)=>{
       setTimeSelected(slot)
 
     }
-    const handleBooking=()=>{
+    const handleBooking=async()=>{
         if(!selectedDate || !timeSelected){
             return toast.error("Select a Date and Slot time",{richColors:true,duration:1500})
         }
+        const response = await instance.get(`/profile/isComplete/check`);
+        if(!response.data.isComplete) return toast.error(response.data.message,{richColors:true,duration:1500})
 
            Swal.fire({
              title: "Proceed for booking?",

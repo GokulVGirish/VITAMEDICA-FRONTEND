@@ -14,7 +14,7 @@ const DoctorAddSlots = () => {
     const today = new Date().toISOString().split("T")[0]; 
 
   const [availableDates, setAvailableDates] = useState<Date[]>([]);
-  const [slots, setSlots] = useState<any[]>([]);
+ 
   console.log('availabledates',availableDates)
 
   useEffect(()=>{
@@ -39,7 +39,7 @@ const DoctorAddSlots = () => {
        const date = new Date(e.target.value);
        setSelectStartDate(date);
      };
-     const navigate=useNavigate()
+  
        console.log("selected", selectStartDate);
 
    
@@ -103,6 +103,8 @@ const DoctorAddSlots = () => {
        duration: 1500,
      });
     }
+    const response = await instance.get("/profile/isComplete/check");
+    if(!response.data.isComplete)return toast.error(response.data.message,{richColors:true,duration:1500})
     const formattedSlots=selectedSlots.map(slot=>({start:slot.start.toISOString(),end:slot.end.toISOString()}))
     const data={
       date:selectStartDate.toISOString(),

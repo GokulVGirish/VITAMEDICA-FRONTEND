@@ -19,9 +19,12 @@ import {
   faFilePdf,
   faPaperclip,
   faPaperPlane,
+  faSmile,
 } from "@fortawesome/free-solid-svg-icons";
 import imageInstance from "../../Axios/imageIntsance";
 import ImagePreviewSendTime from "../extra/ImagePreviewSendTime";
+
+import EmojiPicker from "emoji-picker-react";
 
 const DoctorUserProfile = () => {
   const [appointmentDetails, setAppointmentDetails] = useState<any>(null);
@@ -39,6 +42,14 @@ const DoctorUserProfile = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading,setLoading]=useState(false)
   console.log("appointmentDetails",appointmentDetails)
+
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+    const handleEmojiClick = (emojiObject:any) => {
+      setNewMessage((prevMessage) => prevMessage + emojiObject.emoji);
+      setShowEmojiPicker(false);
+    };
+
 
   const fetchAppointmentData = useCallback(async () => {
     const response = await instance.get(`/appointments/${id}`);
@@ -403,10 +414,10 @@ const DoctorUserProfile = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex  flex-row items-center h-16 rounded-xl bg-[#3a5e81] w-full px-4">
+              <div className="relative flex flex-row items-center h-16 rounded-xl bg-[#3a5e81] w-full px-4">
                 <label
                   htmlFor="fileInput"
-                  className="flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-white  transition-colors duration-300 ease-in-out transform hover:scale-110 cursor-pointer"
+                  className="flex items-center justify-center h-full w-12 text-gray-400 hover:text-white transition-colors duration-300 ease-in-out transform hover:scale-110 cursor-pointer"
                 >
                   <FontAwesomeIcon icon={faPaperclip} />
                 </label>
@@ -418,6 +429,7 @@ const DoctorUserProfile = () => {
                   onChange={handleFileChange}
                   style={{ display: "none" }}
                 />
+
                 <div className="flex-grow ml-4">
                   <div className="relative w-full">
                     <input
@@ -431,14 +443,28 @@ const DoctorUserProfile = () => {
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Type a message..."
-                      className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                      className="w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
                     />
+
+                    <button
+                      onClick={() => setShowEmojiPicker((prev) => !prev)}
+                      className="absolute flex items-center justify-center h-full w-12 right-12 top-0 text-gray-400 hover:text-gray-600"
+                    >
+                      <FontAwesomeIcon icon={faSmile} />
+                    </button>
+
                     <button
                       onClick={sendMessage}
                       className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"
                     >
                       <FontAwesomeIcon icon={faPaperPlane} />
                     </button>
+
+                    {showEmojiPicker && (
+                      <div className="absolute bottom-12 right-0 z-50 bg-white shadow-lg rounded-lg">
+                        <EmojiPicker onEmojiClick={handleEmojiClick} />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

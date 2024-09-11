@@ -27,6 +27,7 @@ import NotificationComponent from "../Components/extra/Notification"
 import {toast} from "sonner"
 import instance from "../Axios/userInstance"
 import { useAppSelector } from "../Redux/hoocks"
+import ringtone from '@/assets/ringtone.mp3';
 
 
 
@@ -38,18 +39,29 @@ const UserRoute=()=>{
   const [showCallModal, setShowCallModal] = useState(false);
    const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
     const [notificationCount, setNotificationCount] = useState<number>(0);
+      const [audioPlay,setAudioPlay] = useState<HTMLAudioElement | null>(null);
     const pathname=useLocation().pathname
     const {user}=useAppSelector((state)=>state.user)
 
+
+    
+  
+  useEffect(() => {
+
+    const playRingtone=()=>{
+      const audio=new Audio(ringtone)
+      audio.loop=true
+      audio.play()
+      setAudioPlay(audio)
+
+    }
 
      socket?.on("call-request", (data: any) => {
        console.log("Received call request:", data);
        setCallData(data);
        setShowCallModal(true);
+       playRingtone()
      });
-    
-  
-  useEffect(() => {
 
     socket?.on("receive_notification", ({ content }) => {
       
@@ -61,6 +73,7 @@ const UserRoute=()=>{
     console.log("listening")
    return () => {
      socket?.off("receive_notification");
+     socket?.off("call-request")
     
    };
    
@@ -97,6 +110,7 @@ const UserRoute=()=>{
       <div className="relative">
         {showCallModal && (
           <CallModal
+          audioPlay={audioPlay}
             callData={callData}
             onClose={() => setShowCallModal(false)}
           />

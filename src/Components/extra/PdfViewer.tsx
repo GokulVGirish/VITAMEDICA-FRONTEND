@@ -17,7 +17,8 @@ const PdfViewer = ({
 
   return (
     <div
-      className="relative z-30"
+      className="relative "
+      style={{ zIndex: 60 }}
       aria-labelledby="crop-image-dialog"
       role="dialog"
       aria-modal="true"

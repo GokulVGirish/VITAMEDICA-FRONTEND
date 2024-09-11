@@ -9,6 +9,8 @@ import ProfileModal from "../extra/ProfileModal";
 import Spinner from "../extra/Spinner";
 import { useAppDispatch } from "../../Redux/hoocks";
 import { updateName } from "../../Redux/userSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 export type InitialStateType = {
   name: string;
@@ -25,6 +27,7 @@ export type InitialStateType = {
     postalCode: number;
   };
   bloodGroup: string | null;
+  isComplete:boolean
 };
 
 
@@ -44,12 +47,14 @@ const UserProfile = () => {
       postalCode: 0,
     },
     bloodGroup: null,
+    isComplete:false
   });
   const [imageURL, setImageURL] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [showUpdateButton,setShowUpdateButton]=useState(false)
+
   const dispatch=useAppDispatch()
 
   useEffect(() => {
@@ -114,8 +119,71 @@ const UserProfile = () => {
             duration: 1500,
           });
         }
+          
  
-    if (!userData.address) {
+  
+    const today = new Date();
+    const dob = new Date(userData?.dob as string);
+    const minAge = 18;
+    const maxAge = 120;
+    const age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (!userData?.dob?.trim()) {
+      return toast.error("Date of birth is required", {
+        richColors: true,
+        duration: 1500,
+      });
+    } else if (dob > today) {
+      setUserData({...userData,dob:""})
+      return toast.error("Date of birth must be in the past", {
+        richColors: true,
+        duration: 1500,
+      });
+    } else if (
+      age < minAge ||
+      (age === minAge && monthDiff < 0) ||
+      (age === minAge && monthDiff === 0 && today.getDate() < dob.getDate())
+    ) {
+       setUserData({ ...userData, dob: "" });
+      return toast.error(`You must be at least ${minAge} years old`, {
+        richColors: true,
+        duration: 1500,
+      });
+    } else if (
+      age > maxAge ||
+      (age === maxAge && monthDiff > 0) ||
+      (age === maxAge && monthDiff === 0 && today.getDate() > dob.getDate())
+    ) {
+       setUserData({ ...userData, dob: "" });
+      return toast.error(`You must be less than ${maxAge} years old`, {
+        richColors: true,
+        duration: 1500,
+      });
+    }
+       if (!userData?.gender?.trim()) {
+         return toast.error("Select a gender", {
+           richColors: true,
+           duration: 1500,
+         });
+       } else if (
+         userData?.gender !== "male" &&
+         userData?.gender !== "female"
+       ) {
+         return toast.error("Gender must be either male or female", {
+           richColors: true,
+           duration: 1500,
+         });
+       }
+         if (!userData?.bloodGroup?.trim()) {
+           return toast.error("select a blood group", {
+             richColors: true,
+             duration: 1500,
+           });
+         }
+
+
+ 
+    if (!userData?.address) {
       return toast.error("fill in the address field", {
         richColors: true,
         duration: 1500,
@@ -184,6 +252,7 @@ const UserProfile = () => {
     try {
       const response = await instance.put("/profile", formData);
       if (response.data.success) {
+        setShowUpdateButton(false)
         setLoading(false)
         dispatch(updateName(response.data.data.name));
         toast.success(response.data.message, {
@@ -220,6 +289,23 @@ const UserProfile = () => {
 
   return (
     <>
+      {!userData.isComplete && (
+        <div className="absolute top-5 right-5 flex items-center justify-center h-52 w-56 bg-yellow-50 border-l-4 border-yellow-400 shadow-md rounded-lg p-4 text-yellow-800">
+          <div className="flex items-start space-x-2">
+            <FontAwesomeIcon
+              icon={faExclamationCircle}
+              className="text-yellow-500 mt-1"
+            />
+            <div className="text-sm font-semibold">
+              <p className="mb-1">Complete Your Profile</p>
+              <p className="text-yellow-700 font-normal">
+                Complete your profile inorder to schedule an appointment with
+                your doctor
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="flex items-center justify-center p-12 h-full mt-20 mb-40">
         <motion.div
           className="mx-auto w-full  max-w-[550px] bg-gray-100"
@@ -244,7 +330,7 @@ const UserProfile = () => {
 
             <div
               onClick={() => setModalOpen(true)}
-              className="absolute top-44 right-48 cursor-pointer flex items-center justify-center h-12 w-12 bg-[#928EDE] text-black rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out"
+              className="absolute top-44 right-48 cursor-pointer flex items-center justify-center h-14 w-14 bg-gradient-to-r from-[#928EDE] to-[#7A77D9] text-[#364f6b] rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               <FaEdit className="h-6 w-6" />
             </div>
@@ -342,15 +428,16 @@ const UserProfile = () => {
                   <input
                     type="date"
                     name="dob"
-                    readOnly
+                    readOnly={userData?.isComplete ? true : false}
                     value={
                       userData.dob
                         ? new Date(userData.dob).toISOString().split("T")[0]
                         : ""
                     }
-                    onChange={(e) =>
-                      setUserData({ ...userData, dob: e.target.value })
-                    }
+                    onChange={(e) => {
+                      setShowUpdateButton(true);
+                      setUserData({ ...userData, dob: e.target.value });
+                    }}
                     id="date"
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   />
@@ -364,15 +451,25 @@ const UserProfile = () => {
                   >
                     Gender
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={userData.gender || ""}
                     name="gender"
-                    readOnly
-                    id="time"
-                    onChange={handleInputChange}
+                    disabled={userData?.isComplete ? true : false}
+                    onChange={(e) => {
+                      setShowUpdateButton(true);
+                      setUserData({
+                        ...userData,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
+                  >
+                    <option value="" disabled>
+                      Select gender
+                    </option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
                 </div>
               </div>
               <div className="w-full px-3 sm:w-1/3">
@@ -383,15 +480,32 @@ const UserProfile = () => {
                   >
                     Blood Group
                   </label>
-                  <input
-                    type="text"
-                    readOnly
+                  <select
                     name="bloodGroup"
                     value={userData.bloodGroup || ""}
-                    onChange={handleInputChange}
-                    id="time"
+                    disabled={userData.isComplete ? true : false}
+                    onChange={(e) => {
+                      setShowUpdateButton(true);
+                      setUserData({
+                        ...userData,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    id="bloodGroup"
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  />
+                  >
+                    <option value="" disabled>
+                      Select blood group
+                    </option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                  </select>
                 </div>
               </div>
             </div>

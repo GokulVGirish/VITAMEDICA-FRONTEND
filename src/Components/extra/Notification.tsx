@@ -71,11 +71,12 @@ const NotificationComponent = ({
 
   return (
     <motion.div
-      className="w-full h-full fixed top-0 right-0 bg-gray-800 bg-opacity-90 z-40 overflow-y-auto"
+      className="w-full h-full fixed top-0 right-0 bg-gray-800 bg-opacity-90  overflow-y-auto"
       initial={{ opacity: 0, x: "100%" }}
       animate={{ opacity: 1, x: "0%" }}
       exit={{ opacity: 0, x: "100%" }}
       transition={{ duration: 0.5 }}
+      style={{ zIndex: 80 }}
     >
       <div className="w-full h-full flex justify-end">
         <motion.div

@@ -11,6 +11,7 @@ import { FaPhone, FaTimes } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import InstructionModal from "../Components/extra/CuteGirlInstruction";
+import IsCallingModal from "../Components/extra/IsCallingModal";
 
 
 
@@ -34,6 +35,8 @@ const { appointment, callerId, toPersonId,role} = useParams<{
   role:string;
   img:string
 }>();
+
+console.log("appointment videocall",appointment,"callerId",callerId,"personalId",toPersonId,"role",role)
 const state=useLocation().state
 const img=state.img
 
@@ -44,6 +47,7 @@ const [showPrescription,setShowPrescription]=useState(false)
 console.log("appointment",appointment,"callerId",callerId,"userId",toPersonId)
 const socket = useContext(SocketContext);
 const [showInstructionModal,setInstructionModal]=useState(false)
+const [showIsCalling,setShowIsCalling]=useState(false)
 const room = appointment;
 const navigate=useNavigate()
 
@@ -61,9 +65,12 @@ const [videoState, setVideoState] = useState(true);
 
 
 useEffect(() => {
-  socket?.emit("join", room);
+ if(socket && room){
+   socket?.emit("join", room);
+ }
 
   socket?.on("calling", (data: any) => {
+   
     if (!localStream.current) {
       console.log("not ready yet");
       return;
@@ -105,6 +112,7 @@ useEffect(() => {
   });
 
   socket?.on("chat-message",(data)=>{
+  
     const {message,from}=data
     setMessages((prevState)=>[...prevState,{sender:from,message}])
 
@@ -115,8 +123,9 @@ useEffect(() => {
     socket?.off("calling");
     socket?.off("ignoredStatus");
   };
-}, [room]);
+}, [room,socket]);
 socket?.on("cut-call", () => {
+  setShowIsCalling(false)
   Swal.fire({
     title: "User rejected the call",
     confirmButtonText: "Ok",
@@ -162,6 +171,7 @@ socket?.on("prescription",()=>{
 });
 
 async function makeCall() {
+
   try {
     pc.current = new RTCPeerConnection(configuration);
     pc.current.onicecandidate = (e) => {
@@ -240,6 +250,7 @@ async function handleOffer(offer: RTCSessionDescriptionInit) {
 }
 
 async function handleAnswer(answer: RTCSessionDescriptionInit) {
+  setShowIsCalling(false)
   if (!pc.current) {
     console.error("no peerconnection");
     return;
@@ -297,6 +308,7 @@ useEffect(() => {
 }, []);
 
 async function startB() {
+   setShowIsCalling(true);
   setInstructionModal(false)
 
  
@@ -327,6 +339,7 @@ async function startB() {
 }
 
 const hangB = async () => {
+  setShowIsCalling(false)
   Swal.fire({
     title: "Are you sure you want to end the call?",
     showCancelButton: true,
@@ -368,7 +381,7 @@ const sendMessage=()=>{
  const handleCloseRating = async () => {
    try {
      setShowRatingModal(false);
-     navigate("/")
+     navigate(`/profile/appointmentDetail/${room}`);
    } catch (error) {
      console.log(error);
    }
@@ -377,7 +390,8 @@ const sendMessage=()=>{
 
 
     return (
-      <div className="md:h-[100vh] h-[100vh] bg-[#110620] w-full md:w-full justify-center flex-col md:flex-row  flex items-center md:justify-around">
+      <div className="md:h-[100vh]  h-[100vh] bg-[#110620] w-full md:w-full justify-center flex-col md:flex-row  flex items-center md:justify-around">
+        {showIsCalling && role==="doctor" && <IsCallingModal />}
         <div className="flex  md:relative flex-col md:flex-row items-center justify-center">
           <div className="flex order-2 mt-5 md:mt-0 md:absolute bottom-5 left-14 flex-col items-center  md:space-y-8">
             <div className="bg-gray-500  w-[300px] h-[280px] md:h-32 md:w-44 border border-black  rounded-lg shadow-md">
@@ -454,7 +468,10 @@ const sendMessage=()=>{
               <div className="grid grid-cols-12 gap-y-2">
                 {messages.map((msg, index) => {
                   return msg.sender !== callerId ? (
-                    <div key={index} className="col-start-1 col-end-8 p-3 rounded-lg">
+                    <div
+                      key={index}
+                      className="col-start-1 col-end-8 p-3 rounded-lg"
+                    >
                       <div className="flex flex-row items-center">
                         <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
                           <img
@@ -472,7 +489,10 @@ const sendMessage=()=>{
                       </div>
                     </div>
                   ) : (
-                    <div key={index} className="col-start-6 col-end-13 p-3 rounded-lg">
+                    <div
+                      key={index}
+                      className="col-start-6 col-end-13 p-3 rounded-lg"
+                    >
                       <div className="flex items-center justify-start flex-row-reverse">
                         <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-500 flex-shrink-0">
                           Me
@@ -524,8 +544,9 @@ const sendMessage=()=>{
                   />
                 )}
               </div>
-              {showInstructionModal && <InstructionModal role={role as string}/>}
-           
+              {showInstructionModal && (
+                <InstructionModal role={role as string} />
+              )}
             </div>
           </div>
         </div>

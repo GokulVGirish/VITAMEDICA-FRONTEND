@@ -9,10 +9,11 @@ type PropsType = {
 const ProfileModal = ({ closeModal,setAvatar,side }:PropsType) => {
   return (
     <div
-      className="relative z-10"
+      className="relative"
       aria-labelledby="crop-image-dialog"
       role="dialog"
       aria-modal="true"
+      style={{zIndex:80}}
     >
       <div className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-all backdrop-blur-sm"></div>
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">

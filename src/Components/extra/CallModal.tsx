@@ -8,7 +8,7 @@ import instance from "../../Axios/userInstance";
 
 
 
-const CallModal = ({ callData, onClose }:{callData:any,onClose:()=>void}) => {
+const CallModal = ({ callData, onClose,audioPlay }:{callData:any,onClose:()=>void;audioPlay:HTMLAudioElement|null}) => {
 
     console.log("callldata",callData)
 
@@ -19,6 +19,10 @@ const CallModal = ({ callData, onClose }:{callData:any,onClose:()=>void}) => {
 
 
   const handleCancelCall = () => {
+    if(audioPlay){
+      audioPlay.pause()
+      audioPlay.currentTime=0
+    }
     const from = callData.from;
     socket?.emit("cut-call", { from });
   
@@ -66,10 +70,15 @@ const CallModal = ({ callData, onClose }:{callData:any,onClose:()=>void}) => {
             <button
               type="button"
               className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-              onClick={() =>
+              onClick={() =>{
+                  if (audioPlay) {
+                    audioPlay.pause();
+                    audioPlay.currentTime = 0;
+                  }
                 navigate(
                   `/doctor/videocall/${callData.room}/${callData.to}/${callData.from}/${"user"}`,{state:{img:doctor?.image}}
                 )
+              }
               }
             >
               Accept

@@ -6,13 +6,14 @@ import moment from "moment";
 import PdfViewer from "../extra/PdfViewer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "sonner";
-import { faCircleExclamation, faCircleXmark, faCloudArrowUp, faFilePdf, faPaperclip, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faCircleExclamation, faCircleXmark, faCloudArrowUp, faFilePdf, faPaperclip, faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
 import  { AxiosError } from "axios";
 import { SocketContext } from "../../socketio/SocketIo";
 import imageInstance from "../../Axios/imageIntsance";
 import ImagePreviewSendTime from "../extra/ImagePreviewSendTime";
 import Spinner from "../extra/Spinner";
 import { useAppSelector } from "../../Redux/hoocks";
+import EmojiPicker from "emoji-picker-react";
 
 const UserAppointmentDetail = () => {
   const [appointmentDetails, setAppointmentDetails] = useState<any>(null);
@@ -36,6 +37,12 @@ const UserAppointmentDetail = () => {
   const medicalRecordsRef=useRef<HTMLInputElement|null>(null)
    const [imageFiles, setImageFiles] = useState<File[]>([]);
    const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+     const handleEmojiClick = (emojiObject: any) => {
+       setNewMessage((prevMessage) => prevMessage + emojiObject.emoji);
+       setShowEmojiPicker(false);
+     };
 
   const fetchAppointmentDetail=useCallback(async()=>{
 
@@ -374,13 +381,14 @@ console.log("messages",messages)
                   </div>
                 </div>
               </div>
-              <div className="flex flex-row items-center h-16 rounded-xl bg-[#3a5e81] w-full px-4">
+              <div className="relative flex flex-row items-center h-16 rounded-xl bg-[#3a5e81] w-full px-4">
                 <label
                   htmlFor="fileInput"
-                  className="flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-white  transition-colors duration-300 ease-in-out transform hover:scale-110 cursor-pointer"
+                  className="flex items-center justify-center h-full w-12 text-gray-400 hover:text-white transition-colors duration-300 ease-in-out transform hover:scale-110 cursor-pointer"
                 >
                   <FontAwesomeIcon icon={faPaperclip} />
                 </label>
+
                 <input
                   id="fileInput"
                   type="file"
@@ -388,27 +396,42 @@ console.log("messages",messages)
                   onChange={handleFileChange}
                   style={{ display: "none" }}
                 />
+
                 <div className="flex-grow ml-4">
                   <div className="relative w-full">
                     <input
-                      type="text"
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
                           sendMessage();
                         }
                       }}
+                      type="text"
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Type a message..."
-                      className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                      className="w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
                     />
+
+                    <button
+                      onClick={() => setShowEmojiPicker((prev) => !prev)}
+                      className="absolute flex items-center justify-center h-full w-12 right-12 top-0 text-gray-400 hover:text-gray-600"
+                    >
+                      <FontAwesomeIcon icon={faSmile} />
+                    </button>
+
                     <button
                       onClick={sendMessage}
                       className="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"
                     >
                       <FontAwesomeIcon icon={faPaperPlane} />
                     </button>
+
+                    {showEmojiPicker && (
+                      <div className="absolute bottom-12 right-0 z-50 bg-white shadow-lg rounded-lg">
+                        <EmojiPicker onEmojiClick={handleEmojiClick} />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -514,7 +537,7 @@ console.log("messages",messages)
           closeModal={() => setPdfModal(false)}
         />
       )}
-      {loading && <Spinner />}
+      {loading && <Spinner isUser={true} />}
     </div>
   );
 };

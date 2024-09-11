@@ -36,7 +36,7 @@ const NewsSection = () => {
   }, [page, articles]);
 
   return (
-    <section className="bg-gray-50 py-8">
+    <section className="bg-gray-50 py-5">
       <motion.h1
         className="text-center text-4xl flex justify-center gap-4 font-semibold pb-4"
         initial={{ opacity: 0, y: -20 }}

@@ -122,7 +122,7 @@ const ForgotPassword=()=>{
                    <p className="mt-1 text-sm text-red-500">{errors.email}</p>
                  )}
                </div>
-               {loading && <Spinner />}
+               {loading && <Spinner isUser={request==="user"?true:false} />}
 
                <motion.button
                  whileHover={{ scale: 1.05 }}

@@ -205,7 +205,7 @@ const DoctorProfile = () => {
 
   return (
     <>
-      {userData?.complete===false && (
+      {userData?.complete === false && (
         <div className="absolute top-5 right-5 flex items-center justify-center h-52 w-56 bg-yellow-50 border-l-4 border-yellow-400 shadow-md rounded-lg p-4 text-yellow-800">
           <div className="flex items-start space-x-2">
             <FontAwesomeIcon
@@ -234,10 +234,12 @@ const DoctorProfile = () => {
               alt=""
             />
 
-            <FaEdit
+            <div
               onClick={() => setModalOpen(true)}
-              className="absolute top-44 h-8 w-6 right-48 cursor-pointer"
-            />
+              className="absolute top-44 right-48 cursor-pointer flex items-center justify-center h-14 w-14 bg-gradient-to-r from-[#56aac6] to-[#3b8b9c] text-[#364f6b] rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
+            >
+              <FaEdit className="h-6 w-6" />
+            </div>
           </div>
           <div className="w-full flex justify-center">
             {myErrors?.image && (

@@ -144,6 +144,7 @@ const DoctorRoute = () => {
     fetchNotificationCount();
   }, [fetchNotificationCount]);
 
+
   return (
     <div className="relative">
       {showDummy && <Dummy />}

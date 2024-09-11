@@ -36,21 +36,23 @@ const DoctorSidebar=()=>{
 
 return (
   <>
-    <button
-      onClick={toggleSidebar}
-      className="lg:hidden fixed top-4  right-4 z-50 p-4 bg-[#56aac6] text-white rounded-full shadow-lg"
-    >
-      <span>☰</span>
-    </button>
+    {!isSidebarOpen && (
+      <button
+        onClick={toggleSidebar}
+        className="lg:hidden fixed top-4  right-4 z-50 p-4 bg-[#56aac6] text-white rounded-full shadow-lg"
+      >
+        <span>☰</span>
+      </button>
+    )}
 
     <div
-      className={`fixed inset-0 top-0 left-0 lg:static lg:w-64 bg-[#56aac6] shadow-md transition-transform duration-300 ease-in-out ${
+      className={`fixed inset-0 top-0 left-0  lg:static lg:w-64 bg-[#56aac6] shadow-md transition-transform duration-300 ease-in-out ${
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } lg:translate-x-0`}
-      style={{ zIndex: 1000 }}
+      style={{ zIndex: 50 }}
     >
       <div className="flex relative items-center justify-center h-16 bg-[#56aac6]">
-        <img src={logo} alt="logo" className="w-44 rounded-lg shadow-xl" />
+        <img src={logo} onClick={()=>navigate("/doctor")} alt="logo" className="w-44 rounded-lg shadow-xl" />
         <span
           onClick={toggleSidebar}
           className="text-white absolute lg:hidden top-5 right-5"

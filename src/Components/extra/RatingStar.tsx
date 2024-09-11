@@ -22,7 +22,7 @@ try{
           richColors: true,
           duration: 1500,
           onAutoClose:()=>{
-            navigate("/")
+            navigate(`/profile/appointmentDetail/${appointmentId}`);
           }
         });
 
