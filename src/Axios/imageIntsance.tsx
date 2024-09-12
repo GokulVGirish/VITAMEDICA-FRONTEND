@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 const apiUrl = import.meta.env.VITE_Image_API_URL;
 
 const instance = axios.create({
-  baseURL: apiUrl || "https://www.vitamedica.ix.tc/api/image-upload",
+  baseURL: apiUrl ,
   headers: {
     "Content-Type": "application/json",
   },

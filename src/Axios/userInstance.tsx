@@ -12,7 +12,7 @@ export const setDispatch = (dispatch: any) => {
 
 
 const instance = axios.create({
-  baseURL: apiUrl || "https://www.vitamedica.ix.tc/api/users",
+  baseURL: apiUrl,
   headers: {
     "Content-Type": "application/json",
   },

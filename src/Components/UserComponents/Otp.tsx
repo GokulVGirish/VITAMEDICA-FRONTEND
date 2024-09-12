@@ -29,7 +29,7 @@ const Otp = () => {
       try {
         const response = await axios.get(
           `${
-            userUrl || "https://www.vitamedica.ix.tc/api/users"
+            userUrl 
           }/auth/token/verify`,
           {
             headers: {

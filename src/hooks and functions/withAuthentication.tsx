@@ -24,7 +24,7 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
              if(accessToken){
                 const response = await fetch(
                   `${
-                    adminApiUrl || "https://www.vitamedica.ix.tc/api/admin"
+                    adminApiUrl 
                   }/api/admin/auth/verify-token`,
                   {
                     method: "GET",
@@ -55,7 +55,7 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
                console.log("access with", accessToken);
                const response = await fetch(
                  `${
-                   doctorUrl || "https://www.vitamedica.ix.tc/api/doctors"
+                   doctorUrl 
                  }/auth/verify-token`,
                  {
                    method: "GET",
@@ -85,7 +85,7 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
             if(accessToken){
                const response = await fetch(
                  `${
-                   userUrl || "https://www.vitamedica.ix.tc/api/users"
+                   userUrl 
                  }/auth/token/verify`,
                  {
                    method: "GET",

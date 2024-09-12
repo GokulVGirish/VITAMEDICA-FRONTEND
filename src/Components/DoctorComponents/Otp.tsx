@@ -37,7 +37,7 @@ const DoctorOtp = () => {
         try{
              const response = await axios.get(
                `${
-                 doctorUrl || "https://www.vitamedica.ix.tc/api/doctors"
+                 doctorUrl 
                }/auth/verify-token`,
                {
                  headers: {

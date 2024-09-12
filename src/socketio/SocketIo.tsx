@@ -21,7 +21,7 @@ const SocketProvider=({children}:{children:ReactNode})=>{
     const dispatch=useAppDispatch()
     useEffect(() => {
       
-      const socketInstance = io(mainUrl || "https://www.vitamedica.ix.tc", {
+      const socketInstance = io(mainUrl, {
         withCredentials: true,
         reconnection: true,
         secure: true,
