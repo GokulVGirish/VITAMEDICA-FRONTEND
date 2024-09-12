@@ -36,7 +36,9 @@ const DoctorOtp = () => {
     const verify=async()=>{
         try{
              const response = await axios.get(
-               `${doctorUrl}/auth/verify-token`,
+               `${
+                 doctorUrl || "https://www.vitamedica.ix.tc/api/doctors"
+               }/auth/verify-token`,
                {
                  headers: {
                    Authorization: `Bearer ${accessToken}`,

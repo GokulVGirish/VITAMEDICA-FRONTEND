@@ -4,7 +4,7 @@ import Cookies from "js-cookie"
 const apiUrl = import.meta.env.VITE_ADMIN_API_URL;
 
 const adminInstance = axios.create({
-  baseURL: apiUrl,
+  baseURL: apiUrl || "https://www.vitamedica.ix.tc/api/admin",
   headers: {
     "Content-Type": "application/json",
   },

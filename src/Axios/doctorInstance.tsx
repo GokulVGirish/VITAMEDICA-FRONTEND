@@ -11,7 +11,7 @@ export const setDoctorDispatchFunction=(dispatch:any)=>{
 }
 
 const instance = axios.create({
-  baseURL: apiUrl,
+  baseURL: apiUrl || "https://www.vitamedica.ix.tc/api/doctors",
   headers: {
     "Content-Type": "application/json",
   },

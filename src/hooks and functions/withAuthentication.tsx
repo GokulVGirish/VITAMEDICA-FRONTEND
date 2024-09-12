@@ -23,7 +23,9 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
              const accessToken = Cookies.get("adminAccessToken");
              if(accessToken){
                 const response = await fetch(
-                  `${adminApiUrl}/api/admin/auth/verify-token`,
+                  `${
+                    adminApiUrl || "https://www.vitamedica.ix.tc/api/admin"
+                  }/api/admin/auth/verify-token`,
                   {
                     method: "GET",
                     headers: {
@@ -52,7 +54,9 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
              if(accessToken){
                console.log("access with", accessToken);
                const response = await fetch(
-                 `${doctorUrl}/auth/verify-token`,
+                 `${
+                   doctorUrl || "https://www.vitamedica.ix.tc/api/doctors"
+                 }/auth/verify-token`,
                  {
                    method: "GET",
                    headers: {
@@ -80,7 +84,9 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
             const accessToken = Cookies.get("accessToken");
             if(accessToken){
                const response = await fetch(
-                 `${userUrl}/auth/token/verify`,
+                 `${
+                   userUrl || "https://www.vitamedica.ix.tc/api/users"
+                 }/auth/token/verify`,
                  {
                    method: "GET",
                    headers: {

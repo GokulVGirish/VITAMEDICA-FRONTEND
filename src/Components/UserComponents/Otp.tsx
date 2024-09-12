@@ -28,7 +28,9 @@ const Otp = () => {
     const verify = async () => {
       try {
         const response = await axios.get(
-          `${userUrl}/auth/token/verify`,
+          `${
+            userUrl || "https://www.vitamedica.ix.tc/api/users"
+          }/auth/token/verify`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
