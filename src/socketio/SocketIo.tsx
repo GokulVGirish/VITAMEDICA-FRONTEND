@@ -7,6 +7,7 @@ import {toast} from "sonner"
 import { clearUser } from "../Redux/userSlice";
 import { useAppDispatch } from "../Redux/hoocks";
 import { clearDoctor } from "../Redux/doctorSlice";
+const mainUrl = import.meta.env.VITE_MAIN_URL;
 
 
 export const SocketContext=createContext<Socket|null>(null)
@@ -20,7 +21,7 @@ const SocketProvider=({children}:{children:ReactNode})=>{
     const dispatch=useAppDispatch()
     useEffect(() => {
       
-      const socketInstance = io("http://localhost:4000", {
+      const socketInstance = io(mainUrl, {
         withCredentials: true,
         reconnection:true,
         secure:true,
