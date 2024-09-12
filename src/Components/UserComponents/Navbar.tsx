@@ -85,7 +85,7 @@ const Navbar=()=>{
                     isActive("/doctorBooking") ? "text-white" : "text-[#364f6b]"
                   }  cursor-pointer font-bold hover:text-gray-200`}
                 >
-                  Book Appointment
+                  Book Appointments
                 </span>
               </li>
               <li>
