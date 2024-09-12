@@ -1,9 +1,9 @@
 import { PixelCrop } from "react-image-crop";
 
 const setCanvasPreview = (
-  image:HTMLImageElement, // HTMLImageElement
-  canvas:HTMLCanvasElement, // HTMLCanvasElement
-  crop:PixelCrop // PixelCrop
+  image:HTMLImageElement, 
+  canvas:HTMLCanvasElement, 
+  crop:PixelCrop 
 ) => {
   const ctx = canvas.getContext("2d");
   if (!ctx) {

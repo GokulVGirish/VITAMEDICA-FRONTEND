@@ -16,7 +16,7 @@ import Spinner from './Spinner';
 
 const ForgotPassword=()=>{
    const [email, setEmail] = useState<string>("");
-   const [errors, setErrors] = useState<{email?:string}>({});
+   const [errors] = useState<{email?:string}>({});
    const { request } = useParams();
    const navigate=useNavigate()
    const [loading,setLoading]=useState(false)

@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { FaPhone, FaTimes } from "react-icons/fa";
-
+import  { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { SocketContext } from "../../socketio/SocketIo";

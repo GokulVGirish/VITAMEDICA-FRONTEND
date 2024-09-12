@@ -1,10 +1,10 @@
 
 
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef } from "react";
 
 const CopartnersSliding = () => {
   const logosRef = useRef<HTMLUListElement>(null);
-  const [bannerOpen, setBannerOpen] = useState(true);
+
 
   useEffect(() => {
     const ul = logosRef.current;

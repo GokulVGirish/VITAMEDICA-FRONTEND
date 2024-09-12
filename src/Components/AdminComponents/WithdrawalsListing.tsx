@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
 import {toast} from "sonner"
 import adminInstance from "../../Axios/adminInstance";
 

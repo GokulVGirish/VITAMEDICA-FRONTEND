@@ -4,7 +4,6 @@ import moment from "moment"
 import {toast} from "sonner"
 import instance from "../../Axios/doctorInstance";
 import { AxiosError } from "axios";
-import { useNavigate } from "react-router-dom";
 import DoctorExistingSlots from "./BookedSlots";
 
 const DoctorAddSlots = () => {

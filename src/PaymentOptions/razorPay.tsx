@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import instance from "../Axios/userInstance";
 import { toast } from "sonner";
-const  razorPay=(order:any,id:string,slotDetails:any,navigate:Function,paymentMethod:string):any=>{
+const  razorPay=(order:any,id:string,slotDetails:any,navigate:Function):any=>{
 
     const amount = String(parseFloat(order.amount)/100);
     console.log("amount",amount)

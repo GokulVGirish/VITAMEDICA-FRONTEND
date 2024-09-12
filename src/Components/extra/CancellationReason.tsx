@@ -1,6 +1,4 @@
 
-
-
 const BookingCancellationReason = ({
   setCancellationReasonModal,
   cancellationReason,

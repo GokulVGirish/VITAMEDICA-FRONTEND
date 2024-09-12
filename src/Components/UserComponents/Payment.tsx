@@ -124,7 +124,6 @@ const PaymentComponent = () => {
                id as string,
                slotDetails,
                navigate,
-               paymentMethod
              );
            }
       }else{

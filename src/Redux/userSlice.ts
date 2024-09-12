@@ -84,8 +84,8 @@ export const googleLogin=createAsyncThunk<any,{email:string;name:string,sub:stri
          Cookie.set("accessToken", response.data.accessToken);
 
          Cookie.set("refreshToken", response.data.refreshToken);
-          if (data.socket) {
-            data.socket.emit("loggedin", response.data.userId);
+          if (socket) {
+            socket.emit("loggedin", response.data.userId);
           }
          return response.data;
 

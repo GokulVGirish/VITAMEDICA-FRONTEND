@@ -1,5 +1,5 @@
 
-import { useParams,useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
 

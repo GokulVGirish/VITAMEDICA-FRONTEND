@@ -2,9 +2,8 @@ import { BrowserRouter,Routes,Route } from "react-router-dom"
 import UserRoute from "./Routes/UserRoutes"
 import DoctorRoute from "./Routes/DoctorRoutes"
 import AdminRoute from "./Routes/AdminRoutes"
-import ErrorPage from "./Components/extra/ErrorPage"
 import { Toaster } from "sonner"
-import SocketProvider, { SocketContext } from "./socketio/SocketIo"
+import SocketProvider from "./socketio/SocketIo"
 
 
 

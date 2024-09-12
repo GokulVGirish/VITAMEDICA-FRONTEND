@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { GrLinkNext, GrLinkPrevious} from "react-icons/gr";
@@ -12,7 +11,7 @@ const NewsSection = () => {
   const [showArticles, setShowArticles] = useState<any>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-   const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
+   const [isMobile] = useState(window.innerWidth <= 640);
   const articlesPerPage =isMobile?1: 4;
 
   const fetchNews = useCallback(async () => {

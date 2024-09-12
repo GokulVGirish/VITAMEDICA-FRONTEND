@@ -1,4 +1,4 @@
-import { useEffect,useRef,useState } from "react";
+import { useEffect,useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import instance from "../../Axios/doctorInstance";
 import { AxiosError } from "axios";
@@ -60,9 +60,8 @@ const DoctorProfile = () => {
         ifsc: "",
       },
     });
-    const inputRef = useRef<HTMLInputElement>(null);
+
       const [imageURL, setImageURL] = useState<string>();
-      const [image, setImage] = useState<File>();
        const [myErrors, setMyErrors] = useState<any>({});
        const [modalOpen,setModalOpen]=useState(false)
        const [loading,setLoading]=useState(false)
@@ -194,7 +193,7 @@ const DoctorProfile = () => {
     const handleChangePassword = async () => {
       try {
         setPasswordModalOpen(true);
-        const response = await instance.post(
+         await instance.post(
           "/profile/password/reset-request",
           {
             email: userData.email,

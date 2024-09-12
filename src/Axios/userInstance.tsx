@@ -2,7 +2,6 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 const apiUrl = import.meta.env.VITE_USER_API_URL
-import store from "../Redux/store";
 import { clearUser } from "../Redux/userSlice";
 
 let dispatchFunction: any = null;

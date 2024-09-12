@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import adminInstance from "../../Axios/adminInstance";
 import { AxiosError } from "axios";
@@ -19,7 +18,7 @@ const RefundsListing = () => {
   const [showRefundDetailModal,setShowRefundDefailModal]=useState(false)
   const [selectedRefund,setSelectRefund]=useState<string>()
 
-  const navigate = useNavigate();
+  
 
   const fetchRefundList = useCallback(async () => {
     const params = {

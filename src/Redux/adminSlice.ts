@@ -1,4 +1,4 @@
-import { createSlice,createAsyncThunk, current } from "@reduxjs/toolkit";
+import { createSlice,createAsyncThunk} from "@reduxjs/toolkit";
 import adminInstance from "../Axios/adminInstance";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";

@@ -1,5 +1,3 @@
-
-import { useState } from "react";
 interface PropsType {
   modalOpen(status:boolean): void;
 }

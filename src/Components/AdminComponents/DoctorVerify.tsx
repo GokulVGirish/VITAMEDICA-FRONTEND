@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 import DoctorRejectModal from "../extra/DoctorRejectModal";
 import { toast } from "sonner";
 import {motion} from "framer-motion"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 
 
 const DoctorVerify = () => {

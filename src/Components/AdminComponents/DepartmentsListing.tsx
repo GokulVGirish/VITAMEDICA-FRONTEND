@@ -1,7 +1,6 @@
 import { useState,useEffect } from "react";
-import {User} from "./UserListing"
 import adminInstance from "../../Axios/adminInstance";
-import { Axios, AxiosError } from "axios";
+import {  AxiosError } from "axios";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

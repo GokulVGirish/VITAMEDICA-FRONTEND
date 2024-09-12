@@ -1,6 +1,6 @@
 import logo from '@/assets/logo4.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell, faBookMedical, faChartPie, faWallet } from '@fortawesome/free-solid-svg-icons';
+import {  faBookMedical, faChartPie, faWallet } from '@fortawesome/free-solid-svg-icons';
 import { faUserDoctor } from '@fortawesome/free-solid-svg-icons';
 import { faPersonHalfDress } from '@fortawesome/free-solid-svg-icons/faPersonHalfDress';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
