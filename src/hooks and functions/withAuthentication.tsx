@@ -1,6 +1,9 @@
 import Cookies from "js-cookie";
 import { ComponentType, useEffect } from "react";
 import { useNavigate,useLocation } from "react-router-dom";
+const adminApiUrl = import.meta.env.VITE_ADMIN_API_URL;
+const userUrl = import.meta.env.VITE_USER_API_URL;
+const doctorUrl = import.meta.env.VITE_DOCTOR_API_URL;
 
 
 
@@ -20,7 +23,7 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
              const accessToken = Cookies.get("adminAccessToken");
              if(accessToken){
                 const response = await fetch(
-                  "http://localhost:4000/api/admin/auth/verify-token",
+                  `${adminApiUrl}/api/admin/auth/verify-token`,
                   {
                     method: "GET",
                     headers: {
@@ -49,7 +52,7 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
              if(accessToken){
                console.log("access with", accessToken);
                const response = await fetch(
-                 "http://localhost:4000/api/doctors/auth/verify-token",
+                 `${doctorUrl}/auth/verify-token`,
                  {
                    method: "GET",
                    headers: {
@@ -77,7 +80,7 @@ const withAuthentication=<P extends Object>(WrappedComponent:ComponentType<P>,us
             const accessToken = Cookies.get("accessToken");
             if(accessToken){
                const response = await fetch(
-                 "http://localhost:4000/api/users/auth/token/verify",
+                 `${userUrl}/auth/token/verify`,
                  {
                    method: "GET",
                    headers: {

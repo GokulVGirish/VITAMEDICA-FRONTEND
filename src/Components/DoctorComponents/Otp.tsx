@@ -14,6 +14,7 @@ import { clearErrorMessage } from "../../Redux/doctorSlice";
 import instance from "../../Axios/doctorInstance";
 import { useContext } from "react";
 import { SocketContext } from "../../socketio/SocketIo";
+const doctorUrl = import.meta.env.VITE_DOCTOR_API_URL;
 const DoctorOtp = () => {
   const [seconds, setSeconds] = useState(120);
   const [otp, setOtp] = useState<string>("");
@@ -35,7 +36,7 @@ const DoctorOtp = () => {
     const verify=async()=>{
         try{
              const response = await axios.get(
-               "http://localhost:4000/api/doctors/auth/verify-token",
+               `${doctorUrl}/auth/verify-token`,
                {
                  headers: {
                    Authorization: `Bearer ${accessToken}`,

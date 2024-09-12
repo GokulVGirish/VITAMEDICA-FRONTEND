@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import Spinner from "../extra/Spinner";
 import { SocketContext  } from "../../socketio/SocketIo";
 import { useContext } from "react";
+const userUrl = import.meta.env.VITE_USER_API_URL;
+
 const Otp = () => {
   const [seconds, setSeconds] = useState(120);
   const [otp, setOtp] = useState<string>("");
@@ -26,7 +28,7 @@ const Otp = () => {
     const verify = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/api/users/auth/token/verify",
+          `${userUrl}/auth/token/verify`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
