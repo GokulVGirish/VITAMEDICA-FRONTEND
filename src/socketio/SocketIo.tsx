@@ -21,13 +21,13 @@ const SocketProvider=({children}:{children:ReactNode})=>{
     const dispatch=useAppDispatch()
     useEffect(() => {
       
-      const socketInstance = io(mainUrl, {
+      const socketInstance = io(mainUrl || "https://www.vitamedica.ix.tc", {
         withCredentials: true,
-        reconnection:true,
-        secure:true,
+        reconnection: true,
+        secure: true,
         auth: {
-          token: accessToken || null
-        }
+          token: accessToken || null,
+        },
       });
 
       
