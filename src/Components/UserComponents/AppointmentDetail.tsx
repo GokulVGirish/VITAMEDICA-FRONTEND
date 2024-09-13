@@ -22,6 +22,7 @@ import ImagePreviewSendTime from "../extra/ImagePreviewSendTime";
 import Spinner from "../extra/Spinner";
 import { useAppSelector } from "../../Redux/hoocks";
 import EmojiPicker from "emoji-picker-react";
+import PhotoModal from "../extra/PhotoPreview";
 
 const UserAppointmentDetail = () => {
   const [appointmentDetails, setAppointmentDetails] = useState<any>(null);
@@ -33,6 +34,8 @@ const UserAppointmentDetail = () => {
   const [loading, setLoading] = useState(false);
   const [isMedicalRecordUploaded, setIsMedicalRecordUploaded] = useState(false);
   const { user } = useAppSelector((state) => state.user);
+  const[imgUrl,setImgUrl]=useState("")
+  const [showPhotoPreview,setShowPhotoPreview]=useState(false)
   //  message
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -329,6 +332,10 @@ const UserAppointmentDetail = () => {
                             <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
                               {msg.type === "img" ? (
                                 <img
+                                  onClick={() => {
+                                    setImgUrl(msg.message);
+                                    setShowPhotoPreview(true);
+                                  }}
                                   src={msg.message}
                                   alt="Sent image"
                                   className="w-48 h-48 object-cover rounded-lg"
@@ -352,6 +359,10 @@ const UserAppointmentDetail = () => {
                               {msg.type === "img" ? (
                                 <img
                                   src={msg.message}
+                                  onClick={() => {
+                                    setImgUrl(msg.message);
+                                    setShowPhotoPreview(true);
+                                  }}
                                   alt="Sent image"
                                   className="w-48 h-48 object-cover rounded-lg"
                                 />
@@ -468,6 +479,10 @@ const UserAppointmentDetail = () => {
                     >
                       <img
                         src={image}
+                        onClick={() => {
+                          setImgUrl(image);
+                          setShowPhotoPreview(true);
+                        }}
                         alt={`Medical Record ${index + 1}`}
                         className="w-full h-full object-cover"
                       />
@@ -524,6 +539,12 @@ const UserAppointmentDetail = () => {
         />
       )}
       {loading && <Spinner isUser={true} />}
+      {showPhotoPreview && (
+        <PhotoModal
+          imageUrl={imgUrl}
+          closeModal={() => setShowPhotoPreview(false)}
+        />
+      )}
     </div>
   );
 };

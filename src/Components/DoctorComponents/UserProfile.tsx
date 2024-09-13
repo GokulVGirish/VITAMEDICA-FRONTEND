@@ -25,6 +25,7 @@ import imageInstance from "../../Axios/imageIntsance";
 import ImagePreviewSendTime from "../extra/ImagePreviewSendTime";
 
 import EmojiPicker from "emoji-picker-react";
+import PhotoModal from "../extra/PhotoPreview";
 
 const DoctorUserProfile = () => {
   const [appointmentDetails, setAppointmentDetails] = useState<any>(null);
@@ -41,6 +42,8 @@ const DoctorUserProfile = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [imgUrl,setImgUrl]=useState("")
+  const [showPhotoPreview,setShowPhotoPreview]=useState(false)
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -369,6 +372,10 @@ const DoctorUserProfile = () => {
                             <div className="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
                               {msg.type === "img" ? (
                                 <img
+                                  onClick={() => {
+                                    setImgUrl(msg.message);
+                                    setShowPhotoPreview(true);
+                                  }}
                                   src={msg.message}
                                   alt="Sent image"
                                   className="w-48 h-48 object-cover rounded-lg"
@@ -391,6 +398,10 @@ const DoctorUserProfile = () => {
                             <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
                               {msg.type === "img" ? (
                                 <img
+                                  onClick={() => {
+                                    setImgUrl(msg.message);
+                                    setShowPhotoPreview(true);
+                                  }}
                                   src={msg.message}
                                   alt="Sent image"
                                   className="w-48 h-48 object-cover rounded-lg"
@@ -481,6 +492,13 @@ const DoctorUserProfile = () => {
             side="doctor"
           />
         )}
+
+        {showPhotoPreview && (
+          <PhotoModal
+            imageUrl={imgUrl}
+            closeModal={() => setShowPhotoPreview(false)}
+          />
+        )}
         {/* modal */}
 
         <div className="mt-3 border-t-2 flex flex-col justify-center">
@@ -502,6 +520,10 @@ const DoctorUserProfile = () => {
                     >
                       <img
                         src={image}
+                        onClick={() => {
+                          setImgUrl(image);
+                          setShowPhotoPreview(true);
+                        }}
                         alt={`Medical Record ${index + 1}`}
                         className="w-full h-full object-cover"
                       />
