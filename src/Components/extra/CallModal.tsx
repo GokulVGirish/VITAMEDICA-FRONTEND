@@ -1,44 +1,46 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { SocketContext } from "../../socketio/SocketIo";
 import instance from "../../Axios/userInstance";
 
-
-
-const CallModal = ({ callData, onClose,audioPlay }:{callData:any,onClose:()=>void;audioPlay:HTMLAudioElement|null}) => {
-
-    console.log("callldata",callData)
-
-  const socket=useContext(SocketContext)
-  const [doctor,setDoctor]=useState<{image:string;name:string,department:{name:string}}|null>(null)
+const CallModal = ({
+  callData,
+  onClose,
+  audioPlay,
+}: {
+  callData: any;
+  onClose: () => void;
+  audioPlay: HTMLAudioElement | null;
+}) => {
+  const socket = useContext(SocketContext);
+  const [doctor, setDoctor] = useState<{
+    image: string;
+    name: string;
+    department: { name: string };
+  } | null>(null);
   const navigate = useNavigate();
-  console.log("doctor",doctor)
-
 
   const handleCancelCall = () => {
-    if(audioPlay){
-      audioPlay.pause()
-      audioPlay.currentTime=0
+    if (audioPlay) {
+      audioPlay.pause();
+      audioPlay.currentTime = 0;
     }
     const from = callData.from;
     socket?.emit("cut-call", { from });
-  
+
     onClose();
   };
 
-   useEffect(() => {
-     const getDoctorDetail = async () => {
-       const response = await instance.get(`/doctors/${callData.from}/profile`);
-       if (response.data.success) {
-         console.log("response is here", response.data);
-         setDoctor(response.data.doctor)
-       }
-     };
-     getDoctorDetail();
-   }, []);
-
-
+  useEffect(() => {
+    const getDoctorDetail = async () => {
+      const response = await instance.get(`/doctors/${callData.from}/profile`);
+      if (response.data.success) {
+        setDoctor(response.data.doctor);
+      }
+    };
+    getDoctorDetail();
+  }, []);
 
   return (
     <div
@@ -68,16 +70,18 @@ const CallModal = ({ callData, onClose,audioPlay }:{callData:any,onClose:()=>voi
             <button
               type="button"
               className="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-              onClick={() =>{
-                  if (audioPlay) {
-                    audioPlay.pause();
-                    audioPlay.currentTime = 0;
-                  }
+              onClick={() => {
+                if (audioPlay) {
+                  audioPlay.pause();
+                  audioPlay.currentTime = 0;
+                }
                 navigate(
-                  `/doctor/videocall/${callData.room}/${callData.to}/${callData.from}/${"user"}`,{state:{img:doctor?.image}}
-                )
-              }
-              }
+                  `/doctor/videocall/${callData.room}/${callData.to}/${
+                    callData.from
+                  }/${"user"}`,
+                  { state: { img: doctor?.image } }
+                );
+              }}
             >
               Accept
             </button>

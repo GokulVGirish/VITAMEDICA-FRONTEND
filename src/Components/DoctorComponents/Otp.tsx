@@ -1,4 +1,3 @@
-
 import logo from "@/assets/logo3.png";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../../Redux/hoocks";
@@ -18,68 +17,52 @@ const doctorUrl = import.meta.env.VITE_DOCTOR_API_URL;
 const DoctorOtp = () => {
   const [seconds, setSeconds] = useState(120);
   const [otp, setOtp] = useState<string>("");
-  const [loadingM,setLoading]=useState(false)
+  const [loadingM, setLoading] = useState(false);
   const [error1, setErrors] = useState<{ error?: string }>({});
   const { message, error, loading } = useAppSelector((state) => state.doctor);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const ref=useRef(false)
-  const socket=useContext(SocketContext)
+  const ref = useRef(false);
+  const socket = useContext(SocketContext);
   const accessToken = Cookies.get("accessToken");
-  if(!ref.current){
-     dispatch(clearErrorMessage());
-     ref.current=true
+  if (!ref.current) {
+    dispatch(clearErrorMessage());
+    ref.current = true;
   }
- 
 
-  useEffect(()=>{
-    const verify=async()=>{
-        try{
-             const response = await axios.get(
-               `${
-                 doctorUrl 
-               }/auth/verify-token`,
-               {
-                 headers: {
-                   Authorization: `Bearer ${accessToken}`,
-                 },
-               }
-             );
-             if(response.status===200){
-                navigate("/doctor")
-             }
-
-        }
-        catch(error){
-             if (error instanceof AxiosError) {
-               if (
-                 error.response?.status === 403 &&
-                 error.response.data.message === "not yet verified"
-               ) {
-
-               } else {
-                 navigate("/doctor/login");
-               }
-             } else {
-               navigate("/doctor/login");
-             }
-
-        }
-
-
-    }
-    if(accessToken){
-        verify()
-    }else{
-        navigate("/doctor/login")
-    }
-
-  },[])
-
- 
   useEffect(() => {
- 
+    const verify = async () => {
+      try {
+        const response = await axios.get(`${doctorUrl}/auth/verify-token`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (response.status === 200) {
+          navigate("/doctor");
+        }
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          if (
+            error.response?.status === 403 &&
+            error.response.data.message === "not yet verified"
+          ) {
+          } else {
+            navigate("/doctor/login");
+          }
+        } else {
+          navigate("/doctor/login");
+        }
+      }
+    };
+    if (accessToken) {
+      verify();
+    } else {
+      navigate("/doctor/login");
+    }
+  }, []);
 
+  useEffect(() => {
     const interval = setInterval(() => {
       setSeconds((prevState) => {
         if (prevState > 0) {
@@ -95,7 +78,7 @@ const DoctorOtp = () => {
   }, [seconds]);
   useEffect(() => {
     if (error) {
-      setOtp("")
+      setOtp("");
       toast.error(error, {
         position: "top-right",
         autoClose: 1500,
@@ -124,8 +107,7 @@ const DoctorOtp = () => {
     if (message === "signed Up Sucessfully") {
       setTimeout(() => {
         navigate("/doctor");
-     dispatch(clearErrorMessage());
-      
+        dispatch(clearErrorMessage());
       }, 1500);
     }
   }, [message, error, loading]);
@@ -150,52 +132,51 @@ const DoctorOtp = () => {
       setErrors({ error: "Enter an otp" });
       return;
     }
-    dispatch(verifyOtpSigup({ otp ,socket}));
+    dispatch(verifyOtpSigup({ otp, socket }));
   };
-     const handleResend = async () => {
-      setLoading(true)
+  const handleResend = async () => {
+    setLoading(true);
 
-
-       try {
-         const response = await instance.post("/auth/otp/resend");
-         if (response.data.success) {
-           setSeconds(120);
-           toast.success(response.data.message, {
-             position: "top-right",
-             autoClose: 1500,
-             hideProgressBar: false,
-             closeOnClick: true,
-             pauseOnHover: true,
-             draggable: true,
-             progress: undefined,
-             theme: "colored",
-             transition: Zoom,
-           });
-         }
-       } catch (error) {
-         if (error instanceof AxiosError) {
-          setOtp("")
-           toast.error(error.response?.data.message, {
-             position: "top-right",
-             autoClose: 1500,
-             hideProgressBar: false,
-             closeOnClick: true,
-             pauseOnHover: true,
-             draggable: true,
-             progress: undefined,
-             theme: "colored",
-             transition: Zoom,
-           });
-           if (error.response?.data.message === "retry signup") {
-             Cookies.remove("accessToken");
-             setTimeout(() => {
-               navigate("/doctor/signup");
-             }, 2000);
-           }
-         }
-       }
-       setLoading(false)
-     };
+    try {
+      const response = await instance.post("/auth/otp/resend");
+      if (response.data.success) {
+        setSeconds(120);
+        toast.success(response.data.message, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Zoom,
+        });
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setOtp("");
+        toast.error(error.response?.data.message, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Zoom,
+        });
+        if (error.response?.data.message === "retry signup") {
+          Cookies.remove("accessToken");
+          setTimeout(() => {
+            navigate("/doctor/signup");
+          }, 2000);
+        }
+      }
+    }
+    setLoading(false);
+  };
   return (
     <div className="flex flex-1 flex-col justify-center space-y-5 max-w-md mx-auto pt-24">
       <div className="flex flex-col space-y-2 text-center">
@@ -233,7 +214,7 @@ const DoctorOtp = () => {
               onClick={handleResend}
               type="button"
               className={`flex items-center justify-center flex-none px-3 py-2 md:px-4 md:py-3 border-2 rounded-r-lg border-black font-medium ${
-                (seconds > 0||loadingM) ? "bg-slate-300" : "bg-black"
+                seconds > 0 || loadingM ? "bg-slate-300" : "bg-black"
               }  text-white`}
             >
               resend

@@ -1,146 +1,135 @@
-
 import React, { useEffect, useState } from "react";
-import moment from "moment"
-import {toast} from "sonner"
+import moment from "moment";
+import { toast } from "sonner";
 import instance from "../../Axios/doctorInstance";
 import { AxiosError } from "axios";
 import DoctorExistingSlots from "./BookedSlots";
 
 const DoctorAddSlots = () => {
-  const [selectStartDate, setSelectStartDate] = useState<Date|null>();
+  const [selectStartDate, setSelectStartDate] = useState<Date | null>();
 
-  const [selectedSlots,setSelectedSlots]=useState<{ start: Date; end: Date }[]>([])
-    const today = new Date().toISOString().split("T")[0]; 
+  const [selectedSlots, setSelectedSlots] = useState<
+    { start: Date; end: Date }[]
+  >([]);
+  const today = new Date().toISOString().split("T")[0];
 
   const [availableDates, setAvailableDates] = useState<Date[]>([]);
- 
-  console.log('availabledates',availableDates)
 
-  useEffect(()=>{
-    const getAvailableDates=async()=>{
-
+  useEffect(() => {
+    const getAvailableDates = async () => {
       const response = await instance.get("/slots/available-dates");
-      if(response.data.success){
-           const dates = response.data.dates.map(
-             (date: string) => new Date(date)
-           );
-           setAvailableDates(dates);
-
+      if (response.data.success) {
+        const dates = response.data.dates.map((date: string) => new Date(date));
+        setAvailableDates(dates);
       }
+    };
+    getAvailableDates();
+  }, []);
 
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedSlots([]);
+    const date = new Date(e.target.value);
+    setSelectStartDate(date);
+  };
+
+  const timeSlots: { start: Date; end: Date }[] = [];
+  const timeNow = new Date();
+
+  const startTime = new Date();
+  startTime.setHours(9, 0, 0, 0);
+  const endTime = new Date();
+  endTime.setHours(18, 0, 0, 0);
+
+  let currentTime = startTime;
+  while (currentTime < endTime) {
+    const slotStart = new Date(currentTime);
+    const slotEnd = new Date(currentTime);
+    slotEnd.setMinutes(slotStart.getMinutes() + 60);
+
+    if (slotEnd <= endTime) {
+      timeSlots.push({ start: slotStart, end: slotEnd });
     }
-    getAvailableDates()
-  },[])
 
-   
-     const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSelectedSlots([])
-       const date = new Date(e.target.value);
-       setSelectStartDate(date);
-     };
-  
-       console.log("selected", selectStartDate);
+    currentTime = new Date(slotEnd);
+    currentTime.setMinutes(currentTime.getMinutes() + 15);
+  }
+  const handleSlotClick = (slot: { start: Date; end: Date }) => {
+    if (!selectStartDate) {
+      return toast.error("Select a date", {
+        richColors: true,
+        duration: 1500,
+      });
+    }
+    const selectedDate = selectStartDate.toISOString().split("T")[0];
+    if (selectedDate === today && slot.start <= timeNow) {
+      return toast.error("The time has passed to add this slot", {
+        richColors: true,
+        duration: 1500,
+      });
+    }
+    setSelectedSlots((prevState) => {
+      const isSelected = prevState.some(
+        (s) =>
+          s.start.getTime() === slot.start.getTime() &&
+          s.end.getTime() === slot.end.getTime()
+      );
+      if (isSelected) {
+        return prevState.filter(
+          (s) =>
+            s.start.getTime() !== slot.start.getTime() ||
+            s.end.getTime() !== slot.end.getTime()
+        );
+      } else {
+        return [...prevState, slot];
+      }
+    });
+  };
 
-   
-       const timeSlots: { start: Date; end: Date }[] = [];
-         const timeNow = new Date();
-
-       const startTime = new Date();
-       startTime.setHours(9, 0, 0, 0);
-       const endTime = new Date();
-       endTime.setHours(18, 0, 0, 0);
-
-       let currentTime = startTime;
-       while (currentTime < endTime) {
-         const slotStart = new Date(currentTime);
-         const slotEnd = new Date(currentTime);
-         slotEnd.setMinutes(slotStart.getMinutes() + 60); 
-
-         if (slotEnd <= endTime) {
-           timeSlots.push({ start: slotStart, end: slotEnd });
-         }
-
-         currentTime = new Date(slotEnd);
-         currentTime.setMinutes(currentTime.getMinutes() + 15); 
-       }
-         const handleSlotClick = (slot: { start: Date; end: Date }) => {
-            if(!selectStartDate){
-                return toast.error("Select a date", {
-                  richColors: true,
-                  duration: 1500,
-                });
-
-            }
-            const selectedDate = selectStartDate.toISOString().split("T")[0];
-               if (selectedDate === today && slot.start <= timeNow) {
-                 return toast.error("The time has passed to add this slot", {
-                   richColors: true,
-                   duration: 1500,
-                 });
-               }
-            setSelectedSlots((prevState)=>{
-                const isSelected=prevState.some(s=>s.start.getTime()===slot.start.getTime() &&s.end.getTime()===slot.end.getTime())
-                 if (isSelected) {
-                    return prevState.filter(s=>s.start.getTime()!==slot.start.getTime()||s.end.getTime()!==slot.end.getTime())
-
-                 }else{
-                    return [...prevState,slot]
-                 }
-
-            })
-           
-         };
-         console.log("selected time",selectedSlots)
-
-
-
-
-  const handleSubmit = async() => {
-    if(!selectStartDate||selectedSlots.length===0){
-     return toast.error("Please select a date and at least one slot", {
-       richColors: true,
-       duration: 1500,
-     });
+  const handleSubmit = async () => {
+    if (!selectStartDate || selectedSlots.length === 0) {
+      return toast.error("Please select a date and at least one slot", {
+        richColors: true,
+        duration: 1500,
+      });
     }
     const response = await instance.get("/profile/isComplete/check");
-    if(!response.data.isComplete)return toast.error(response.data.message,{richColors:true,duration:1500})
-    const formattedSlots=selectedSlots.map(slot=>({start:slot.start.toISOString(),end:slot.end.toISOString()}))
-    const data={
-      date:selectStartDate.toISOString(),
-      slots:formattedSlots
-    }
-   try{
-     const response = await instance.post("/slots", data);
-     if (response.data.success) {
-      setAvailableDates([...availableDates,selectStartDate])
-         setSelectStartDate(null);
-         setSelectedSlots([])
-       return toast.success("Sucessfully added Slots", {
-         richColors: true,
-         duration: 1500,
-       });
-    
-     }
-  
-
-   }
-   catch(error){
-    if(error instanceof AxiosError){
-      toast.error(error.response?.data.message, {
+    if (!response.data.isComplete)
+      return toast.error(response.data.message, {
         richColors: true,
         duration: 1500,
       });
-    }else{
-      toast.error("Unknown error", {
-        richColors: true,
-        duration: 1500,
-      });
-
+    const formattedSlots = selectedSlots.map((slot) => ({
+      start: slot.start.toISOString(),
+      end: slot.end.toISOString(),
+    }));
+    const data = {
+      date: selectStartDate.toISOString(),
+      slots: formattedSlots,
+    };
+    try {
+      const response = await instance.post("/slots", data);
+      if (response.data.success) {
+        setAvailableDates([...availableDates, selectStartDate]);
+        setSelectStartDate(null);
+        setSelectedSlots([]);
+        return toast.success("Sucessfully added Slots", {
+          richColors: true,
+          duration: 1500,
+        });
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message, {
+          richColors: true,
+          duration: 1500,
+        });
+      } else {
+        toast.error("Unknown error", {
+          richColors: true,
+          duration: 1500,
+        });
+      }
     }
-
-    
-   }
-   
   };
 
   return (

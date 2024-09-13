@@ -4,8 +4,6 @@ import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import adminInstance from "../../Axios/adminInstance";
 
-
-
 const RefundDetailModal = ({
   closeModal,
   id,
@@ -13,45 +11,33 @@ const RefundDetailModal = ({
   closeModal: () => void;
   id: string;
 }) => {
+  const [data, setData] = useState<{
+    _id: number;
+    docName: string;
+    userName: string;
+    docImg: string;
+    userImg: string;
+    cancelledBy: string;
+    appointmentTime: Date;
+    appointmentBookedTime: Date;
+    reason: string;
+    amount: string;
+    cancellationTime: Date;
+    start: Date;
+    end: Date;
+  } | null>(null);
 
-    const [data, setData] = useState<{
-      _id: number;
-      docName: string;
-      userName: string;
-      docImg: string;
-      userImg: string;
-      cancelledBy: string;
-      appointmentTime: Date;
-      appointmentBookedTime: Date;
-      reason: string;
-      amount: string;
-      cancellationTime: Date;
-      start:Date,
-      end:Date
-    }|null>(null);
-
-
-    const fetchRefundDetails=useCallback(async()=>{
-
-        try{
-            const response = await adminInstance.get(`/payouts/refunds/${id}`);
-            if(response.data.success){
-                setData(response.data.refundDetail)
-            }
-
-        }
-        catch(error){
-
-        }
-
-    },[id])
-    useEffect(()=>{
-        fetchRefundDetails()
-
-    },[fetchRefundDetails])
-   
-
-
+  const fetchRefundDetails = useCallback(async () => {
+    try {
+      const response = await adminInstance.get(`/payouts/refunds/${id}`);
+      if (response.data.success) {
+        setData(response.data.refundDetail);
+      }
+    } catch (error) {}
+  }, [id]);
+  useEffect(() => {
+    fetchRefundDetails();
+  }, [fetchRefundDetails]);
 
   return (
     <div
@@ -142,7 +128,9 @@ const RefundDetailModal = ({
                     <div className="flex flex-col items-center">
                       <span className="block text-lg font-medium text-gray-700">
                         Appointment Booked On:{" "}
-                        {moment(data?.appointmentBookedTime).format("MMMM D, YYYY")}
+                        {moment(data?.appointmentBookedTime).format(
+                          "MMMM D, YYYY"
+                        )}
                       </span>
                     </div>
                     <div className="flex flex-col items-center">
@@ -153,14 +141,12 @@ const RefundDetailModal = ({
                     </div>
                     <div className="flex flex-col items-center">
                       <span className="block text-lg font-medium text-gray-700">
-                        Cancelled By:{" "}
-                        {data?.cancelledBy}
+                        Cancelled By: {data?.cancelledBy}
                       </span>
                     </div>
                     <div className="flex flex-col items-center">
                       <span className="block text-lg font-medium text-gray-700">
-                        Reason:{" "}
-                        {data?.reason}
+                        Reason: {data?.reason}
                       </span>
                     </div>
                     <div className="flex flex-col items-center">
@@ -173,8 +159,6 @@ const RefundDetailModal = ({
                         Doctor's Fees: ₹{data?.fees}
                       </span>
                     </div> */}
-                   
-                   
                   </div>
                 </div>
               </div>
@@ -185,4 +169,4 @@ const RefundDetailModal = ({
     </div>
   );
 };
-export default RefundDetailModal
+export default RefundDetailModal;

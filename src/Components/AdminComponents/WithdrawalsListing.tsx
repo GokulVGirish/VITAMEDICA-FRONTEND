@@ -1,42 +1,39 @@
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import moment from "moment";
-import {toast} from "sonner"
+import { toast } from "sonner";
 import adminInstance from "../../Axios/adminInstance";
 
 const WithdrawalListing = () => {
-  const [withdrawalList, setWithdrawalList] = useState<{_id:number,name:string,email:string,date:Date,amount:number}[]>([]);
+  const [withdrawalList, setWithdrawalList] = useState<
+    { _id: number; name: string; email: string; date: Date; amount: number }[]
+  >([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
-    const [searchClicked, setSearchClicked] = useState(false);
-    const fetchWithdrawalList=useCallback(async()=>{
-           const params = {
-             page,
-             limit: 10,
-             ...(startDate && { startDate }),
-             ...(endDate && { endDate }),
-           };
-        try{
-            const response = await adminInstance.get("/payouts/withdrawals",{params});
-            if(response.data.success){
-                setWithdrawalList(response.data.withdrawalList)
-                setTotalPages(response.data.count)
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [searchClicked, setSearchClicked] = useState(false);
+  const fetchWithdrawalList = useCallback(async () => {
+    const params = {
+      page,
+      limit: 10,
+      ...(startDate && { startDate }),
+      ...(endDate && { endDate }),
+    };
+    try {
+      const response = await adminInstance.get("/payouts/withdrawals", {
+        params,
+      });
+      if (response.data.success) {
+        setWithdrawalList(response.data.withdrawalList);
+        setTotalPages(response.data.count);
+      }
+    } catch (error) {}
+  }, [page, searchClicked]);
 
-            }
-
-        }
-        catch(error){
-
-        }
-
-    },[page,searchClicked])
-    
-    useEffect(()=>{
-        fetchWithdrawalList()
-
-    },[fetchWithdrawalList])
+  useEffect(() => {
+    fetchWithdrawalList();
+  }, [fetchWithdrawalList]);
   const handlePrevPage = () => {
     if (page > 1) {
       setPage((prevState) => prevState - 1);
@@ -47,32 +44,32 @@ const WithdrawalListing = () => {
       setPage((prevState) => prevState + 1);
     }
   };
-   const handleSearch = () => {
-     if (!startDate || !endDate)
-       return toast.error("Select a Start and End Date", {
-         richColors: true,
-         duration: 1500,
-       });
-     const start = new Date(startDate);
-     const end = new Date(endDate);
+  const handleSearch = () => {
+    if (!startDate || !endDate)
+      return toast.error("Select a Start and End Date", {
+        richColors: true,
+        duration: 1500,
+      });
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-     if (start > end) {
-       setStartDate("");
-       setEndDate("");
-       return toast.error(
-         "Start date should be less than or equal to end date.",
-         { richColors: true, duration: 1500 }
-       );
-     }
-     setPage(1);
-     setSearchClicked(true);
-   };
-     const handleClear = () => {
-       setStartDate("");
-       setEndDate("");
-       setPage(1);
-       setSearchClicked(false);
-     };
+    if (start > end) {
+      setStartDate("");
+      setEndDate("");
+      return toast.error(
+        "Start date should be less than or equal to end date.",
+        { richColors: true, duration: 1500 }
+      );
+    }
+    setPage(1);
+    setSearchClicked(true);
+  };
+  const handleClear = () => {
+    setStartDate("");
+    setEndDate("");
+    setPage(1);
+    setSearchClicked(false);
+  };
 
   return (
     <>
@@ -164,7 +161,7 @@ const WithdrawalListing = () => {
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                     Date
                   </th>
-                
+
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                     Doctor Name
                   </th>
@@ -174,7 +171,6 @@ const WithdrawalListing = () => {
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                     Amount
                   </th>
-                
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -191,7 +187,7 @@ const WithdrawalListing = () => {
                         {moment(item?.date).format("MMMM D, YYYY")}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-                      {item?.name}
+                        {item?.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                         {item?.email}
@@ -199,7 +195,6 @@ const WithdrawalListing = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                         ₹{item?.amount}
                       </td>
-                     
                     </motion.tr>
                   ))}
               </tbody>

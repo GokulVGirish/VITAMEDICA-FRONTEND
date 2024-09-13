@@ -1,70 +1,67 @@
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios";
-import { useState ,useEffect} from "react";
+import { useState, useEffect } from "react";
 import adminInstance from "../../Axios/adminInstance";
 import { useNavigate } from "react-router-dom";
 
 const DoctorListing = () => {
-    const [doctors,setDoctors]=useState<any[]>()
-    const [filteredDoctors,setFilteredDoctors]=useState<any[]>([])
-    const [filter,setFilter]=useState<"all"|"blocked"|"unblocked">("all")
-    const navigate=useNavigate()
-     useEffect(() => {
-       const getUsers = async () => {
-         const response = await adminInstance.get("/doctors");
-         if (response.data.success) {
-           setDoctors(response.data.doctors);
-           setFilteredDoctors(response.data.doctors);
-         }
-       };
-       getUsers();
-     }, []);
-    const handleBlockUnblock=async(id:string,status:boolean)=>{
-        try{
-            console.log("clicked")
-            const response=await adminInstance.put(`/doctors/${id}/${status}`)
-            if(response.data.success){
-                setDoctors((prevState)=>prevState?.map((doctor)=>doctor._id===id?{...doctor,isBlocked:!status}:doctor))
-
-            }
-
-        }
-        catch(error){
-            if (error instanceof AxiosError) {
-              toast.error(error.response?.data?.message, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Zoom,
-              });
-            }
-
-        }
-
-
+  const [doctors, setDoctors] = useState<any[]>();
+  const [filteredDoctors, setFilteredDoctors] = useState<any[]>([]);
+  const [filter, setFilter] = useState<"all" | "blocked" | "unblocked">("all");
+  const navigate = useNavigate();
+  useEffect(() => {
+    const getUsers = async () => {
+      const response = await adminInstance.get("/doctors");
+      if (response.data.success) {
+        setDoctors(response.data.doctors);
+        setFilteredDoctors(response.data.doctors);
+      }
+    };
+    getUsers();
+  }, []);
+  const handleBlockUnblock = async (id: string, status: boolean) => {
+    try {
+      const response = await adminInstance.put(`/doctors/${id}/${status}`);
+      if (response.data.success) {
+        setDoctors((prevState) =>
+          prevState?.map((doctor) =>
+            doctor._id === id ? { ...doctor, isBlocked: !status } : doctor
+          )
+        );
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Zoom,
+        });
+      }
     }
-     const applyFilter = (
-       doctors: any[],
-       filter: "all" | "blocked" | "unblocked"
-     ) => {
-       if (filter === "all") {
-         setFilteredDoctors(doctors);
-       } else if (filter === "blocked") {
-         setFilteredDoctors(doctors.filter((user) => user.isBlocked === true));
-       } else {
-         setFilteredDoctors(doctors.filter((user) => user.isBlocked === false));
-       }
-     };
-     useEffect(() => {
-       applyFilter(doctors as any[], filter);
-     }, [filter, doctors]);
-    
+  };
+  const applyFilter = (
+    doctors: any[],
+    filter: "all" | "blocked" | "unblocked"
+  ) => {
+    if (filter === "all") {
+      setFilteredDoctors(doctors);
+    } else if (filter === "blocked") {
+      setFilteredDoctors(doctors.filter((user) => user.isBlocked === true));
+    } else {
+      setFilteredDoctors(doctors.filter((user) => user.isBlocked === false));
+    }
+  };
+  useEffect(() => {
+    applyFilter(doctors as any[], filter);
+  }, [filter, doctors]);
+
   return (
     <div className="">
       <div className=" flex justify-center items-center">
@@ -159,10 +156,12 @@ const DoctorListing = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
-                      onClick={()=>navigate(`/admin/doctors/${user._id}`)}
+                        onClick={() => navigate(`/admin/doctors/${user._id}`)}
                         className="mr-2 
                           user.isBlocked bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded-full"
-                      >View</button>
+                      >
+                        View
+                      </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button

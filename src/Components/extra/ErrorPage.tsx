@@ -1,11 +1,10 @@
+import { useNavigate } from "react-router-dom";
 
-import { useNavigate} from "react-router-dom";
+const ErrorPage = (props: { side: "user" | "admin" | "doctor" }) => {
+  const navigate = useNavigate();
 
-const ErrorPage = (props:{side:"user"|"admin"|"doctor"}) => {
-    const navigate=useNavigate()
-    
   return (
-     <div className="h-screen fixed top-0 left-0 z-50 w-screen bg-gradient-to-r from-gray-50 to-gray-100 flex items-center justify-center">
+    <div className="h-screen fixed top-0 left-0 z-50 w-screen bg-gradient-to-r from-gray-50 to-gray-100 flex items-center justify-center">
       <div className="container max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between px-6 py-12 shadow-xl rounded-lg bg-white transform transition duration-300 hover:scale-105 hover:shadow-2xl">
         <div className="w-full lg:w-1/2 text-center md:text-left">
           <div className="text-8xl md:text-9xl font-extrabold text-green-500 mb-6">

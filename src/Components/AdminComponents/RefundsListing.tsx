@@ -15,10 +15,8 @@ const RefundsListing = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchClicked, setSearchClicked] = useState(false);
-  const [showRefundDetailModal,setShowRefundDefailModal]=useState(false)
-  const [selectedRefund,setSelectRefund]=useState<string>()
-
-  
+  const [showRefundDetailModal, setShowRefundDefailModal] = useState(false);
+  const [selectedRefund, setSelectRefund] = useState<string>();
 
   const fetchRefundList = useCallback(async () => {
     const params = {
@@ -31,8 +29,6 @@ const RefundsListing = () => {
     try {
       const response = await adminInstance.get(`/payouts/refunds`, { params });
       if (response.data.success) {
-        console.log("response", response.data);
-
         setRefundList(response.data.refundList);
         setTotalPages(response.data.count);
       }
@@ -218,12 +214,10 @@ const RefundsListing = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
-                          onClick={() =>{
-                             setSelectRefund(item?._id);
-                             setShowRefundDefailModal(true);
-                          }
-                          
-                          }
+                          onClick={() => {
+                            setSelectRefund(item?._id);
+                            setShowRefundDefailModal(true);
+                          }}
                           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded w-20 text-center"
                         >
                           View
@@ -294,7 +288,12 @@ const RefundsListing = () => {
             </svg>
           </button>
         </motion.div>
-        {showRefundDetailModal && <RefundDetailModal id={selectedRefund as string} closeModal={()=>setShowRefundDefailModal(false)}/>}
+        {showRefundDetailModal && (
+          <RefundDetailModal
+            id={selectedRefund as string}
+            closeModal={() => setShowRefundDefailModal(false)}
+          />
+        )}
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import instance from "../../Axios/userInstance";
@@ -9,21 +9,24 @@ import razorPay from "../../PaymentOptions/razorPay";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWallet } from "@fortawesome/free-solid-svg-icons";
-
+import { SocketContext } from "../../socketio/SocketIo";
 
 const PaymentComponent = () => {
   const { id } = useParams();
-  const [doctor, setDoctor] = useState<{_id: string;name: string;fees: string;image: string;department: {name:string };
+  const [doctor, setDoctor] = useState<{
+    _id: string;
+    name: string;
+    fees: string;
+    image: string;
+    department: { name: string };
   } | null>(null);
-  console.log("doctor", doctor);
-  const [paymentMethod, setPaymentMethod] = useState<string|null>(null);
-  const [walletBalance,setWalletBalance]=useState<number>(0)
-  const slotDetailUnparsed=localStorage.getItem("bookingDetails")
-  const slotDetails=JSON.parse(slotDetailUnparsed as string)
-  const navigate=useNavigate()
-  console.log('slotDetails',slotDetails)
 
-
+  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+  const [walletBalance, setWalletBalance] = useState<number>(0);
+  const slotDetailUnparsed = localStorage.getItem("bookingDetails");
+  const slotDetails = JSON.parse(slotDetailUnparsed as string);
+  const navigate = useNavigate();
+  const socket = useContext(SocketContext);
 
   useEffect(() => {
     const getDoctorDetail = async () => {
@@ -48,119 +51,101 @@ const PaymentComponent = () => {
       }
     };
     getDoctorDetail();
-    const getWalletBalance=async ()=>{
-      try{
-
-        const response=await instance.get("/wallet")
+    const getWalletBalance = async () => {
+      try {
+        const response = await instance.get("/wallet");
         setWalletBalance(response.data.walletDetail.balance);
-        console.log("type", typeof response.data.walletDetail.balance);
-
-      }
-      catch(error){
-
-      }
-
-
-
-    }
-    getWalletBalance()
+      } catch (error) {}
+    };
+    getWalletBalance();
   }, []);
-  const handlePayment=async()=>{
-   
+  const handlePayment = async () => {
     const now = new Date();
     const currentHours = now.getHours();
     const currentMinutes = now.getMinutes();
 
-    
     const slotStart = new Date(slotDetails.slotTime.start);
     const slotStartHours = slotStart.getHours();
     const slotStartMinutes = slotStart.getMinutes();
 
-   
     if (slotDetails.date && moment(slotDetails.date).isSame(now, "day")) {
-     
       if (
         slotStartHours < currentHours ||
         (slotStartHours === currentHours && slotStartMinutes <= currentMinutes)
       ) {
-        return toast.error(" Cant Book slot.This slot's time has already passed.", {
+        return toast.error(
+          " Cant Book slot.This slot's time has already passed.",
+          {
+            richColors: true,
+            duration: 1500,
+          }
+        );
+      }
+    }
+
+    if (!paymentMethod) {
+      return toast.error("Select A Payment Method");
+    }
+    if (paymentMethod === "wallet" && walletBalance < Number(doctor?.fees)) {
+      return toast.error("Insufficient wallet balance");
+    }
+    try {
+      const lockResponse = await instance.post("/appointments/lock-slot", {
+        doctorId: doctor?._id,
+        date: slotDetails?.date,
+        slotId: slotDetails?.slotTime?._id,
+      });
+
+      if (!lockResponse.data.success) {
+        return toast.error(lockResponse.data.message, {
+          richColors: true,
+          duration: 1500,
+        });
+      }
+      if (paymentMethod === "razorpay") {
+        const response = await instance.post("/appointments/order", {
+          amount: doctor?.fees,
+          currency: "INR",
+          receipt: doctor?._id,
+        });
+
+        if (response.data.success) {
+          razorPay(
+            response.data.order,
+            id as string,
+            slotDetails,
+            navigate,
+            socket
+          );
+        }
+      } else {
+        const result = await instance.post(`/appointments/book/wallet`, {
+          docId: doctor?._id,
+          slotDetails,
+          fees: doctor?.fees,
+        });
+        if (result.data.success) {
+          localStorage.setItem(
+            "appointmentData",
+            JSON.stringify({
+              date: result.data.appointment.date,
+              start: result.data.appointment.start,
+              end: result.data.appointment.end,
+            })
+          );
+
+          await navigate(`/paymentSuccess`);
+        }
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message, {
           richColors: true,
           duration: 1500,
         });
       }
     }
-
-     if (!paymentMethod) {
-       return toast.error("Select A Payment Method");
-     }
-     if (paymentMethod === "wallet" && walletBalance < Number(doctor?.fees)){
-       return toast.error("Insufficient wallet balance");
-     }
-       try {
-         const lockResponse = await instance.post("/appointments/lock-slot", {
-           doctorId: doctor?._id,
-           date: slotDetails?.date,
-           slotId: slotDetails?.slotTime?._id,
-         });
-         console.log("lock response", lockResponse.data);
-
-         if (!lockResponse.data.success) {
-           return toast.error(lockResponse.data.message, {
-             richColors: true,
-             duration: 1500,
-           });
-         }
-      if(paymentMethod==="razorpay"){
-           const response = await instance.post("/appointments/order", {
-             amount: doctor?.fees,
-             currency: "INR",
-             receipt: doctor?._id,
-           });
-
-           if (response.data.success) {
-             console.log("order", response.data.order);
-             razorPay(
-               response.data.order,
-               id as string,
-               slotDetails,
-               navigate,
-             );
-           }
-      }else{
-
-        const result = await instance.post(`/appointments/book/wallet`,{
-          docId:doctor?._id,
-          slotDetails,
-          fees:doctor?.fees
-        });
-        if(result.data.success){
-            localStorage.setItem(
-              "appointmentData",
-              JSON.stringify({
-                date: result.data.appointment.date,
-                start: result.data.appointment.start,
-                end: result.data.appointment.end,
-              })
-            );
-
-            await navigate(`/paymentSuccess`);
-
-
-        }
-
-      }
-
-       } catch (error) {
-         if (error instanceof AxiosError) {
-           toast.error(error.response?.data.message, {
-             richColors: true,
-             duration: 1500,
-           });
-         }
-         console.log(error);
-       }
-
-  }
+  };
 
   return (
     <div className="max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
@@ -218,8 +203,10 @@ const PaymentComponent = () => {
               <i className="pl-2">Wallet</i>
             </div>
             <div className="flex items-center">
-            <FontAwesomeIcon icon={faWallet}/>
-              <span className="px-1 ml-2 rounded-lg border-2 bg-white">₹{walletBalance}</span>
+              <FontAwesomeIcon icon={faWallet} />
+              <span className="px-1 ml-2 rounded-lg border-2 bg-white">
+                ₹{walletBalance}
+              </span>
             </div>
           </label>
         </div>

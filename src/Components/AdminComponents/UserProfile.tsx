@@ -11,72 +11,63 @@ import { faCircleLeft, faCircleRight } from "@fortawesome/free-solid-svg-icons";
 import AppointmentDetailModal from "./AppointmentDetailModal";
 
 const AdminUserProfile = () => {
-    const [user,setUser]=useState<User|null>(null)
-    const {id}=useParams()
-    const [showAppointments,setShowAppointments]=useState(false)
-     const [totalAppointmentCount, setTotalAppointmentCount] =
-       useState<number>(1);
-     const [appointments, setAppointments] = useState<any[]>([]);
-     const [appointmentsPage, setAppointmentsPage] = useState(1);
-     const [appointmentDetailModal, setAppointmentDetailModal] =
-       useState(false);
-     const [selectedAppointment, setSelectedAppointment] = useState<
-       string | null
-     >(null);
+  const [user, setUser] = useState<User | null>(null);
+  const { id } = useParams();
+  const [showAppointments, setShowAppointments] = useState(false);
+  const [totalAppointmentCount, setTotalAppointmentCount] = useState<number>(1);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [appointmentsPage, setAppointmentsPage] = useState(1);
+  const [appointmentDetailModal, setAppointmentDetailModal] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<string | null>(
+    null
+  );
 
-    const getUserProfile=useCallback(async()=>{
-        const response=await adminInstance.get(`/users/${id}/profile`)
-        console.log(response.data.user)
-        setUser(response.data.user)
+  const getUserProfile = useCallback(async () => {
+    const response = await adminInstance.get(`/users/${id}/profile`);
 
-    },[id])
-    useEffect(()=>{
-        getUserProfile()
+    setUser(response.data.user);
+  }, [id]);
+  useEffect(() => {
+    getUserProfile();
+  }, [getUserProfile]);
+  const fetchUserAppointmentInfo = useCallback(
+    async (page: number = 1) => {
+      try {
+        const response = await adminInstance.get(
+          `/users/${id}/appointments?page=${page}&limit=10`
+        );
+        if (response.data.success) {
+          setAppointments(response.data.data.data);
+          setTotalAppointmentCount(response.data.data.count);
+        }
+      } catch (error) {}
+    },
+    [appointmentsPage]
+  );
+  const handleShowAppointments = () => {
+    setShowAppointments(true);
+    fetchUserAppointmentInfo();
+  };
+  const handleBackToProfile = () => {
+    setShowAppointments(false);
+    setAppointmentsPage(1);
+    setAppointments([]);
+    setTotalAppointmentCount(1);
+  };
 
-    },[getUserProfile])
-    const fetchUserAppointmentInfo=useCallback(async (page:number=1)=>{
+  const handlePreviousPage = () => {
+    if (appointmentsPage > 1) {
+      setAppointmentsPage((prevPage) => prevPage - 1);
+      fetchUserAppointmentInfo(appointmentsPage - 1);
+    }
+  };
 
-      try{
-     const response = await adminInstance.get(`/users/${id}/appointments?page=${page}&limit=10`);
-     if(response.data.success){
-      setAppointments(response.data.data.data)
-      setTotalAppointmentCount(response.data.data.count)
-
-     }
-
-      }
-      catch(error){
-
-      }
-
-    },[appointmentsPage])
-     const handleShowAppointments = () => {
-       setShowAppointments(true);
-       fetchUserAppointmentInfo();
-     };
-        const handleBackToProfile = () => {
-          setShowAppointments(false);
-          setAppointmentsPage(1);
-          setAppointments([]);
-          setTotalAppointmentCount(1);
-        };
-
-        const handlePreviousPage = () => {
-          if (appointmentsPage > 1) {
-            setAppointmentsPage((prevPage) => prevPage - 1);
-            fetchUserAppointmentInfo(appointmentsPage - 1);
-          }
-        };
-
-        const handleNextPage = () => {
-          if (
-            appointmentsPage < Math.ceil((totalAppointmentCount as number) / 10)
-          ) {
-            setAppointmentsPage((prevPage) => prevPage + 1);
-            fetchUserAppointmentInfo(appointmentsPage + 1);
-          }
-        };
-        console.log("totalAppointmnetcount",totalAppointmentCount)
+  const handleNextPage = () => {
+    if (appointmentsPage < Math.ceil((totalAppointmentCount as number) / 10)) {
+      setAppointmentsPage((prevPage) => prevPage + 1);
+      fetchUserAppointmentInfo(appointmentsPage + 1);
+    }
+  };
 
   return (
     <main

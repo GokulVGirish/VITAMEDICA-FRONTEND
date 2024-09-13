@@ -1,9 +1,7 @@
-
-
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { useState,useRef } from "react";
-import {toast} from "sonner"
+import { useState, useRef } from "react";
+import { toast } from "sonner";
 import instance from "../../Axios/userInstance";
 import { AxiosError } from "axios";
 import docInstance from "../../Axios/doctorInstance";
@@ -11,117 +9,91 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 
 const PasswordReset = () => {
-    const {search}=useLocation()
-    const queryParams=new URLSearchParams(search)
-    const token=queryParams.get("token")
-    const request=queryParams.get("request")
-    const [password,setPassword]=useState<string>("")
-    const [cPassword,setCPassword]=useState<string>("")
-    const passInput1 = useRef<HTMLInputElement>(null);
-    const passInput2 = useRef<HTMLInputElement>(null);
-    const [pass1Visibility, setPass1Visibility] = useState(false);
-    const [pass2Visibility, setPass2Visibility] = useState(false);
-    const handleSubmit=async(e:React.FormEvent)=>{
-        e.preventDefault()
-        console.log("inn")
-           if (!password.trim()) {
-             toast.error("Password is required",{richColors:true,duration:1500});
-             return
-           } else if (password.length < 6) {
-        
-                  return toast.error("Password must be at least 6 characters", {
-                    richColors: true,
-                    duration: 1500,
-                  });
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const token = queryParams.get("token");
+  const request = queryParams.get("request");
+  const [password, setPassword] = useState<string>("");
+  const [cPassword, setCPassword] = useState<string>("");
+  const passInput1 = useRef<HTMLInputElement>(null);
+  const passInput2 = useRef<HTMLInputElement>(null);
+  const [pass1Visibility, setPass1Visibility] = useState(false);
+  const [pass2Visibility, setPass2Visibility] = useState(false);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-           } else if (!/\W/.test(password)) {
-                  return toast.error("Password must contain at least one symbol", {
-                    richColors: true,
-                    duration: 1500,
-                  });
-           } else if (!/[A-Z]/.test(password)) {
-            
-                toast.error(
-                  "Password must contain at least one uppercase letter",
-                  {
-                    richColors: true,
-                    duration: 1500,
-                  }
-                );
-                return
-           }
-            if (!cPassword.trim()) {
-           
-              return toast.error("Confirm Password is required", {
-                richColors: true,
-                duration: 1500,
-              });
-            } else if (password !== cPassword) {
-              
-              return toast.error("Passwords Must Match", {
-                richColors: true,
-                duration: 1500,
-              });
-
-            }
-            console.log("done")
-
-           try{
-            let response;
-              if(request==="user"){
-                response = await instance.post(
-                  `/profile/password/reset/${token}`,
-                  {
-                    password,
-                  }
-                );
-             
-              }else{
-                 response = await docInstance.post(
-                   `/profile/password/reset/${token}`,
-                   {
-                     password,
-                   }
-                 );
-               
-
-              }
-                if (response.data.success) {
-                  toast.success(response.data.message, {
-                    richColors: true,
-                    duration: 1500,
-                    onAutoClose: () => {
-                      window.close();
-                    },
-                  });
-                }
-
-           }
-           catch(error){
-            if (error instanceof AxiosError) {
-              toast.error(error?.response?.data.message, {
-                richColors: true,
-                duration: 1500,
-                onAutoClose: () => {
-                  window.close();
-                },
-              });
-            } else {
-              
-              toast.error("An unexpected error occurred", {
-                richColors: true,
-                duration: 1500,
-                onAutoClose:()=>{
-                    window.close();
-
-                }
-              });
-        
-            }
-
-           }
-
+    if (!password.trim()) {
+      toast.error("Password is required", { richColors: true, duration: 1500 });
+      return;
+    } else if (password.length < 6) {
+      return toast.error("Password must be at least 6 characters", {
+        richColors: true,
+        duration: 1500,
+      });
+    } else if (!/\W/.test(password)) {
+      return toast.error("Password must contain at least one symbol", {
+        richColors: true,
+        duration: 1500,
+      });
+    } else if (!/[A-Z]/.test(password)) {
+      toast.error("Password must contain at least one uppercase letter", {
+        richColors: true,
+        duration: 1500,
+      });
+      return;
     }
+    if (!cPassword.trim()) {
+      return toast.error("Confirm Password is required", {
+        richColors: true,
+        duration: 1500,
+      });
+    } else if (password !== cPassword) {
+      return toast.error("Passwords Must Match", {
+        richColors: true,
+        duration: 1500,
+      });
+    }
+
+    try {
+      let response;
+      if (request === "user") {
+        response = await instance.post(`/profile/password/reset/${token}`, {
+          password,
+        });
+      } else {
+        response = await docInstance.post(`/profile/password/reset/${token}`, {
+          password,
+        });
+      }
+      if (response.data.success) {
+        toast.success(response.data.message, {
+          richColors: true,
+          duration: 1500,
+          onAutoClose: () => {
+            window.close();
+          },
+        });
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error?.response?.data.message, {
+          richColors: true,
+          duration: 1500,
+          onAutoClose: () => {
+            window.close();
+          },
+        });
+      } else {
+        toast.error("An unexpected error occurred", {
+          richColors: true,
+          duration: 1500,
+          onAutoClose: () => {
+            window.close();
+          },
+        });
+      }
+    }
+  };
   return (
     <main id="content" role="main" className="w-full max-w-md mx-auto p-6">
       <div className="mt-7 bg-white rounded-xl shadow-lg dark:bg-gray-800 dark:border-gray-700 border-2 border-indigo-300">

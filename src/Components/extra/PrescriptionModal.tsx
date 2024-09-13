@@ -4,64 +4,66 @@ import instance from "../../Axios/doctorInstance";
 import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
 
-const PrescriptionModal = ({appointmentId,closeModal}:{appointmentId:string;closeModal:()=>void}) => {
-   const [pdf, setPdf] = useState<File | null>(null);
-  const navigate=useNavigate()
-  const [loading,setLoading]=useState(false)
+const PrescriptionModal = ({
+  appointmentId,
+  closeModal,
+}: {
+  appointmentId: string;
+  closeModal: () => void;
+}) => {
+  const [pdf, setPdf] = useState<File | null>(null);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-    
         toast.error("File size should be less than 2 MB", {
           richColors: true,
           duration: 1500,
         });
         setPdf(null);
-        
-      
       } else if (file.type !== "application/pdf") {
-       
-
-         toast.error("Please select a PDF file", {
-           richColors: true,
-           duration: 1500,
-         });
+        toast.error("Please select a PDF file", {
+          richColors: true,
+          duration: 1500,
+        });
         setPdf(null);
-
       } else {
-        
         setPdf(file);
       }
     }
   };
-  const handleFileUpload=async()=>{
-     if (!pdf) {
-       toast.error("No PDF file selected");
-       return;
-     }
-     const formData=new FormData()
-     formData.append("prescription",pdf)
-     setLoading(true)
-    try{
-        const response = await instance.put(`/appointments/${appointmentId}/prescriptions`,formData,{headers:{"Content-Type":"multipart/form-data"}});
-        if(response.data.success){
-          setLoading(false)
-            toast.success(response.data.message,{richColors:true,duration:1500,onAutoClose:()=>{
-                closeModal()
-
-                 navigate(`/doctor/userProfile/${appointmentId}`);
-            }})
-           
-        }
-
-
+  const handleFileUpload = async () => {
+    if (!pdf) {
+      toast.error("No PDF file selected");
+      return;
     }
-    catch(error){
-      setLoading(false)
+    const formData = new FormData();
+    formData.append("prescription", pdf);
+    setLoading(true);
+    try {
+      const response = await instance.put(
+        `/appointments/${appointmentId}/prescriptions`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      if (response.data.success) {
+        setLoading(false);
+        toast.success(response.data.message, {
+          richColors: true,
+          duration: 1500,
+          onAutoClose: () => {
+            closeModal();
 
+            navigate(`/doctor/userProfile/${appointmentId}`);
+          },
+        });
+      }
+    } catch (error) {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div
@@ -132,11 +134,11 @@ const PrescriptionModal = ({appointmentId,closeModal}:{appointmentId:string;clos
             >
               add Prescription
             </button>
-            {loading && <Spinner isUser={false}/>}
+            {loading && <Spinner isUser={false} />}
           </div>
         </div>
       </div>
     </div>
   );
 };
-export default PrescriptionModal
+export default PrescriptionModal;

@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 
 const ContactLocationComponent = () => {
- 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {

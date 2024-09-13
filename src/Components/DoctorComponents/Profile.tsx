@@ -1,11 +1,11 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import instance from "../../Axios/doctorInstance";
 import { AxiosError } from "axios";
 import ProfileModal from "../extra/ProfileModal";
 import SyncLoader from "react-spinners/SyncLoader";
 import "react-image-crop/dist/ReactCrop.css";
-import {toast} from "sonner"
+import { toast } from "sonner";
 import PasswordChangeModal from "../extra/PasswordChangeMoadal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,7 +26,7 @@ export type Doctor = {
   image: string | null;
   documentsUploaded?: boolean;
   bankDetails: {
-    accountNumber:string;
+    accountNumber: string;
     ifsc: string;
   };
   documents?: {
@@ -40,167 +40,149 @@ export type Doctor = {
   status?: "Pending" | "Submitted" | "Verified";
   fees: string | null;
   degree: string | null;
-  complete?:boolean;
+  complete?: boolean;
 };
 const DoctorProfile = () => {
-    const [userData, setUserData] = useState<Doctor>({
-      _id: "",
-      name: "",
-      email: "",
-      phone: "",
-      gender: "",
-      department: "",
-      password: "",
-      image: "",
-      description: "",
-      fees: "",
-      degree: "",
-      bankDetails: {
-        accountNumber: "",
-        ifsc: "",
-      },
-    });
+  const [userData, setUserData] = useState<Doctor>({
+    _id: "",
+    name: "",
+    email: "",
+    phone: "",
+    gender: "",
+    department: "",
+    password: "",
+    image: "",
+    description: "",
+    fees: "",
+    degree: "",
+    bankDetails: {
+      accountNumber: "",
+      ifsc: "",
+    },
+  });
 
-      const [imageURL, setImageURL] = useState<string>();
-       const [myErrors, setMyErrors] = useState<any>({});
-       const [modalOpen,setModalOpen]=useState(false)
-       const [loading,setLoading]=useState(false)
-        const [passwordModalOpen, setPasswordModalOpen] = useState(false);
-        const override = {
-          display: "flex",
-          justifyContent: "center",
-        };
+  const [imageURL, setImageURL] = useState<string>();
+  const [myErrors, setMyErrors] = useState<any>({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const override = {
+    display: "flex",
+    justifyContent: "center",
+  };
 
-    useEffect(()=>{
-
-        const getProfile=async()=>{
-           try{
-
-             const response = await instance.get("/profile");
-             if(response.data.success){
-                setUserData(response.data.doctorData)
-                setImageURL(response.data.doctorData.image||"");
-                console.log("data",response.data.doctorData);
-
-             }
-
-           }
-           catch(error){
-            if(error instanceof AxiosError){
-                console.log(error)
-            }
-           }
-
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const response = await instance.get("/profile");
+        if (response.data.success) {
+          setUserData(response.data.doctorData);
+          setImageURL(response.data.doctorData.image || "");
         }
-        getProfile()
-
-
-    },[])
-    const handleSubmit=async(e:React.FormEvent)=>{
-        setMyErrors({})
-        e.preventDefault()
-        const validationErrors:any={}
-         const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
-         if (!userData.name.trim()) {
-           validationErrors.name = "Name is required";
-         } else if (!nameRegex.test(userData.name)) {
-           validationErrors.name = "Invalid name format";
-         }
-         const phoneRegex = /^\d{10}$/;
-         if (!userData.phone || !userData.phone.trim()) {
-           validationErrors.phone = "Phone number is required";
-         } else if (!phoneRegex.test(userData.phone)) {
-           validationErrors.phone = "Phone number must be 10 digits";
-         }
-         if(!userData.degree?.trim()){
-          return toast.error("Degree Field Is Missing",{richColors:true,duration:1500})
-         }
-          
-         
-
-  if (userData.fees == null || (userData?.fees as String).trim() === "") {
-   return toast.error("Fees are required", {
-     richColors: true,
-     duration: 1500,
-   });
-  } else if (isNaN(Number(userData.fees))) {
-  
-              return toast.error("Fees must be a number", {
-                richColors: true,
-                duration: 1500,
-              });
-  } else {
-    const feesNumber = Number(userData.fees);
-    if (feesNumber < 300 || feesNumber > 3000) {
-      validationErrors.fees = "Fees should be between 300 and 3000";
-      return toast.error("Fees should be between 300 and 3000", {
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.message, {
+            richColors: true,
+            duration: 1000,
+          });
+        }
+      }
+    };
+    getProfile();
+  }, []);
+  const handleSubmit = async (e: React.FormEvent) => {
+    setMyErrors({});
+    e.preventDefault();
+    const validationErrors: any = {};
+    const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
+    if (!userData.name.trim()) {
+      validationErrors.name = "Name is required";
+    } else if (!nameRegex.test(userData.name)) {
+      validationErrors.name = "Invalid name format";
+    }
+    const phoneRegex = /^\d{10}$/;
+    if (!userData.phone || !userData.phone.trim()) {
+      validationErrors.phone = "Phone number is required";
+    } else if (!phoneRegex.test(userData.phone)) {
+      validationErrors.phone = "Phone number must be 10 digits";
+    }
+    if (!userData.degree?.trim()) {
+      return toast.error("Degree Field Is Missing", {
         richColors: true,
         duration: 1500,
       });
     }
+
+    if (userData.fees == null || (userData?.fees as String).trim() === "") {
+      return toast.error("Fees are required", {
+        richColors: true,
+        duration: 1500,
+      });
+    } else if (isNaN(Number(userData.fees))) {
+      return toast.error("Fees must be a number", {
+        richColors: true,
+        duration: 1500,
+      });
+    } else {
+      const feesNumber = Number(userData.fees);
+      if (feesNumber < 300 || feesNumber > 3000) {
+        validationErrors.fees = "Fees should be between 300 and 3000";
+        return toast.error("Fees should be between 300 and 3000", {
+          richColors: true,
+          duration: 1500,
+        });
+      }
     }
 
-     const accountNumberRegex = /^\d{9,18}$/;
-     if (!userData?.bankDetails?.accountNumber || !userData?.bankDetails?.accountNumber.trim()) {
-       validationErrors.accountNumber = "Bank account number is required";
-     } else if (!accountNumberRegex.test(userData?.bankDetails?.accountNumber)) {
-       validationErrors.accountNumber = "Invalid bank account number format";
-     }
-
-  
-     const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
-     if (!userData?.bankDetails?.ifsc || !userData?.bankDetails?.ifsc.trim()) {
-       validationErrors.ifsc = "IFSC code is required";
-     } else if (!ifscRegex.test(userData?.bankDetails?.ifsc)) {
-       validationErrors.ifsc = "Invalid IFSC code format";
-     }
-
-
-  
-
-
-           if(Object.keys(validationErrors).length>0){
-            setMyErrors(validationErrors)
-            return
-           }
-          try{
-            setLoading(true)
-             const response = await instance.put("/profile",userData);
-             setLoading(false)
-             if (response.data.success) {
-               setUserData((prevState)=>({...prevState,complete:true}));
-               toast.success(response.data.message, {
-                 richColors: true,
-                 duration: 1500,
-               });
-             }
-
-          }
-          catch(error){
-            if(error instanceof AxiosError){
-              toast.error(error.response?.data.message, {
-                richColors: true,
-                duration: 1500,
-              });
-            }
-
-          }
-
-          
-
-
+    const accountNumberRegex = /^\d{9,18}$/;
+    if (
+      !userData?.bankDetails?.accountNumber ||
+      !userData?.bankDetails?.accountNumber.trim()
+    ) {
+      validationErrors.accountNumber = "Bank account number is required";
+    } else if (!accountNumberRegex.test(userData?.bankDetails?.accountNumber)) {
+      validationErrors.accountNumber = "Invalid bank account number format";
     }
-    const handleChangePassword = async () => {
-      try {
-        setPasswordModalOpen(true);
-         await instance.post(
-          "/profile/password/reset-request",
-          {
-            email: userData.email,
-          }
-        );
-      } catch (error) {}
-    };
+
+    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    if (!userData?.bankDetails?.ifsc || !userData?.bankDetails?.ifsc.trim()) {
+      validationErrors.ifsc = "IFSC code is required";
+    } else if (!ifscRegex.test(userData?.bankDetails?.ifsc)) {
+      validationErrors.ifsc = "Invalid IFSC code format";
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setMyErrors(validationErrors);
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await instance.put("/profile", userData);
+      setLoading(false);
+      if (response.data.success) {
+        setUserData((prevState) => ({ ...prevState, complete: true }));
+        toast.success(response.data.message, {
+          richColors: true,
+          duration: 1500,
+        });
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message, {
+          richColors: true,
+          duration: 1500,
+        });
+      }
+    }
+  };
+  const handleChangePassword = async () => {
+    try {
+      setPasswordModalOpen(true);
+      await instance.post("/profile/password/reset-request", {
+        email: userData.email,
+      });
+    } catch (error) {}
+  };
 
   return (
     <>

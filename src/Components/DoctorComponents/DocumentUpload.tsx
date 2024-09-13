@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useAppSelector ,useAppDispatch} from "../../Redux/hoocks";
+import { useAppSelector, useAppDispatch } from "../../Redux/hoocks";
 import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { doctorDocumentUpload } from "../../Redux/doctorSlice";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Spinner from "../extra/Spinner";
 
 const DoctorDocumentUpload: React.FC = () => {
@@ -15,9 +15,9 @@ const DoctorDocumentUpload: React.FC = () => {
   const [preview3, setPreview3] = useState<string | null>(null);
   const [file4, setFile4] = useState<File | null>(null);
   const [preview4, setPreview4] = useState<string | null>(null);
-  const {docStatus,loading}=useAppSelector((state)=>state.doctor)
-  const navigate=useNavigate()
-  const dispatch=useAppDispatch()
+  const { docStatus, loading } = useAppSelector((state) => state.doctor);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleFileChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -37,92 +37,89 @@ const DoctorDocumentUpload: React.FC = () => {
       setPreview(null);
     }
   };
-    const isImageFormatValid = (file: File) => {
-      const validFormats = [
-        "image/jpeg",
-        "image/jpg",
-        "image/bmp",
-        "image/webp",
-        "image/tiff",
-      ];
-      return validFormats.includes(file.type);
-    };
-     const isFileSizeValid = (file: File) => {
-       const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
-       return file.size <= maxSizeInBytes;
-     };
+  const isImageFormatValid = (file: File) => {
+    const validFormats = [
+      "image/jpeg",
+      "image/jpg",
+      "image/bmp",
+      "image/webp",
+      "image/tiff",
+    ];
+    return validFormats.includes(file.type);
+  };
+  const isFileSizeValid = (file: File) => {
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
+    return file.size <= maxSizeInBytes;
+  };
 
-    const handleSubmit = async() => {
+  const handleSubmit = async () => {
+    if (!file1 || !file2 || !file3 || !file4) {
+      toast.error("Please upload all four images.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Zoom,
+      });
+      return;
+    }
 
-      if (!file1 || !file2 || !file3 || !file4) {
-           toast.error("Please upload all four images.", {
-             position: "top-right",
-             autoClose: 5000,
-             hideProgressBar: false,
-             closeOnClick: true,
-             pauseOnHover: true,
-             draggable: true,
-             progress: undefined,
-             theme: "colored",
-             transition: Zoom,
-           });
-        return;
-      }
+    if (
+      !isImageFormatValid(file1) ||
+      !isImageFormatValid(file2) ||
+      !isImageFormatValid(file3) ||
+      !isImageFormatValid(file4)
+    ) {
+      toast.error(
+        "Invalid image format. Please upload images in JPG, JPEG, BMP, WEBP, or TIFF formats.",
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Zoom,
+        }
+      );
+      return;
+    }
+    if (
+      !isFileSizeValid(file1) ||
+      !isFileSizeValid(file2) ||
+      !isFileSizeValid(file3) ||
+      !isFileSizeValid(file4)
+    ) {
+      toast.error("File size must be less than 2 MB.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Zoom,
+      });
+      return;
+    }
+    const formData = new FormData();
+    formData.append("images", file1);
+    formData.append("images", file2);
+    formData.append("images", file3);
+    formData.append("images", file4);
 
-      if (
-        !isImageFormatValid(file1) ||
-        !isImageFormatValid(file2) ||
-        !isImageFormatValid(file3) ||
-        !isImageFormatValid(file4)
-      ) {
-            toast.error(
-              "Invalid image format. Please upload images in JPG, JPEG, BMP, WEBP, or TIFF formats.",
-              {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Zoom,
-              }
-            );
-        return;
-      }
-         if (
-           !isFileSizeValid(file1) ||
-           !isFileSizeValid(file2) ||
-           !isFileSizeValid(file3) ||
-           !isFileSizeValid(file4)
-         ) {
-        
-              toast.error("File size must be less than 2 MB.", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Zoom,
-              });
-           return;
-         }
-      const formData = new FormData();
-      formData.append("images", file1);
-      formData.append("images", file2);
-      formData.append("images", file3);
-      formData.append("images", file4);
-      console.log("called")
-      await dispatch(doctorDocumentUpload(formData))
-      navigate("/doctor")
-      
-    };
+    await dispatch(doctorDocumentUpload(formData));
+    navigate("/doctor");
+  };
 
-  if(docStatus==="Pending"){
+  if (docStatus === "Pending") {
     return (
       <section className="container w-full mx-auto items-center pt-10 pb-32">
         <h1 className="text-center text-3xl font-bold mb-4">
@@ -373,24 +370,21 @@ const DoctorDocumentUpload: React.FC = () => {
         {loading && <Spinner isUser={false} />}
       </section>
     );
- 
   }
-    if(docStatus==="Submitted"){
-        return (
-            <>
-            <h1>Document has been submitted and yet to be verified</h1>
-            </>
-        )
-     }
-     if(docStatus==="verified"){
-        return (
-             <>
-           <h1>Verified Doctor</h1>
-         </>
-        )
-
-     }
+  if (docStatus === "Submitted") {
+    return (
+      <>
+        <h1>Document has been submitted and yet to be verified</h1>
+      </>
+    );
+  }
+  if (docStatus === "verified") {
+    return (
+      <>
+        <h1>Verified Doctor</h1>
+      </>
+    );
+  }
 };
 
 export default DoctorDocumentUpload;
-

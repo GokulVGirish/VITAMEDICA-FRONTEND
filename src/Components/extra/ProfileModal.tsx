@@ -3,17 +3,17 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import ImageCropper from "./ImageCropper";
 type PropsType = {
   closeModal(): void;
-  setAvatar(url:string):void
-  side:"user"|"doctor"
+  setAvatar(url: string): void;
+  side: "user" | "doctor";
 };
-const ProfileModal = ({ closeModal,setAvatar,side }:PropsType) => {
+const ProfileModal = ({ closeModal, setAvatar, side }: PropsType) => {
   return (
     <div
       className="relative"
       aria-labelledby="crop-image-dialog"
       role="dialog"
       aria-modal="true"
-      style={{zIndex:80}}
+      style={{ zIndex: 80 }}
     >
       <div className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-all backdrop-blur-sm"></div>
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -26,9 +26,13 @@ const ProfileModal = ({ closeModal,setAvatar,side }:PropsType) => {
                 onClick={closeModal}
               >
                 <span className="sr-only">Close menu</span>
-              <FontAwesomeIcon icon={faCircleXmark}/>
+                <FontAwesomeIcon icon={faCircleXmark} />
               </button>
-              <ImageCropper setAvatar={setAvatar} closeModal={closeModal} side={side}/>
+              <ImageCropper
+                setAvatar={setAvatar}
+                closeModal={closeModal}
+                side={side}
+              />
             </div>
           </div>
         </div>

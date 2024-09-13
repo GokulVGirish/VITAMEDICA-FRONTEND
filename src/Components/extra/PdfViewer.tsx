@@ -13,7 +13,6 @@ const PdfViewer = ({
   viewPdf: string | null;
 }) => {
   const newplugin = defaultLayoutPlugin();
-  console.log("view pdf",viewPdf)
 
   return (
     <div

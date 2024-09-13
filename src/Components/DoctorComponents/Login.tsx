@@ -59,7 +59,6 @@ const DoctorLogin = () => {
       });
     }
     if (message === "logged in sucessfully") {
-      console.log("innn");
       setTimeout(() => {
         navigate("/doctor");
         dispatch(clearErrorMessage());

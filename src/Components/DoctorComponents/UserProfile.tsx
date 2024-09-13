@@ -31,7 +31,7 @@ const DoctorUserProfile = () => {
   const socket = useContext(SocketContext);
   const [online, setOnline] = useState<boolean>(false);
   const [pdfModal, setPdfModal] = useState(false);
-  console.log("appointments", appointmentDetails);
+
   const navigate = useNavigate();
   const { id } = useParams();
   const [messages, setMessages] = useState<any[]>([]);
@@ -40,16 +40,14 @@ const DoctorUserProfile = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [loading,setLoading]=useState(false)
-  console.log("appointmentDetails",appointmentDetails)
+  const [loading, setLoading] = useState(false);
 
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-    const handleEmojiClick = (emojiObject:any) => {
-      setNewMessage((prevMessage) => prevMessage + emojiObject.emoji);
-      setShowEmojiPicker(false);
-    };
-
+  const handleEmojiClick = (emojiObject: any) => {
+    setNewMessage((prevMessage) => prevMessage + emojiObject.emoji);
+    setShowEmojiPicker(false);
+  };
 
   const fetchAppointmentData = useCallback(async () => {
     const response = await instance.get(`/appointments/${id}`);
@@ -78,7 +76,6 @@ const DoctorUserProfile = () => {
     };
   }, [appointmentDetails, socket]);
 
-  console.log("onelee", online);
   function calculateAge(dob: Date): number {
     const today = new Date();
     const birthDate = new Date(dob);
@@ -113,7 +110,6 @@ const DoctorUserProfile = () => {
       socket.emit("join_appointment", { appointmentId: id });
 
       socket.on("receive_message", (message) => {
-        console.log("Message received:", message);
         setMessages((prevMessages) => [...prevMessages, message]);
       });
     }
@@ -122,7 +118,6 @@ const DoctorUserProfile = () => {
       socket?.off("receive_message");
     };
   }, [id, socket]);
-  console.log("appointmetDetails", appointmentDetails);
 
   const sendMessage = () => {
     if (!newMessage.trim()) {
@@ -137,26 +132,21 @@ const DoctorUserProfile = () => {
       message: newMessage,
       type: "txt",
     });
-     socket?.emit("send_notification", {
-       receiverId: appointmentDetails?.userId,
-       content: `You  have received a message from Dr ${appointmentDetails?.docName}`,
-       appointmentId: id,
-       type: "message",
-     });
+    socket?.emit("send_notification", {
+      receiverId: appointmentDetails?.userId,
+      content: `You  have received a message from Dr ${appointmentDetails?.docName}`,
+      appointmentId: id,
+      type: "message",
+    });
 
     setNewMessage("");
   };
-  console.log("messages", messages);
-  const scrollToBottom = () => {
-  
 
-  
-    
-        messagesEndRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-         
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   };
 
   useEffect(() => {
@@ -180,13 +170,16 @@ const DoctorUserProfile = () => {
   };
   const handleSendImage = async () => {
     if (imageFile) {
-     
       const formData = new FormData();
       formData.append("image", imageFile);
       try {
-        setLoading(true)
-        
-         const response = await imageInstance.put(`/${id}/${"doctor"}`,formData,{headers:{"Content-Type":"multipart/form-data"}});
+        setLoading(true);
+
+        const response = await imageInstance.put(
+          `/${id}/${"doctor"}`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
         if (response.data.success) {
           const imageUrl = response.data.url;
           socket?.emit("send_message", {
@@ -203,8 +196,8 @@ const DoctorUserProfile = () => {
         setShowModal(false);
         setImageFile(null);
         setImagePreview(null);
-      }finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     }
   };

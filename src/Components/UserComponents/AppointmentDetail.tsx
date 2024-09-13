@@ -1,13 +1,21 @@
 import React, { ChangeEvent, useRef } from "react";
 import { useCallback, useEffect, useState, useContext } from "react";
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import instance from "../../Axios/userInstance";
 import moment from "moment";
 import PdfViewer from "../extra/PdfViewer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "sonner";
-import { faCircleExclamation, faCircleXmark, faCloudArrowUp, faFilePdf, faPaperclip, faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
-import  { AxiosError } from "axios";
+import {
+  faCircleExclamation,
+  faCircleXmark,
+  faCloudArrowUp,
+  faFilePdf,
+  faPaperclip,
+  faPaperPlane,
+  faSmile,
+} from "@fortawesome/free-solid-svg-icons";
+import { AxiosError } from "axios";
 import { SocketContext } from "../../socketio/SocketIo";
 import imageInstance from "../../Axios/imageIntsance";
 import ImagePreviewSendTime from "../extra/ImagePreviewSendTime";
@@ -18,123 +26,106 @@ import EmojiPicker from "emoji-picker-react";
 const UserAppointmentDetail = () => {
   const [appointmentDetails, setAppointmentDetails] = useState<any>(null);
   const [pdfModal, setPdfModal] = useState(false);
-  console.log("appointments", appointmentDetails);
-   const [messages, setMessages] = useState<any[]>([]);
-   const [newMessage, setNewMessage] = useState("");
-   const socket=useContext(SocketContext)
-     const { id } = useParams();
-     const [loading,setLoading]=useState(false)
-     const[isMedicalRecordUploaded,setIsMedicalRecordUploaded]=useState(false)
-     const {user}=useAppSelector((state)=>state.user)
+  const [messages, setMessages] = useState<any[]>([]);
+  const [newMessage, setNewMessage] = useState("");
+  const socket = useContext(SocketContext);
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
+  const [isMedicalRecordUploaded, setIsMedicalRecordUploaded] = useState(false);
+  const { user } = useAppSelector((state) => state.user);
   //  message
-    const messagesEndRef = useRef<HTMLDivElement | null>(null);
-     const [imageFile, setImageFile] = useState<File | null>(null);
-     const [showModal, setShowModal] = useState<boolean>(false);
-     const [imagePreview, setImagePreview] = useState<string | null>(null);
-   //message
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  //message
 
+  const medicalRecordsRef = useRef<HTMLInputElement | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const medicalRecordsRef=useRef<HTMLInputElement|null>(null)
-   const [imageFiles, setImageFiles] = useState<File[]>([]);
-   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const handleEmojiClick = (emojiObject: any) => {
+    setNewMessage((prevMessage) => prevMessage + emojiObject.emoji);
+    setShowEmojiPicker(false);
+  };
 
-     const handleEmojiClick = (emojiObject: any) => {
-       setNewMessage((prevMessage) => prevMessage + emojiObject.emoji);
-       setShowEmojiPicker(false);
-     };
-
-  const fetchAppointmentDetail=useCallback(async()=>{
-
-  try{
+  const fetchAppointmentDetail = useCallback(async () => {
+    try {
       const response = await instance.get(`/appointments/${id}/detail`);
       if (response.data.success) {
-        setAppointmentDetails(response.data.data)
-        setMessages(response.data.messages)
-        
-
+        setAppointmentDetails(response.data.data);
+        setMessages(response.data.messages);
       }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+      }
+    }
+  }, [id, isMedicalRecordUploaded]);
+  useEffect(() => {
+    fetchAppointmentDetail();
+  }, [fetchAppointmentDetail]);
 
-  }
-  catch(error){
-    if(error instanceof AxiosError){
-      console.log(error.response?.data)
+  useEffect(() => {
+    if (socket && id) {
+      socket.emit("join_appointment", { appointmentId: id });
+
+      socket.on("receive_message", (message) => {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      });
     }
 
-  }
-
-  },[id,isMedicalRecordUploaded])
-  useEffect(()=>{
-    fetchAppointmentDetail()
-
-  },[fetchAppointmentDetail])
-  console.log(appointmentDetails)
-
-
- useEffect(() => {
-   if (socket && id) {
-     socket.emit("join_appointment", { appointmentId: id });
-
-     socket.on("receive_message", (message) => {
-       console.log("Message received:", message);
-       setMessages((prevMessages) => [...prevMessages, message]);
-     });
-   }
-
-   return () => {
-     socket?.off("receive_message");
-   };
- }, [id, socket]);
-    console.log("appointmetDetails", appointmentDetails);
-
-    const sendMessage = () => {
-      if (!newMessage.trim()) {
-        return toast.error("type a message", {
-          richColors: true,
-          duration: 1500,
-        });
-      }
-      socket?.emit("send_message", {
-        appointmentId: id,
-        sender: "user",
-        message: newMessage,
-        type:"txt"
-      });
-
-      socket?.emit("send_notification",{
-        receiverId:appointmentDetails?.docId,
-        content:`You  have received a message from ${user}`,
-        appointmentId:id,
-        type:"message"
-      })
-       
-      setNewMessage("");
+    return () => {
+      socket?.off("receive_message");
     };
-console.log("messages",messages)
- 
+  }, [id, socket]);
+
+  const sendMessage = () => {
+    if (!newMessage.trim()) {
+      return toast.error("type a message", {
+        richColors: true,
+        duration: 1500,
+      });
+    }
+    socket?.emit("send_message", {
+      appointmentId: id,
+      sender: "user",
+      message: newMessage,
+      type: "txt",
+    });
+
+    socket?.emit("send_notification", {
+      receiverId: appointmentDetails?.docId,
+      content: `You  have received a message from ${user}`,
+      appointmentId: id,
+      type: "message",
+    });
+
+    setNewMessage("");
+  };
 
   const scrollToBottom = () => {
-   messagesEndRef.current?.scrollIntoView({
-     behavior: "smooth",
-     block: "center",
-   });
-  
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   };
 
   useEffect(() => {
-    scrollToBottom(); 
+    scrollToBottom();
   }, [messages]);
 
-   const handleFileChange = (e: ChangeEvent<HTMLInputElement>): void => {
-     const selectedFile = e.target.files ? e.target.files[0] : null;
-     if (selectedFile) {
-       setImageFile(selectedFile);
-       const reader = new FileReader();
-       reader.onloadend = () => setImagePreview(reader.result as string);
-       reader.readAsDataURL(selectedFile);
-       setShowModal(true);
-     }
-   };
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const selectedFile = e.target.files ? e.target.files[0] : null;
+    if (selectedFile) {
+      setImageFile(selectedFile);
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result as string);
+      reader.readAsDataURL(selectedFile);
+      setShowModal(true);
+    }
+  };
   const handleSendImage = async () => {
     if (imageFile) {
       const formData = new FormData();
@@ -166,7 +157,6 @@ console.log("messages",messages)
     }
   };
 
-
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
@@ -174,64 +164,60 @@ console.log("messages",messages)
 
     const selectedFiles = Array.from(files);
 
-
     if (selectedFiles.length + imageFiles.length > 3) {
-
-      return toast.error("You can only upload a maximum of 3 images",{richColors:true,duration:1500});
+      return toast.error("You can only upload a maximum of 3 images", {
+        richColors: true,
+        duration: 1500,
+      });
     }
 
     const newImagePreviews = selectedFiles.map((file) =>
       URL.createObjectURL(file)
     );
 
-
     setImageFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
     setImagePreviews((prevPreviews) => [...prevPreviews, ...newImagePreviews]);
   };
-  const handleRemoveImage=(indx:number)=>{
-    const updatedFiles=imageFiles.filter((_,index)=>index!==index)
-    const updatedPreviews=imagePreviews.filter((_,index)=>indx!==index)
-    setImageFiles(updatedFiles)
-    setImagePreviews(updatedPreviews)
-
-  }
-  const handleMedicalRecordsUpload=async()=>{
-    if(imageFiles.length===0) return toast.error("Add records", {
-      richColors: true,
-      duration: 1500,
+  const handleRemoveImage = (indx: number) => {
+    const updatedFiles = imageFiles.filter((_, index) => index !== index);
+    const updatedPreviews = imagePreviews.filter((_, index) => indx !== index);
+    setImageFiles(updatedFiles);
+    setImagePreviews(updatedPreviews);
+  };
+  const handleMedicalRecordsUpload = async () => {
+    if (imageFiles.length === 0)
+      return toast.error("Add records", {
+        richColors: true,
+        duration: 1500,
+      });
+    const formData = new FormData();
+    imageFiles.forEach((image) => {
+      formData.append("medicalRecords", image);
     });
-    const formData=new FormData()
-    imageFiles.forEach((image)=>{
-      formData.append("medicalRecords",image)
-    })
-   try{
-     setLoading(true);
-     const response = await instance.post(
-       `/appointments/medicalRecords/${id}`,
-       formData,
-       {
-         headers: {
-           "Content-Type": "multipart/form-data",
-         },
-       }
-     );
-     if (response.data.success) {
-       setLoading(false);
+    try {
+      setLoading(true);
+      const response = await instance.post(
+        `/appointments/medicalRecords/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.data.success) {
+        setLoading(false);
 
-       setIsMedicalRecordUploaded(true);
-       toast.success("success", { richColors: true, duration: 1500 });
-     }
-
-   }catch(error){
-    setLoading(false)
-
-   }finally{
-    setImageFiles([])
-    setImagePreviews([])
-   }
-
-  }
-  console.log("appointment detail",appointmentDetails)
+        setIsMedicalRecordUploaded(true);
+        toast.success("success", { richColors: true, duration: 1500 });
+      }
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setImageFiles([]);
+      setImagePreviews([]);
+    }
+  };
 
   return (
     <div className="px-16 py-3 ">

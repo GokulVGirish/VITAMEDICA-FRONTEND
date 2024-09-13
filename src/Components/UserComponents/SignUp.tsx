@@ -14,8 +14,7 @@ import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "sonner";
 import Spinner from "../extra/Spinner";
 import { useContext } from "react";
-import  { SocketContext } from "../../socketio/SocketIo";
-
+import { SocketContext } from "../../socketio/SocketIo";
 
 const initialState = {
   name: "",
@@ -31,9 +30,9 @@ type stateType = typeof initialState;
 const myReducer = (
   state: stateType,
   action:
-     { type: "SET_FIELD"; field: string; value: string }
+    | { type: "SET_FIELD"; field: string; value: string }
     | { type: "SET_BLOOD_GROUP"; value: string }
-    |{type :"SET_GENDER",value:string}
+    | { type: "SET_GENDER"; value: string }
 ): stateType => {
   switch (action.type) {
     case "SET_FIELD":
@@ -46,11 +45,11 @@ const myReducer = (
         ...state,
         bloodGroup: action.value,
       };
-      case "SET_GENDER":
+    case "SET_GENDER":
       return {
         ...state,
-        gender:action.value
-      }
+        gender: action.value,
+      };
     default:
       return state;
   }
@@ -65,7 +64,7 @@ const UserSignUp = () => {
   const passInput2 = useRef<HTMLInputElement>(null);
   const [pass1Visibility, setPass1Visibility] = useState(false);
   const [pass2Visibility, setPass2Visibility] = useState(false);
-  const socket=useContext(SocketContext)
+  const socket = useContext(SocketContext);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -105,15 +104,13 @@ const UserSignUp = () => {
         duration: 1500,
       });
     }
-    
-    if(!state.gender.trim()){
-        return toast.error("Select a gender", {
-          richColors: true,
-          duration: 1500,
-        });
 
-    }
-    else if (state.gender !== "male" && state.gender !== "female") {
+    if (!state.gender.trim()) {
+      return toast.error("Select a gender", {
+        richColors: true,
+        duration: 1500,
+      });
+    } else if (state.gender !== "male" && state.gender !== "female") {
       return toast.error("Gender must be either male or female", {
         richColors: true,
         duration: 1500,
@@ -199,39 +196,35 @@ const UserSignUp = () => {
       });
     }
 
-    try{
+    try {
       setLoading(true);
       const response = await instance.post("/auth/signup", state);
       Cookies.set("accessToken", response.data.token, { expires: 1 / 24 / 12 });
       console.log("state", state);
 
       if (response.data.success) {
-        
         toast.success(response.data.message, {
           richColors: true,
           duration: 1500,
         });
 
         setTimeout(() => {
-           setLoading(false);
-         
+          setLoading(false);
+
           navigate("/otpVerify", { replace: true });
         }, 2000);
-      } 
-
-    }
-    catch(error){
-     if(error instanceof AxiosError){
-          toast.error(error.response?.data.message, {
-            richColors: true,
-            duration: 1500,
-          });
-     }
-         setLoading(false);
-
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message, {
+          richColors: true,
+          duration: 1500,
+        });
+      }
+      setLoading(false);
     }
   };
-//k
+  //k
   return (
     <div className="py-10 ">
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
@@ -254,7 +247,7 @@ const UserSignUp = () => {
               theme="outline"
               onSuccess={async (e) => {
                 const data = await jwtDecode(e.credential as string);
-                console.log(data);
+
                 setLoading(true);
                 try {
                   const response = await instance.post(
@@ -274,6 +267,12 @@ const UserSignUp = () => {
                     });
                     socket?.emit("loggedin", response.data.userId);
                     dispatch(updateName(response.data.name));
+                    if (response.data.message === "Signed Up Sucessfully")
+                      socket?.emit("send_notification", {
+                        receiverId: response.data.userId,
+                        content: `Thankyou for being a part of vitamedica.Hurry up complete your profile`,
+                        type: "welcome",
+                      });
 
                     dispatch(clearErrorMessage());
                     setTimeout(() => {

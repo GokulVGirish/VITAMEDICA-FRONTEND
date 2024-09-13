@@ -23,7 +23,7 @@ const FavoriteDoctors=()=>{
         try{
             const response=await instance.get(`/doctors/favorites/list?page=${currentPage}&limit=6`)
             if(response.data.success){
-                console.log("response",response.data.doctors)
+                
 
                 setDoctors(response.data.doctors)
                 setTotalCount(response.data.totalCount)
@@ -33,6 +33,7 @@ const FavoriteDoctors=()=>{
 
         }
         catch(error){
+          console.log(error)
 
         }
 

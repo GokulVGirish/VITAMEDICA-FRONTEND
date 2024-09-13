@@ -1,10 +1,7 @@
-
-
-import  { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const CopartnersSliding = () => {
   const logosRef = useRef<HTMLUListElement>(null);
-
 
   useEffect(() => {
     const ul = logosRef.current;
@@ -89,7 +86,6 @@ const CopartnersSliding = () => {
       </main>
     </div>
   );
-
 };
 
 export default CopartnersSliding;

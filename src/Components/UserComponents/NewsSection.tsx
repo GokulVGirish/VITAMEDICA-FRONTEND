@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
-import { GrLinkNext, GrLinkPrevious} from "react-icons/gr";
+import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import { RiArticleLine } from "react-icons/ri";
 import { motion } from "framer-motion";
-import logo from '@/assets/bg-2.jpg';
+import logo from "@/assets/bg-2.jpg";
 const news = [
   {
     source: {
@@ -181,14 +181,14 @@ const NewsSection = () => {
   const [showArticles, setShowArticles] = useState<any>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-   const [isMobile] = useState(window.innerWidth <= 640);
-  const articlesPerPage =isMobile?1: 4;
+  const [isMobile] = useState(window.innerWidth <= 640);
+  const articlesPerPage = isMobile ? 1 : 4;
 
   const fetchNews = useCallback(async () => {
     const response = await axios.get(
       `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=2e5705f4d9bf4b27b316f696ff32e7c4`
     );
-    console.log("response of news",response)
+
     setArticles(news);
     setShowArticles(news.slice(0, articlesPerPage));
     setTotalPages(Math.ceil(response.data.articles.length / articlesPerPage));

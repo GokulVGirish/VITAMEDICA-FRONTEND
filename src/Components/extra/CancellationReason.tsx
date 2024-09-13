@@ -1,14 +1,13 @@
-
 const BookingCancellationReason = ({
   setCancellationReasonModal,
   cancellationReason,
   setCancellationReason,
-  handleCancel
+  handleCancel,
 }: {
   setCancellationReasonModal: (status: false) => void;
   cancellationReason: string;
   setCancellationReason: (reason: string) => void;
-  handleCancel:()=>void
+  handleCancel: () => void;
 }) => {
   return (
     <div>
@@ -25,7 +24,7 @@ const BookingCancellationReason = ({
                 id="hs-scale-animation-modal-label"
                 className="font-bold text-gray-800"
               >
-              Cancel Appointment
+                Cancel Appointment
               </h3>
               <button
                 type="button"
@@ -65,7 +64,7 @@ const BookingCancellationReason = ({
               <button
                 type="button"
                 className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50"
-                onClick={()=>setCancellationReasonModal(false)}
+                onClick={() => setCancellationReasonModal(false)}
               >
                 Close
               </button>
@@ -83,4 +82,4 @@ const BookingCancellationReason = ({
     </div>
   );
 };
-export default BookingCancellationReason
+export default BookingCancellationReason;

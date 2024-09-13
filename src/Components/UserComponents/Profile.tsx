@@ -4,7 +4,7 @@ import instance from "../../Axios/userInstance";
 import { AxiosError } from "axios";
 import PasswordChangeModal from "../extra/PasswordChangeMoadal";
 import { motion } from "framer-motion";
-import {toast} from "sonner"
+import { toast } from "sonner";
 import ProfileModal from "../extra/ProfileModal";
 import Spinner from "../extra/Spinner";
 import { useAppDispatch } from "../../Redux/hoocks";
@@ -19,7 +19,7 @@ export type InitialStateType = {
   dob: string | null;
   gender: string | null;
   password: string;
-  image:string
+  image: string;
   address: {
     street: string;
     city: string;
@@ -27,9 +27,8 @@ export type InitialStateType = {
     postalCode: number;
   };
   bloodGroup: string | null;
-  isComplete:boolean
+  isComplete: boolean;
 };
-
 
 const UserProfile = () => {
   const [userData, setUserData] = useState<InitialStateType>({
@@ -47,15 +46,15 @@ const UserProfile = () => {
       postalCode: 0,
     },
     bloodGroup: null,
-    isComplete:false
+    isComplete: false,
   });
   const [imageURL, setImageURL] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
-  const [showUpdateButton,setShowUpdateButton]=useState(false)
+  const [showUpdateButton, setShowUpdateButton] = useState(false);
 
-  const dispatch=useAppDispatch()
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -78,12 +77,12 @@ const UserProfile = () => {
     fetchUserData();
   }, []);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setShowUpdateButton(true)
+    setShowUpdateButton(true);
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-       setShowUpdateButton(true);
+    setShowUpdateButton(true);
     const { name, value } = e.target;
     setUserData({
       ...userData,
@@ -93,7 +92,6 @@ const UserProfile = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("state before validation", userData);
 
     const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
     if (!userData.name.trim()) {
@@ -107,21 +105,19 @@ const UserProfile = () => {
         duration: 1500,
       });
     }
-        const phoneRegex = /^\d{10}$/;
-        if (!userData.phone || !userData.phone.trim()) {
-          return toast.error("Phone number is required", {
-            richColors: true,
-            duration: 1500,
-          });
-        } else if (!phoneRegex.test(userData.phone)) {
-          return toast.error("Phone number must be 10 digits", {
-            richColors: true,
-            duration: 1500,
-          });
-        }
-          
- 
-  
+    const phoneRegex = /^\d{10}$/;
+    if (!userData.phone || !userData.phone.trim()) {
+      return toast.error("Phone number is required", {
+        richColors: true,
+        duration: 1500,
+      });
+    } else if (!phoneRegex.test(userData.phone)) {
+      return toast.error("Phone number must be 10 digits", {
+        richColors: true,
+        duration: 1500,
+      });
+    }
+
     const today = new Date();
     const dob = new Date(userData?.dob as string);
     const minAge = 18;
@@ -134,7 +130,7 @@ const UserProfile = () => {
         duration: 1500,
       });
     } else if (dob > today) {
-      setUserData({...userData,dob:""})
+      setUserData({ ...userData, dob: "" });
       return toast.error("Date of birth must be in the past", {
         richColors: true,
         duration: 1500,
@@ -144,7 +140,7 @@ const UserProfile = () => {
       (age === minAge && monthDiff < 0) ||
       (age === minAge && monthDiff === 0 && today.getDate() < dob.getDate())
     ) {
-       setUserData({ ...userData, dob: "" });
+      setUserData({ ...userData, dob: "" });
       return toast.error(`You must be at least ${minAge} years old`, {
         richColors: true,
         duration: 1500,
@@ -154,35 +150,30 @@ const UserProfile = () => {
       (age === maxAge && monthDiff > 0) ||
       (age === maxAge && monthDiff === 0 && today.getDate() > dob.getDate())
     ) {
-       setUserData({ ...userData, dob: "" });
+      setUserData({ ...userData, dob: "" });
       return toast.error(`You must be less than ${maxAge} years old`, {
         richColors: true,
         duration: 1500,
       });
     }
-       if (!userData?.gender?.trim()) {
-         return toast.error("Select a gender", {
-           richColors: true,
-           duration: 1500,
-         });
-       } else if (
-         userData?.gender !== "male" &&
-         userData?.gender !== "female"
-       ) {
-         return toast.error("Gender must be either male or female", {
-           richColors: true,
-           duration: 1500,
-         });
-       }
-         if (!userData?.bloodGroup?.trim()) {
-           return toast.error("select a blood group", {
-             richColors: true,
-             duration: 1500,
-           });
-         }
+    if (!userData?.gender?.trim()) {
+      return toast.error("Select a gender", {
+        richColors: true,
+        duration: 1500,
+      });
+    } else if (userData?.gender !== "male" && userData?.gender !== "female") {
+      return toast.error("Gender must be either male or female", {
+        richColors: true,
+        duration: 1500,
+      });
+    }
+    if (!userData?.bloodGroup?.trim()) {
+      return toast.error("select a blood group", {
+        richColors: true,
+        duration: 1500,
+      });
+    }
 
-
- 
     if (!userData?.address) {
       return toast.error("fill in the address field", {
         richColors: true,
@@ -252,8 +243,8 @@ const UserProfile = () => {
     try {
       const response = await instance.put("/profile", formData);
       if (response.data.success) {
-        setShowUpdateButton(false)
-        setLoading(false)
+        setShowUpdateButton(false);
+        setLoading(false);
         dispatch(updateName(response.data.data.name));
         toast.success(response.data.message, {
           richColors: true,
@@ -261,20 +252,14 @@ const UserProfile = () => {
         });
       }
 
-      console.log("response", response.data);
- 
       setUserData(response.data.data);
     } catch (error) {
-           setLoading(false);
+      setLoading(false);
       if (error instanceof AxiosError) {
         console.log(error.response?.data.message);
       }
     }
   };
-  
-
-
-
 
   const handleChangePassword = async () => {
     try {
@@ -284,8 +269,6 @@ const UserProfile = () => {
       });
     } catch (error) {}
   };
-
-  
 
   return (
     <>

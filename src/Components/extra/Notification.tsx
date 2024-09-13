@@ -1,14 +1,21 @@
 import userInstance from "../../Axios/userInstance";
 import doctorInstance from "../../Axios/doctorInstance";
 import { useCallback, useEffect, useState } from "react";
-import  { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBellSlash, faCommentDots } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBellSlash,
+  faCalendarCheck,
+  faCommentDots,
+  faSmileWink,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { IoEyeSharp } from "react-icons/io5";
 import { motion } from "framer-motion";
-
+import { SocketContext } from "../../socketio/SocketIo";
+import { useContext } from "react";
+import { toast } from "sonner";
 
 const NotificationComponent = ({
   notificationHandler,
@@ -25,6 +32,7 @@ const NotificationComponent = ({
   >([]);
   const navigate = useNavigate();
   const axiosInstance = isUser ? userInstance : doctorInstance;
+  const socket = useContext(SocketContext);
 
   const fetchNotifications = useCallback(async () => {
     try {
@@ -32,7 +40,10 @@ const NotificationComponent = ({
       setNotifications(response.data.notifications);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.error(error);
+        toast.error(error.response?.data.message, {
+          richColors: true,
+          duration: 1000,
+        });
       }
     }
   }, [axiosInstance]);
@@ -40,6 +51,15 @@ const NotificationComponent = ({
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
+
+  useEffect(() => {
+    socket?.on("realtime-notification", (notification) => {
+      setNotifications((prevState) => [notification, ...prevState]);
+    });
+    return () => {
+      socket?.off("realtime-notification");
+    };
+  }, [socket]);
 
   const markAsRead = async () => {
     try {
@@ -49,11 +69,8 @@ const NotificationComponent = ({
       if (response.data.success) {
         setNotificationCount(0);
         handleDisappearAnimation();
-     
       }
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   };
 
   const handleDisappearAnimation = () => {
@@ -161,7 +178,13 @@ const NotificationComponent = ({
                 <div className="w-10 h-10 border border-gray-200 rounded-full flex items-center justify-center bg-gray-100">
                   <FontAwesomeIcon
                     className="text-[#EF4444]"
-                    icon={faCommentDots}
+                    icon={
+                      notification.type === "message"
+                        ? faCommentDots
+                        : notification.type === "welcome"
+                        ? faSmileWink
+                        : faCalendarCheck
+                    }
                   />
                 </div>
                 <div className="ml-4">
@@ -171,23 +194,39 @@ const NotificationComponent = ({
                   <p className="text-xs text-gray-500 mt-1">
                     {moment(notification.createdAt).format("MMMM D, h:mm A")}
                   </p>
-                  <p
-                    onClick={() => {
-                      if (isUser) {
-                        navigate(
-                          `/profile/appointmentDetail/${notification.appointmentId}`
-                        );
-                      } else {
-                        navigate(
-                          `/doctor/userProfile/${notification.appointmentId}`
-                        );
-                      }
-                      notificationHandler(false);
-                    }}
-                    className="text-xs cursor-pointer text-blue-500 mt-2 hover:underline"
-                  >
-                    Click to view
-                  </p>
+                  {notification.type === "welcome" ? (
+                    <p
+                      onClick={() => {
+                        if (isUser) {
+                          navigate(`/profile`);
+                        } else {
+                          navigate(`/doctor/profile`);
+                        }
+                        notificationHandler(false);
+                      }}
+                      className="text-xs cursor-pointer text-blue-500 mt-2 hover:underline"
+                    >
+                      Go to profile
+                    </p>
+                  ) : (
+                    <p
+                      onClick={() => {
+                        if (isUser) {
+                          navigate(
+                            `/profile/appointmentDetail/${notification.appointmentId}`
+                          );
+                        } else {
+                          navigate(
+                            `/doctor/userProfile/${notification.appointmentId}`
+                          );
+                        }
+                        notificationHandler(false);
+                      }}
+                      className="text-xs cursor-pointer text-blue-500 mt-2 hover:underline"
+                    >
+                      Click to view
+                    </p>
+                  )}
                 </div>
               </motion.div>
             ))
@@ -196,7 +235,6 @@ const NotificationComponent = ({
       </div>
     </motion.div>
   );
-
 };
 
 export default NotificationComponent;

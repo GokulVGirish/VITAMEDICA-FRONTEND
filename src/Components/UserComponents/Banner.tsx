@@ -10,11 +10,9 @@ const Banner = () => {
   >([]);
   const searchBarRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
-  const dropDownRef=useRef<HTMLDivElement|null>(null)
-
+  const dropDownRef = useRef<HTMLDivElement | null>(null);
 
   const handleSearchChange = async () => {
-      
     const searchValue = searchBarRef.current?.value || "";
     if (searchValue.trim() === "") {
       setSearchResult([]);
@@ -23,7 +21,7 @@ const Banner = () => {
         const response = await instance.get(
           `/doctors/search?search=${searchValue}`
         );
-        console.log("search response", response.data);
+
         setSearchResult(response.data.doctors);
       } catch (error) {
         console.error("Error fetching search results", error);
@@ -41,7 +39,6 @@ const Banner = () => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-
     if (
       dropDownRef.current &&
       !dropDownRef.current.contains(event.target as Node) &&
@@ -52,19 +49,13 @@ const Banner = () => {
     }
   };
 
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
 
-
-  useEffect(()=>{
-    document.addEventListener("mousedown",handleClickOutside)
-
-    return ()=>{
-      document.removeEventListener('mousedown',handleClickOutside)
-
-
-    }
-  },[])
-
-
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>

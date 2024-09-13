@@ -9,17 +9,19 @@ import { Doctor } from "../../types/doctor";
 import SlotBookingModal from "../extra/SlotBookingModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleLeft, faCircleRight,  faUsers } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleLeft,
+  faCircleRight,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { Review } from "../../types/review";
-
-
 
 const UserDoctorDetail = () => {
   const { id } = useParams();
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [reviews, setReviews] = useState<{
-    _id: string
+    _id: string;
     name: string;
     email: string;
     averageRating: number;
@@ -27,20 +29,18 @@ const UserDoctorDetail = () => {
     reviews: Review[];
   }>();
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentPage,setCurrentPage]=useState(1)
-
-
-  console.log("doctor", doctor);
-  console.log("reviews",reviews)
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const getDoctorDetail = async () => {
       try {
-        const response = await instance.get(`/doctors/${id}/profile?page=${currentPage}&limit=3`);
+        const response = await instance.get(
+          `/doctors/${id}/profile?page=${currentPage}&limit=3`
+        );
 
         if (response.data.success) {
           setDoctor(response.data.doctor);
-          setReviews(response.data.reviews)
+          setReviews(response.data.reviews);
         }
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -58,23 +58,19 @@ const UserDoctorDetail = () => {
     };
     getDoctorDetail();
   }, [id]);
-  const showMoreReviews=useCallback(async()=>{
-   try{
-     const response = await instance.get(
-       `/doctors/${id}/profile/reviews?page=${currentPage}&limit=3`
-     );
-     if(response.data.success){
-         setReviews(response.data.reviews);
-
-     }
-
-   }
-   catch(error){}
-
-  },[currentPage])
-  useEffect(()=>{
-    showMoreReviews()
-  },[showMoreReviews])
+  const showMoreReviews = useCallback(async () => {
+    try {
+      const response = await instance.get(
+        `/doctors/${id}/profile/reviews?page=${currentPage}&limit=3`
+      );
+      if (response.data.success) {
+        setReviews(response.data.reviews);
+      }
+    } catch (error) {}
+  }, [currentPage]);
+  useEffect(() => {
+    showMoreReviews();
+  }, [showMoreReviews]);
 
   return (
     <main
@@ -245,7 +241,8 @@ const UserDoctorDetail = () => {
                             className="bg-gray-200 rounded-lg p-8 text-center md:w-1/3"
                           >
                             <p className="text-xs mb-2">
-                              Posted on {moment(review?.createdAt).format("MMMM D, YYYY")}
+                              Posted on{" "}
+                              {moment(review?.createdAt).format("MMMM D, YYYY")}
                             </p>
 
                             <p className="font-bold uppercase">
@@ -292,7 +289,7 @@ const UserDoctorDetail = () => {
                     />
                     <FontAwesomeIcon
                       onClick={() => {
-                        if (currentPage < Math.ceil(reviews.totalReviews/3)) {
+                        if (currentPage < Math.ceil(reviews.totalReviews / 3)) {
                           setCurrentPage((prevState) => prevState + 1);
                         }
                       }}

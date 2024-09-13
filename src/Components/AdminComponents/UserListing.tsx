@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 type BlockedStatus = {
   isBlocked: boolean;
-  register:string;
+  register: string;
   _id: string;
 };
 export type User = InitialStateType & BlockedStatus;
@@ -16,9 +16,9 @@ export type User = InitialStateType & BlockedStatus;
 const UserListing = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [filter, setFilter] = useState<"all" | "blocked" | "unblocked">("all");
-  console.log("filtered users",filteredUsers)
+
   useEffect(() => {
     const getUsers = async () => {
       const response = await adminInstance.get("/users");
@@ -31,10 +31,7 @@ const UserListing = () => {
   }, []);
   const handleBlockUnblock = async (id: string, currentStatus: boolean) => {
     try {
-      console.log("called");
-      const response = await adminInstance.put(
-        `/users/${id}/${currentStatus}`
-      );
+      const response = await adminInstance.put(`/users/${id}/${currentStatus}`);
       if (response.data.success) {
         toast.success(response.data.message, {
           position: "top-right",
@@ -181,7 +178,7 @@ const UserListing = () => {
                       <button
                         className="mr-2 
                           user.isBlocked bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded-full"
-                          onClick={()=>navigate(`/admin/users/${user._id}`)}
+                        onClick={() => navigate(`/admin/users/${user._id}`)}
                       >
                         View
                       </button>

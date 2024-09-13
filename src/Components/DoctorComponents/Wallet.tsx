@@ -3,7 +3,7 @@ import instance from "../../Axios/doctorInstance";
 import moment from "moment";
 import WithdrawalModal from "./WithdrawalModal";
 
-const DoctorWallet=()=>{
+const DoctorWallet = () => {
   const [wallet, setWallet] = useState<any>(null);
   const [transactions, setTransactions] = useState<any>(null);
   const [page, setPage] = useState(1);
@@ -26,8 +26,6 @@ const DoctorWallet=()=>{
           `/wallet?page=${page}&limit=${limit}`
         );
         if (response.data.success) {
-          console.log("responsedata", response.data);
-
           setWallet(response.data.walletDetail);
           setTransactions(response.data.walletDetail.transactions);
           setTotalPages(response.data.totalPages);
@@ -38,9 +36,9 @@ const DoctorWallet=()=>{
     };
 
     fetchWallet();
-  }, [page,refresh]);
+  }, [page, refresh]);
   const handleWithdrawalSuccess = () => {
-    setRefresh((prev) => !prev); 
+    setRefresh((prev) => !prev);
   };
 
   return (
@@ -201,5 +199,5 @@ const DoctorWallet=()=>{
       </div>
     </>
   );
-}
-export default DoctorWallet
+};
+export default DoctorWallet;

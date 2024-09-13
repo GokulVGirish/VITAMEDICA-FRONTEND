@@ -6,7 +6,6 @@ const DigitalClock: React.FC = () => {
   const [time, setTime] = useState<Moment>(moment());
   const [is24HourFormat, setIs24HourFormat] = useState<boolean>(false);
 
-
   useEffect(() => {
     const timer = setInterval(() => {
       setTime(moment());
@@ -30,10 +29,7 @@ const DigitalClock: React.FC = () => {
         animate={{ y: [0, -15, 15, 0], x: [0, -15, 15, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       />
-      <motion.div
-      
-        className="bg-gray-700 p-4 rounded-lg text-center"
-      >
+      <motion.div className="bg-gray-700 p-4 rounded-lg text-center">
         <div className="text-5xl font-extrabold tracking-tight">
           {is24HourFormat ? time.format("HH:mm") : time.format("hh:mm A")}
         </div>

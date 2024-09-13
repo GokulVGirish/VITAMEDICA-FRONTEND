@@ -110,13 +110,13 @@ const DoctorRoute = () => {
       });
     });
 
-    socket?.on("receive_notification", ({ content }) => {
-      console.log("in here notificationsss");
+    socket?.on("receive_notification", ({ content, type }) => {
       if (
         !(
           location.pathname.split("/").slice(0, 3).join("/") ===
           "/doctor/userProfile"
-        )
+        ) &&
+        (type === "message" || type === "appointment")
       )
         toast.success(content, { richColors: true, duration: 1000 });
       setNotificationCount((prevState) => prevState + 1);
@@ -143,7 +143,6 @@ const DoctorRoute = () => {
   useEffect(() => {
     fetchNotificationCount();
   }, [fetchNotificationCount]);
-
 
   return (
     <div className="relative">

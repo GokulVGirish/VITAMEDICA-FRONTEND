@@ -1,10 +1,12 @@
 import { AxiosError } from "axios";
 import instance from "../Axios/userInstance";
 import { toast } from "sonner";
-const  razorPay=(order:any,id:string,slotDetails:any,navigate:Function):any=>{
+import { Socket } from "socket.io-client";
+import moment from "moment";
+const  razorPay=(order:any,id:string,slotDetails:any,navigate:Function,socket:Socket|null):any=>{
 
     const amount = String(parseFloat(order.amount)/100);
-    console.log("amount",amount)
+  
 
 
 var options = {
@@ -37,6 +39,20 @@ var options = {
           end: result.data.appointment.end
         })
       );
+      if(socket){
+         socket.emit("send_notification", {
+           receiverId: id,
+           content: `Appointment booked on ${moment(
+             result.data.appointment.date
+           ).format("MMMM D, YYYY")} for time ${moment(
+             result.data.appointment.start
+           ).format("h:mm A")}-${moment(result.data.appointment.end).format(
+             "h:mm A"
+           )} `,
+           type: "appointment",
+           appointmentId: result.data.appointment._id
+         });
+      }
      
        
         await navigate(

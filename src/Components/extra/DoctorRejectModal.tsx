@@ -1,59 +1,48 @@
 import { useState } from "react";
-import {toast } from "sonner"
+import { toast } from "sonner";
 import adminInstance from "../../Axios/adminInstance";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-type PropsType={
-    
-    
-closeModal:()=>void,
-id:string
+type PropsType = {
+  closeModal: () => void;
+  id: string;
+};
 
-}
-
-const DoctorRejectModal = ({closeModal,id}:PropsType) => {
-    const [reason,setReason]=useState<string>("")
-    const navigate=useNavigate()
-    const handleReject=async()=>{
-       
-           if (!reason.trim()) {
-          
-              toast.error("Please enter a reason.");
-              return;
-            }
-
-            if (reason.length < 10) {
-           
-              toast.error("Reason must be at least 10 characters long.");
-              return;
-            }
-             try {
-               const response = await adminInstance.delete(
-                 `/doctors/${id}/reject`,{params:{reason}}
-               );
-               if (response.data.success) {
-                toast.success(response.data.message,{richColors:true,duration:1500,onAutoClose:()=>{
-                    closeModal()
-                    navigate("/admin/verifyDoctor");
-                }})
-               }
-             } catch (error) {
-                if(error instanceof AxiosError){
-                        
-                  toast.error(error.response?.data.message);
-                }else{
-                      toast.error("An unknown error occured");
-
-                }
-             }
-          
-          
-
-
-
+const DoctorRejectModal = ({ closeModal, id }: PropsType) => {
+  const [reason, setReason] = useState<string>("");
+  const navigate = useNavigate();
+  const handleReject = async () => {
+    if (!reason.trim()) {
+      toast.error("Please enter a reason.");
+      return;
     }
 
-  
+    if (reason.length < 10) {
+      toast.error("Reason must be at least 10 characters long.");
+      return;
+    }
+    try {
+      const response = await adminInstance.delete(`/doctors/${id}/reject`, {
+        params: { reason },
+      });
+      if (response.data.success) {
+        toast.success(response.data.message, {
+          richColors: true,
+          duration: 1500,
+          onAutoClose: () => {
+            closeModal();
+            navigate("/admin/verifyDoctor");
+          },
+        });
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data.message);
+      } else {
+        toast.error("An unknown error occured");
+      }
+    }
+  };
 
   return (
     <div>
@@ -101,7 +90,7 @@ const DoctorRejectModal = ({closeModal,id}:PropsType) => {
               <input
                 type="text"
                 value={reason}
-                onChange={(e)=>setReason(e.target.value)}
+                onChange={(e) => setReason(e.target.value)}
                 className="flex mt-5 items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl shadow-lg"
                 placeholder="enter a reason"
               />

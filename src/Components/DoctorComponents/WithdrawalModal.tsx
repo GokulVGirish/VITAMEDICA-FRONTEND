@@ -2,7 +2,7 @@ import { useState } from "react";
 import moneyLogo from "@/assets/money2.png";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {toast} from "sonner"
+import { toast } from "sonner";
 import instance from "../../Axios/doctorInstance";
 import { AxiosError } from "axios";
 
@@ -13,7 +13,7 @@ const WithdrawalModal = ({
 }: {
   closeModal: (status: boolean) => void;
   walletBalance: any;
-  handleWithdrawalSuccess:()=>void
+  handleWithdrawalSuccess: () => void;
 }) => {
   const [amount, setAmount] = useState<string>("");
   const handleWithdraw = async () => {
@@ -32,7 +32,6 @@ const WithdrawalModal = ({
         duration: 1500,
       });
     }
-   
 
     if (numericAmount > walletBalance) {
       return toast.error("Amount exceeds wallet balance", {
@@ -40,12 +39,12 @@ const WithdrawalModal = ({
         duration: 1500,
       });
     }
-     if (numericAmount < 1000) {
-       return toast.error("You should have a minimum balance of 1000", {
-         richColors: true,
-         duration: 1500,
-       });
-     }
+    if (numericAmount < 1000) {
+      return toast.error("You should have a minimum balance of 1000", {
+        richColors: true,
+        duration: 1500,
+      });
+    }
 
     try {
       const response = await instance.post(`/wallet/withdraw/${amount}`);
@@ -55,7 +54,7 @@ const WithdrawalModal = ({
           duration: 1500,
         });
         closeModal(false);
-        handleWithdrawalSuccess()
+        handleWithdrawalSuccess();
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -109,4 +108,4 @@ const WithdrawalModal = ({
     </div>
   );
 };
-export default WithdrawalModal
+export default WithdrawalModal;

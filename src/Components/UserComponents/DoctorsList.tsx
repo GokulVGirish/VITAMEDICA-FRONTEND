@@ -1,10 +1,4 @@
-import  {
-  RefObject,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import DoctorFilterSort from "./DoctorFilterSort";
 import instance from "../../Axios/userInstance";
 import { AxiosError } from "axios";
@@ -17,96 +11,77 @@ import { useAppSelector } from "../../Redux/hoocks";
 import { FaHeart } from "react-icons/fa";
 import { Doctor } from "../../types/doctor";
 
-
-
-
 const DoctorsList = () => {
   const [doctors, setDoctors] = useState<Doctor[] | null>(null);
-  const [favoriteDoctors,setFavoriteDoctors]=useState<string[]>([])
+  const [favoriteDoctors, setFavoriteDoctors] = useState<string[]>([]);
   const [searchResult, setSearchResult] =
     useState<{ _id: number; name: string; image: string }[]>();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<{name: string;_id: number;}>({ name: "All Departments", _id: 453 });
+  const [selectedCategory, setSelectedCategory] = useState<{
+    name: string;
+    _id: number;
+  }>({ name: "All Departments", _id: 453 });
   const searchBarRef = useRef<HTMLInputElement | null>();
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); 
-  const {user}=useAppSelector((state)=>state.user)
+  const [loading, setLoading] = useState(true);
+  const { user } = useAppSelector((state) => state.user);
 
- useEffect(()=>{
-  const fetchFavorites = async () => {
-    try {
-      const response = await instance.get(`/doctors/favorites`);
-      setFavoriteDoctors(response.data.favorites)
-      
-      console.log("favorite respnse",response.data)
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const response = await instance.get(`/doctors/favorites`);
+        setFavoriteDoctors(response.data.favorites);
+      } catch (error) {
+        console.error("Failed to fetch favorites", error);
+      }
+    };
 
-    } catch (error) {
-      console.error("Failed to fetch favorites", error);
-    }
-  };
+    if (user) fetchFavorites();
+  }, [user]);
 
-  if (user) fetchFavorites();
- },[user])
-
- const toggleFavorites=async(docId:string)=>{
+  const toggleFavorites = async (docId: string) => {
     if (!user) {
-           toast.error("Please Login")
+      toast.error("Please Login");
       return;
     }
-  try{
-    let response;
+    try {
+      let response;
       if (favoriteDoctors?.includes(docId)) {
-        
-       
-        response=await instance.delete(`/doctors/favorites/${docId}`);
-        if(response.data.success){
-           toast.success("removed from wishlist", {
-             richColors: true,
-             duration: 1500,
-           });
-     
-           setFavoriteDoctors((prevPage) =>
-             prevPage?.filter((id) => docId !== id)
-           );
+        response = await instance.delete(`/doctors/favorites/${docId}`);
+        if (response.data.success) {
+          toast.success("removed from wishlist", {
+            richColors: true,
+            duration: 1500,
+          });
 
+          setFavoriteDoctors((prevPage) =>
+            prevPage?.filter((id) => docId !== id)
+          );
         }
+      } else {
+        response = await instance.post(`/doctors/favorites/${docId}`);
+        if (response.data.success) {
+          toast.success("added to wishlist", {
+            richColors: true,
+            duration: 1500,
+          });
 
-      }else{
-         response=await instance.post(`/doctors/favorites/${docId}`);
-     if(response.data.success){
-      toast.success("added to wishlist",{richColors:true,duration:1500})
-
-      
-         setFavoriteDoctors([...favoriteDoctors, docId]);
-    
-     }
-
-       
-
+          setFavoriteDoctors([...favoriteDoctors, docId]);
+        }
       }
-
-  }
-  catch(error){
-
- 
-
-  }
-
- }
-
-
+    } catch (error) {}
+  };
 
   useEffect(() => {
     const getDoctors = async () => {
       try {
-        setLoading(true); 
+        setLoading(true);
         const response = await instance.get(
           `/doctors/list?page=${currentPage}&limit=6`
         );
         if (response.data.success) {
-          console.log("data of doctor", response.data.doctors);
           setDoctors(response.data.doctors);
           setTotalPages(response.data.totalPages);
         }
@@ -130,12 +105,11 @@ const DoctorsList = () => {
       getDoctors();
     } else {
       const categoryFilter = async () => {
-        setLoading(true); 
+        setLoading(true);
         const response = await instance.get(
           `/doctors/category?category=${selectedCategory._id}&page=${currentPage}&limit=6`
         );
         if (response.data.success) {
-          console.log("data of doctor", response.data.doctors);
           setDoctors(response.data.doctors);
           setTotalPages(response.data.totalPages);
         }
@@ -167,7 +141,7 @@ const DoctorsList = () => {
         const response = await instance.get(
           `/doctors/search?search=${searchValue}`
         );
-        console.log("search response", response.data);
+
         setSearchResult(response.data.doctors);
       } catch (error) {
         console.error("Error fetching search results", error);
@@ -175,12 +149,10 @@ const DoctorsList = () => {
     }
   };
 
-
   const doctorDetails = useMemo(
     () =>
       loading
-        ?
-          Array.from({ length: 6 }).map((_, index) => (
+        ? Array.from({ length: 6 }).map((_, index) => (
             <div key={index} className="w-72">
               <Skeleton height={200} />
               <Skeleton count={5} className="my-2" />
@@ -265,14 +237,13 @@ const DoctorsList = () => {
               </div>
             );
           }),
-    [doctors, loading,favoriteDoctors]
+    [doctors, loading, favoriteDoctors]
   );
-  console.log("selctedCategory",selectedCategory)
 
   return (
     <div>
       <DoctorFilterSort
-      setSearchResult={setSearchResult}
+        setSearchResult={setSearchResult}
         searchResult={
           searchResult as { _id: number; name: string; image: string }[]
         }

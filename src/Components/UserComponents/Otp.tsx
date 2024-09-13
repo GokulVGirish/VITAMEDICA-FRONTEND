@@ -10,7 +10,7 @@ import instance from "../../Axios/userInstance";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import Spinner from "../extra/Spinner";
-import { SocketContext  } from "../../socketio/SocketIo";
+import { SocketContext } from "../../socketio/SocketIo";
 import { useContext } from "react";
 const userUrl = import.meta.env.VITE_USER_API_URL;
 
@@ -22,21 +22,16 @@ const Otp = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const accessToken = Cookies.get("accessToken");
-  const socket=useContext(SocketContext)
+  const socket = useContext(SocketContext);
 
   useEffect(() => {
     const verify = async () => {
       try {
-        const response = await axios.get(
-          `${
-            userUrl 
-          }/auth/token/verify`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        const response = await axios.get(`${userUrl}/auth/token/verify`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
         if (response.status === 200) {
           navigate("/");
@@ -47,7 +42,6 @@ const Otp = () => {
             error.response?.status === 403 &&
             error.response.data.message === "not yet verified"
           ) {
-
           } else {
             navigate("/login");
           }
@@ -78,9 +72,8 @@ const Otp = () => {
   }, [seconds]);
   useEffect(() => {
     if (error) {
-
       toast.error(error, { richColors: true, duration: 1500 });
-       dispatch(clearErrorMessage());
+      dispatch(clearErrorMessage());
     }
     if (message) {
       toast.success(message, { richColors: true, duration: 1500 });
@@ -93,14 +86,13 @@ const Otp = () => {
     }
   }, [message, error, loading]);
 
-
   const handleResend = async () => {
     setLoading(true);
 
     try {
       const response = await instance.post("/auth/otp/resend");
       if (response.data.success) {
-        setLoading(false)
+        setLoading(false);
         setSeconds(120);
         toast.success(response.data.message, {
           richColors: true,
@@ -108,7 +100,7 @@ const Otp = () => {
         });
       }
     } catch (error) {
-          setLoading(false);
+      setLoading(false);
       if (error instanceof AxiosError) {
         toast.error(error.response?.data.message, {
           richColors: true,
@@ -122,7 +114,6 @@ const Otp = () => {
         }
       }
     }
-
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,7 +134,7 @@ const Otp = () => {
         duration: 1500,
       });
     }
-    dispatch(verifyOtpSigup({ otp ,socket}));
+    dispatch(verifyOtpSigup({ otp, socket }));
   };
   return (
     <div className="flex flex-1 flex-col justify-center space-y-5 max-w-md mx-auto pt-24">
@@ -184,7 +175,7 @@ const Otp = () => {
             >
               Confirm
             </button>
-           
+
             <div className="w-36 mx-1 p-2 bg-black flex flex-col items-center justify-center gap-3 h-24 text-white  rounded-lg">
               <div className="font-mono text-4xl leading-none" x-text="seconds">
                 {seconds.toString().padStart(2, "0")}
@@ -192,7 +183,7 @@ const Otp = () => {
               <div className="font-mono uppercase text-lg  leading-none">
                 Seconds
               </div>
-              {loading||loadingM && <Spinner isUser={true}/>}
+              {loading || (loadingM && <Spinner isUser={true} />)}
             </div>
           </div>
         </div>

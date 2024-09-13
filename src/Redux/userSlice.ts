@@ -12,9 +12,14 @@ export const verifyOtpSigup=createAsyncThunk<any,{otp:string,socket:Socket|null}
         const response = await instance.post("/auth/signup/verify-otp", {otp});
         Cookie.set("accessToken",response.data.accessToken)
         Cookie.set("refreshToken",response.data.refreshToken)
-        console.log("response of signup",response.data)
+        
          if (socket) {
            socket.emit("loggedin", response.data.userId);
+             socket.emit("send_notification", {
+               receiverId: response.data.userId,
+               content: `Thankyou for being a part of vitamedica.Hurry up complete your profile`,
+               type: "welcome",
+             });
          }
 
     
@@ -52,7 +57,7 @@ export const loginUser=createAsyncThunk<any,{email:string,password:string,socket
  
        Cookie.set("accessToken", accessToken);
        Cookie.set("refreshToken", refreshToken);
-       console.log("socket data",data.socket)
+     
 
   
          if (data.socket) {
@@ -65,7 +70,7 @@ export const loginUser=createAsyncThunk<any,{email:string,password:string,socket
 
     }
     catch(error){
-        console.log(error)
+     
               if(error instanceof AxiosError){
              return thunkAPI.rejectWithValue(error.response?.data?.message||"an error occured")
         }else if(error instanceof Error){
@@ -86,8 +91,14 @@ export const googleLogin=createAsyncThunk<any,{email:string;name:string,sub:stri
          Cookie.set("refreshToken", response.data.refreshToken);
           if (socket) {
             socket.emit("loggedin", response.data.userId);
+              if(response.data.message==="Signed Up Sucessfully") socket.emit("send_notification", {
+                receiverId: response.data.userId,
+                content: `Thankyou for being a part of vitamedica.Hurry up complete your profile`,
+                type: "welcome",
+              });
           }
          return response.data;
+         
 
     }
     catch(error){
