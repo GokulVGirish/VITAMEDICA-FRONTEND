@@ -17,13 +17,22 @@ import IsCallingModal from "../Components/extra/IsCallingModal";
 
 
 
+// const configuration = {
+//   iceServers: [
+//     {
+//       urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
+//     },
+//   ],
+//   iceCandidatePoolSize: 10,
+// };
 const configuration = {
   iceServers: [
     {
-      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
+      urls: "turn:turn.anonymous10.cloud:3478",
+      username: "user",
+      credential: "pass",
     },
   ],
-  iceCandidatePoolSize: 10,
 };
 
 

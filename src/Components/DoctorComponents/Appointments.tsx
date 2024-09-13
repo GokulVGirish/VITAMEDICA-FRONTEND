@@ -8,7 +8,7 @@ import BookingCancellationReason from "../extra/CancellationReason";
 const DoctorAppointments=()=>{
 
     const [appointments,setAppointments]=useState<any>(null)
-    const [filter,setFilter]=useState<"today"|"upcomming">("today")
+    const [filter,setFilter]=useState<"today"|"upcomming"|"previous">("today")
     const [page,setPage]=useState(1)
     const [cancellationReason,setCancellationReason]=useState("")
     const [cancellationReasonModel,setCancellationReasonModal]=useState(false)
@@ -35,9 +35,9 @@ const DoctorAppointments=()=>{
             getTodaysApointments()
 
         }else{
-            const getUpcommingAppointments=async()=>{
+            const getUpcommingOrPrevAppointments=async()=>{
                 const response = await instance.get(
-                  `/appointments/upcomming?page=${page}&limit=${limit}`
+                  `/appointments/${filter}?page=${page}&limit=${limit}`
                 );
                 console.log("upcomming res",response.data)
                 if(response.data.success){
@@ -46,7 +46,7 @@ const DoctorAppointments=()=>{
                 }
 
             }
-            getUpcommingAppointments()
+            getUpcommingOrPrevAppointments()
         }
 
     },[filter,page])
@@ -212,6 +212,16 @@ const DoctorAppointments=()=>{
                   >
                     Upcomming
                   </button>
+                  <button
+                    onClick={() => setFilter("previous")}
+                    className={`px-4 py-2 mr-2 rounded-lg transition-all ${
+                      filter === "previous"
+                        ? "bg-[#56aac6] text-white"
+                        : "bg-gray-300 text-gray-700"
+                    } hover:bg-[#4993ac]`}
+                  >
+                    Previous
+                  </button>
                 </div>
               </div>
 
@@ -262,7 +272,7 @@ const DoctorAppointments=()=>{
             </div>
           </div>
         </div>
-        {filter === "upcomming" && (
+        {(filter === "upcomming"|| filter==="previous") && (
           <div className=" flex justify-center  mb-10 ">
             <div className="flex justify-between items-center  gap-10">
               <button
