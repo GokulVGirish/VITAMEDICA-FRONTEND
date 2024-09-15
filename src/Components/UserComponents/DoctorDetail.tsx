@@ -31,6 +31,7 @@ const UserDoctorDetail = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
+
   useEffect(() => {
     const getDoctorDetail = async () => {
       try {
@@ -57,6 +58,7 @@ const UserDoctorDetail = () => {
       }
     };
     getDoctorDetail();
+   
   }, [id]);
   const showMoreReviews = useCallback(async () => {
     try {
@@ -74,6 +76,7 @@ const UserDoctorDetail = () => {
 
   return (
     <main
+    
       style={{
         backgroundImage: `url(${logo})`,
         height: "50vh",

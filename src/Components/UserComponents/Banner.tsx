@@ -65,49 +65,53 @@ const Banner = () => {
       >
         <div className="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:h-screen lg:items-center lg:px-8">
           <motion.div
-            className="max-w-xl text-center p-4 rounded-md bg-opacity-50 sm:text-left"
+            className="max-w-xl text-center p-6 rounded-3xl  bg-opacity-5   sm:text-left transform transition duration-500 hover:scale-105"
             initial="hidden"
             animate="visible"
             variants={textVariants}
           >
             <h1 className="text-3xl font-extrabold rounded-lg text-white sm:text-5xl">
-              Let us find your{" "}
-              <strong className="block text-[#928EDE]">Doctor</strong>
+              Discover your{" "}
+              <strong className="block text-[#928EDE]">Perfect Doctor</strong>{" "}
+              Today
             </h1>
-            <p className="mt-4 sm:mt-6 max-w-lg text-sm sm:text-lg rounded-lg text-white font-semibold shadow-md">
-              "Your health is our priority. Find your perfect doctor, book an
-              appointment, and take the first step toward a healthier tomorrow."
+
+            <p className="mt-4 sm:mt-6 max-w-lg text-base sm:text-xl rounded-lg text-white font-semibold  italic">
+              "Your wellness journey begins here. Connect with top doctors, book
+              appointments, and unlock a healthier, brighter future."
             </p>
 
-            <div className="mt-6 relative flex flex-col gap-0 justify-center sm:justify-start w-2/3 sm:w-1/2">
+            <div className="mt-8 relative flex flex-col gap-2 justify-center md:justify-start">
               <input
                 type="text"
                 placeholder="Search Doctors..."
                 ref={searchBarRef}
                 onChange={handleSearchChange}
-                className="w-full bg-white px-4 py-2 text-sm text-black rounded-xl"
+                className="md:w-2/3 sm:3/4 bg-white px-4 py-3 text-base text-black rounded-full shadow-lg border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-[#928EDE] transition duration-300 hover:ring-2 hover:ring-[#928EDE]"
               />
               {searchResult?.length! > 0 && (
                 <div
                   ref={dropDownRef}
-                  className="absolute top-full left-0 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-30 dark:bg-gray-700 dark:border-gray-600"
+                  className="absolute top-full left-0 w-full mt-2 bg-white bg-opacity-70 backdrop-blur-md border border-gray-300 rounded-xl shadow-lg z-30 dark:bg-gray-800 dark:border-gray-600"
                 >
-                  <ul className="max-h-60 overflow-y-auto text-sm text-gray-700 dark:text-gray-200">
+                  <ul className="max-h-60 overflow-y-auto text-base text-gray-700 dark:text-gray-200">
                     {searchResult?.map((doctor) => (
                       <li
                         key={doctor._id}
                         onClick={() => navigate(`/doctorDetail/${doctor._id}`)}
                       >
-                        <div className="flex items-center px-2 py-1 hover:rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
+                        <div className="flex items-center px-3 py-2 rounded-lg hover:bg-[#f3f4f6] dark:hover:bg-gray-700 cursor-pointer transition duration-200">
                           <img
-                            className="h-8 rounded-full"
+                            className="h-10 w-10 rounded-full shadow-md"
                             src={
                               doctor.image ||
                               "https://i0.wp.com/digitalhealthskills.com/wp-content/uploads/2022/11/fd35c-no-user-image-icon-27.png?fit=500%2C500&ssl=1"
                             }
                             alt={doctor.name}
                           />
-                          <span className="ml-2">{doctor.name}</span>
+                          <span className="ml-3 font-semibold text-lg">
+                            {doctor.name}
+                          </span>
                         </div>
                       </li>
                     ))}
