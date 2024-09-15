@@ -1,14 +1,12 @@
 import UserLogin from "../../Components/UserComponents/Login";
 import withAuthentication from "../../hooks and functions/withAuthentication";
 
-const UserLoginPage=()=>{
+const UserLoginPage = () => {
+  return (
+    <div className="bg-[#928EDE] h-screen">
+      <UserLogin />
+    </div>
+  );
+};
 
-    return (
-  <div className="bg-[#928EDE] h-screen">
-       <UserLogin/> 
-      
-  </div>
-
-    )
-}
-export default withAuthentication(UserLoginPage);
+export const AuthenticatedUserLoginPage = withAuthentication(UserLoginPage);

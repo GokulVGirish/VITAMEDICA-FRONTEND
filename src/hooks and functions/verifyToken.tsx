@@ -13,12 +13,12 @@ const useVerifyToken = (userType = "") => {
       try {
         let response;
         if (userType === "admin") {
-          response = await adminInstance.get("/auth/verify-token");
+          response = await adminInstance.get("/auth/token/verify-token");
           if (response.status === 401) {
             // navigate("/admin/login");
           }
         } else if (userType === "doctor") {
-          response = await doctorInstance.get("/auth/verify-token");
+          response = await doctorInstance.get("/auth/token/verify-token");
           if (response.status === 401) {
             toast.error(response.data.message, {
               richColors: true,
@@ -29,7 +29,7 @@ const useVerifyToken = (userType = "") => {
             });
           }
         } else {
-          response = await instance.get("/auth/token/verify");
+          response = await instance.get("/auth/token/verify-token");
           if (response.status === 401) {
             //  navigate("/login");
           }

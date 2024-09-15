@@ -1,9 +1,11 @@
 import Cookies from "js-cookie";
 import { ComponentType, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-const adminApiUrl = import.meta.env.VITE_ADMIN_API_URL;
-const userUrl = import.meta.env.VITE_USER_API_URL;
-const doctorUrl = import.meta.env.VITE_DOCTOR_API_URL;
+import userInstance from "../Axios/userInstance";
+import doctorInstance from "../Axios/doctorInstance";
+import adminInstance from "../Axios/adminInstance";
+
+
 
 const withAuthentication = <P extends Object>(
   WrappedComponent: ComponentType<P>,
@@ -11,80 +13,26 @@ const withAuthentication = <P extends Object>(
 ) => {
   return (props: P) => {
     const navigate = useNavigate();
+    console.log('us',userType)
+   const axiosInstance= userType==="doctor"?doctorInstance:userType==="admin"?adminInstance:userInstance
+   const accessToken=Cookies.get("accessToken")
+   const adminAccessToken=Cookies.get("adminAccessToken")
  
 
     useEffect(() => {
       const verifyToken = async () => {
-        try {
-          if (userType === "admin") {
-            const accessToken = Cookies.get("adminAccessToken");
-            if (accessToken) {
-              const response = await fetch(
-                `${adminApiUrl}/api/admin/auth/verify-token`,
-                {
-                  method: "GET",
-                  headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "application/json",
-                  },
-                  credentials: "include",
-                }
-              );
+       try{
 
-              const data = await response.json();
+        const response = await axiosInstance.get("/auth/token/verify-token");
+        console.log("response",response.data)
+        if(response.data.success) navigate(`/${userType}`)
 
-              if (data.success) {
-                navigate("/admin");
-              }
-            } else {
-              navigate("/admin/login");
-            }
-          } else if (userType === "doctor") {
-            const accessToken = Cookies.get("accessToken");
-            if (accessToken) {
-              const response = await fetch(`${doctorUrl}/auth/verify-token`, {
-                method: "GET",
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                  "Content-Type": "application/json",
-                },
-                credentials: "include",
-              });
-              const data = await response.json();
+       }catch(error){
 
-              if (data.message == "not yet verified") {
-                navigate("/doctor/otpVerify");
-              } else if (data.success) {
-                navigate("/doctor");
-              }
-            }
-          } else {
-            const accessToken = Cookies.get("accessToken");
-            if (accessToken) {
-              const response = await fetch(`${userUrl}/auth/token/verify`, {
-                method: "GET",
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                  "Content-Type": "application/json",
-                },
-                credentials: "include",
-              });
-
-              const data = await response.json();
-
-              if (data.message == "not yet verified") {
-                navigate("/otpVerify");
-              } else if (data.success) {
-                navigate("/");
-              }
-            }
-          }
-        } catch (error) {
-          console.log("error", error);
-        }
+       }
       };
 
-      verifyToken();
+      if(userType==="admin"?adminAccessToken:accessToken)verifyToken();
     }, [navigate]);
 
     return <WrappedComponent {...props} />;

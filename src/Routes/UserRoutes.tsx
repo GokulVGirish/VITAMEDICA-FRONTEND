@@ -1,6 +1,6 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import UserLangingPage from "../Pages/UserPages/UserLandingPage";
-import UserLoginPage from "../Pages/UserPages/UserLoginPage";
+import { AuthenticatedUserLoginPage } from "../Pages/UserPages/UserLoginPage";
 import UserSignUpPage from "../Pages/UserPages/UserSignUpPage";
 import UserOtpVerification from "../Pages/UserPages/UserOtpVerification";
 import UserProfileLayout from "../Pages/UserPages/UserProfileLayout";
@@ -129,7 +129,7 @@ const UserRoute = () => {
       <Routes>
         <Route path="/" element={<UserLangingPage />} />
 
-        <Route path="/login" element={<UserLoginPage />} />
+        <Route path="/login" element={<AuthenticatedUserLoginPage/>} />
         <Route path="/signup" element={<UserSignUpPage />} />
         <Route path="/otpVerify" element={<UserOtpVerification />} />
         <Route path="/forgotPassword/:request" element={<ForgotPassword />} />

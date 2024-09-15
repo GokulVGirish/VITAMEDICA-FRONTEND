@@ -289,7 +289,7 @@ const UserProfile = () => {
           </div>
         </div>
       )}
-      <div className="flex items-center justify-center p-12 h-full mt-20 mb-40">
+      <div className="flex items-center justify-center p-12 h-full md:mt-28 mt-72 mb-40">
         <motion.div
           className="mx-auto w-full  max-w-[550px] bg-gray-100"
           initial={{ opacity: 0, y: 50 }}

@@ -203,7 +203,7 @@ const DoctorProfile = () => {
           </div>
         </div>
       )}
-      <div className="flex  items-center relative mt-52  justify-center p-24 h-full  ">
+      <div className="flex  items-center relative mb-80 mt-80  justify-center p-24 h-full  ">
         <div className="mx-auto w-full  max-w-[550px] bg-gray-100">
           <div className="w-full relative flex justify-center pt-10 ">
             <img

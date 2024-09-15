@@ -27,7 +27,7 @@ const Otp = () => {
   useEffect(() => {
     const verify = async () => {
       try {
-        const response = await axios.get(`${userUrl}/auth/token/verify`, {
+        const response = await axios.get(`${userUrl}/auth/token/verify-token`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

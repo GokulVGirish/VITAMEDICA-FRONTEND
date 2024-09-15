@@ -34,7 +34,7 @@ const UserProfileSideBar=()=>{
 
     return (
       <div className="relative">
-        {/* Sidebar */}
+  
         <div className="md:flex hidden flex-col w-64 bg-[#928EDE] fixed md:static top-0 left-0 h-full z-50">
           <div className="flex items-center justify-center h-16 bg-[#928EDE]">
             <span className="text-white font-bold uppercase">
@@ -105,10 +105,10 @@ const UserProfileSideBar=()=>{
         </div>
 
  
-        <div className="md:hidden flex items-center p-4">
+        <div className="md:hidden absolute flex items-center p-6">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-white bg-[#928EDE] rounded-full p-2 focus:outline-none"
+            className="text-white bg-[#928EDE] rounded-full p-3 focus:outline-none"
           >
             <FontAwesomeIcon icon={faBars} />
           </button>

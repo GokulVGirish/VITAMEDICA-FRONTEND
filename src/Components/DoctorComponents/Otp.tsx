@@ -33,7 +33,7 @@ const DoctorOtp = () => {
   useEffect(() => {
     const verify = async () => {
       try {
-        const response = await axios.get(`${doctorUrl}/auth/verify-token`, {
+        const response = await axios.get(`${doctorUrl}/auth/token/verify-token`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

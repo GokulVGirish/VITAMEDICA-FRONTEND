@@ -106,9 +106,10 @@ const Navbar=()=>{
                   <button
                     id="dropdownDefaultButton"
                     onClick={toggleDropdown}
-                    className="text-white     font-medium rounded-lg text-sm px-3  text-center inline-flex items-center "
+                    className="text-white font-medium rounded-lg text-sm px-3 text-center inline-flex items-center"
                     type="button"
                   >
+                    {/* User Icon */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-10 w-9 hover:h-10 hover:w-10 hover:rounded-full hover:shadow-xl hover:border-[#364f6b] hover:text-gray-200"
@@ -117,19 +118,39 @@ const Navbar=()=>{
                       stroke="#364f6b"
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
                   </button>
+
                   {user && (
-                    <p className=" rounded-md  px-2 hover:stroke-gray-200  text-[#364f6b] font-bold ">
-                      {" "}
-                      {(user as string).split("")[0].toLocaleUpperCase() +
-                        (user as string).slice(1).toLocaleLowerCase()}
-                    </p>
+                    <div
+                      onClick={toggleDropdown}
+                      className="flex items-center hover:scale-110 transition-transform  cursor-pointer  space-x-2"
+                    >
+                      <p className="rounded-md px-2 text-[#364f6b] font-bold">
+                        {(user as string).split("")[0].toLocaleUpperCase() +
+                          (user as string).slice(1).toLocaleLowerCase()}
+                      </p>
+
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-[#364f6b] hover:text-gray-500 transition-colors duration-300 ease-in-out"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
                   )}
                 </div>
               </span>
@@ -138,7 +159,7 @@ const Navbar=()=>{
 
           <span
             onClick={toggleDropdown}
-            className="navbar-burger cursor-pointer self-center mr-12 xl:hidden"
+            className="navbar-burger cursor-pointer flex items-center space-x-2 mr-12 xl:hidden"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -148,10 +169,31 @@ const Navbar=()=>{
               stroke="#364f6b"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            {user && (
+              <p className="rounded-md hover:scale-110 transition-transform px-2 hover:stroke-gray-200 text-[#364f6b] font-bold">
+                {(user as string).split(" ")[0].slice(0, 1) +
+                  (user as string).split(" ")[0].slice(1)}
+              </p>
+            )}
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4  text-[#364f6b] hover:scale-110 transition-transform "
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
               />
             </svg>
           </span>
@@ -204,9 +246,15 @@ const Navbar=()=>{
         </nav>
         <div className="w-full  md:hidden bg-[#928EDE]  h-10">
           <ul className="flex text-md  text-[#364f6b] font-bold justify-around items-center">
-            <li className="mt-2">Home</li>
-            <li className="mt-2">Book Appointments</li>
-            <li className="mt-2">Contact</li>
+            <li onClick={() => navigate("/")} className="mt-2">
+              Home
+            </li>
+            <li onClick={() => navigate("/doctorBooking")} className="mt-2">
+              Book Appointments
+            </li>
+            <li onClick={() => navigate("/contact")} className="mt-2">
+              Contact
+            </li>
           </ul>
         </div>
       </div>
