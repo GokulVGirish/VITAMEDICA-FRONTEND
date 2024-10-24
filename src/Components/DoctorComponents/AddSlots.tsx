@@ -10,8 +10,7 @@ const DoctorAddSlots = () => {
   const [slots, setSlots] = useState<{ start: Date; end: Date }[]>([]);
   const [availableDates, setAvailableDates] = useState<Date[]>([]);
   const today = new Date().toISOString().split("T")[0];
-  console.log(selectedDate,"selected date");
-  console.log("slots",slots);
+
   const isOverlapping = (newStart: Date, newEnd: Date, index: number) => {
     // Loop through all slots and check if any slot overlaps with the new slot being updated
     for (let i = 0; i < slots.length; i++) {
