@@ -63,6 +63,7 @@ const DoctorDash = () => {
 
         if (response?.data?.success) {
           if (selectedPage === "Todays") {
+            console.log("response",response?.data?.data)
             setTodaysRevenue(response?.data?.data.revenue);
             setAppointCountInfo(response?.data?.data.count);
           } else if (selectedPage === "Weekly" || selectedPage === "Monthly") {

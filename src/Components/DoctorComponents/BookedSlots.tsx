@@ -1,3 +1,5 @@
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
@@ -9,9 +11,13 @@ import BookingCancellationReason from "../extra/CancellationReason";
 
 interface PropsType {
   availableDates: Date[];
+  closeModal: () => void;
 }
 
-const DoctorExistingSlots = ({ availableDates }: PropsType) => {
+const AddedSlots = ({
+  closeModal,
+  availableDates,
+}: PropsType) => {
   const [selectedSlotDate, setSelectedSlotDate] = useState<Date | null>();
   const [slots, setSlots] = useState<any[]>([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<{
@@ -116,78 +122,104 @@ const DoctorExistingSlots = ({ availableDates }: PropsType) => {
   };
 
   return (
-    <div>
-      <section className=" mt-4 flex items-center justify-center">
-        <div className="flex flex-col lg:flex-row gap-12 w-full max-w-screen-lg bg-white shadow-lg rounded-lg p-8">
-          <div className="lg:flex-1 flex flex-col items-center justify-center bg-gray-100 p-6 rounded-lg shadow-sm">
-            <h2 className="text-2xl font-bold uppercase mb-6 text-gray-700">
-              Added &nbsp; Slots
-            </h2>
-            <div className="w-full flex justify-center">
-              <DatePicker
-                includeDates={availableDates}
-                minDate={date}
-                onChange={(date) => setSelectedSlotDate(date)}
-                inline
-                className="bg-white p-4 rounded-lg shadow-inner"
-              />
+    <div
+      className="relative  "
+      style={{ zIndex: 60 }}
+      aria-labelledby="crop-image-dialog"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="fixed inset-0 bg-black bg-opacity-80  transition-all backdrop-blur-sm"></div>
+      <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div className="flex min-h-full justify-center px-2 py-12 text-center">
+          <div className="relative w-[95%] sm:w-[80%] min-h-[60vh] rounded-2xl  text-slate-100 text-left  transition-all">
+            <div className="px-5 py-4">
+              <button
+                type="button"
+                className="rounded-md p-1 inline-flex items-center justify-center text-gray-400  focus:outline-none absolute top-2 right-2"
+                onClick={closeModal}
+              >
+                <span className="sr-only">Close menu</span>
+                <FontAwesomeIcon size="2x" icon={faCircleXmark} />
+              </button>
+            </div>
+            <div className="px-4 py-4">
+              <div>
+                <section className=" mt-4 flex items-center justify-center">
+                  <div className="flex flex-col lg:flex-row gap-12 w-full max-w-screen-lg bg-white shadow-lg rounded-lg p-8">
+                    <div className="lg:flex-1 flex flex-col items-center justify-center bg-gray-100 p-6 rounded-lg shadow-sm">
+                     
+                      <div className="w-full flex justify-center">
+                        <DatePicker
+                          includeDates={availableDates}
+                          minDate={date}
+                          onChange={(date) => setSelectedSlotDate(date)}
+                          inline
+                          className="bg-white p-4 rounded-lg shadow-inner"
+                        />
+                      </div>
+                    </div>
+
+                    {selectedSlotDate && (
+                      <div className="lg:flex-1 flex flex-col justify-between bg-white p-6 rounded-lg shadow-sm">
+                        <div className="flex flex-col">
+                          <h3 className="text-2xl font-semibold mb-4 text-gray-700">
+                            Existing Slots
+                          </h3>
+                          <form className="space-y-4">
+                            {slots &&
+                              slots.map((slot: any) => (
+                                <label
+                                  key={slot._id}
+                                  className={`flex items-center text-black justify-between p-4 rounded-md transition duration-200 cursor-pointer ${
+                                    slot.availability
+                                      ? "bg-gray-100 hover:bg-indigo-100"
+                                      : "bg-red-400 text-white"
+                                  }`}
+                                >
+                                  <input
+                                    type="radio"
+                                    onClick={() => setSelectedTimeSlot(slot)}
+                                    name="slot"
+                                    className="form-radio h-5 w-5"
+                                  />
+                                  <span className="text-base flex-1 pl-4">
+                                    {moment(slot.start).format("h:mm A")} -{" "}
+                                    {moment(slot.end).format("h:mm A")}
+                                  </span>
+                                </label>
+                              ))}
+                          </form>
+                        </div>
+
+                        <div className="text-center mt-6">
+                          <button
+                            onClick={handleCancelTimeSlots}
+                            className="py-2 px-10  bg-[#378eac] text-white rounded-lg shadow hover:bg-[#287892] transition duration-200"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {cancellationReasonModel && (
+                    <BookingCancellationReason
+                      handleCancel={handleCancel}
+                      cancellationReason={cancellationReason}
+                      setCancellationReasonModal={setCancellationReasonModal}
+                      setCancellationReason={setCancellationReason}
+                    />
+                  )}
+                </section>
+              </div>
             </div>
           </div>
-
-          {selectedSlotDate && (
-            <div className="lg:flex-1 flex flex-col justify-between bg-white p-6 rounded-lg shadow-sm">
-              <div className="flex flex-col">
-                <h3 className="text-2xl font-semibold mb-4 text-gray-700">
-                  Available Slots
-                </h3>
-                <form className="space-y-4">
-                  {slots &&
-                    slots.map((slot: any) => (
-                      <label
-                        key={slot._id}
-                        className={`flex items-center justify-between p-4 rounded-md transition duration-200 cursor-pointer ${
-                          slot.availability
-                            ? "bg-gray-100 hover:bg-indigo-100"
-                            : "bg-red-400 text-white"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          onClick={() => setSelectedTimeSlot(slot)}
-                          name="slot"
-                          className="form-radio h-5 w-5"
-                        />
-                        <span className="text-base flex-1 pl-4">
-                          {moment(slot.start).format("h:mm A")} -{" "}
-                          {moment(slot.end).format("h:mm A")}
-                        </span>
-                      </label>
-                    ))}
-                </form>
-              </div>
-
-              <div className="text-center mt-6">
-                <button
-                  onClick={handleCancelTimeSlots}
-                  className="py-2 px-10  bg-[#378eac] text-white rounded-lg shadow hover:bg-[#287892] transition duration-200"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
         </div>
-
-        {cancellationReasonModel && (
-          <BookingCancellationReason
-            handleCancel={handleCancel}
-            cancellationReason={cancellationReason}
-            setCancellationReasonModal={setCancellationReasonModal}
-            setCancellationReason={setCancellationReason}
-          />
-        )}
-      </section>
+      </div>
     </div>
   );
 };
-export default DoctorExistingSlots;
+
+export default AddedSlots;

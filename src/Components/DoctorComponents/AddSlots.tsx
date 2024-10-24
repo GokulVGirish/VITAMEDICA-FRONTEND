@@ -2,18 +2,36 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { toast } from "sonner";
 import instance from "../../Axios/doctorInstance";
-import { AxiosError } from "axios";
-import DoctorExistingSlots from "./BookedSlots";
+import AddedSlots from "./BookedSlots";
 
 const DoctorAddSlots = () => {
-  const [selectStartDate, setSelectStartDate] = useState<Date | null>();
-
-  const [selectedSlots, setSelectedSlots] = useState<
-    { start: Date; end: Date }[]
-  >([]);
-  const today = new Date().toISOString().split("T")[0];
-
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [slots, setSlots] = useState<{ start: Date; end: Date }[]>([]);
   const [availableDates, setAvailableDates] = useState<Date[]>([]);
+  const today = new Date().toISOString().split("T")[0];
+  console.log(selectedDate,"selected date");
+  console.log("slots",slots);
+  const isOverlapping = (newStart: Date, newEnd: Date, index: number) => {
+    // Loop through all slots and check if any slot overlaps with the new slot being updated
+    for (let i = 0; i < slots.length; i++) {
+      if (i !== index) {
+        // Skip the current slot being modified
+        const slot = slots[i];
+        if (
+          (newStart >= slot.start && newStart < slot.end) || // newStart overlaps existing slot
+          (newEnd > slot.start && newEnd <= slot.end) || // newEnd overlaps existing slot
+          (newStart <= slot.start && newEnd >= slot.end) // new slot completely overlaps an existing one
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+  
+  
+  
 
   useEffect(() => {
     const getAvailableDates = async () => {
@@ -27,190 +45,217 @@ const DoctorAddSlots = () => {
   }, []);
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedSlots([]);
-    const date = new Date(e.target.value);
-    setSelectStartDate(date);
+    setSelectedDate(new Date(e.target.value));
   };
 
-  const timeSlots: { start: Date; end: Date }[] = [];
-  const timeNow = new Date();
-
-  const startTime = new Date();
-  startTime.setHours(9, 0, 0, 0);
-  const endTime = new Date();
-  endTime.setHours(18, 0, 0, 0);
-
-  let currentTime = startTime;
-  while (currentTime < endTime) {
-    const slotStart = new Date(currentTime);
-    const slotEnd = new Date(currentTime);
-    slotEnd.setMinutes(slotStart.getMinutes() + 60);
-
-    if (slotEnd <= endTime) {
-      timeSlots.push({ start: slotStart, end: slotEnd });
+  const handleAddSlot = () => {
+    if (!selectedDate) {
+      return toast.error("Select a date");
     }
-
-    currentTime = new Date(slotEnd);
-    currentTime.setMinutes(currentTime.getMinutes() + 15);
-  }
-  const handleSlotClick = (slot: { start: Date; end: Date }) => {
-    if (!selectStartDate) {
-      return toast.error("Select a date", {
-        richColors: true,
-        duration: 1500,
-      });
-    }
-    const selectedDate = selectStartDate.toISOString().split("T")[0];
-    if (selectedDate === today && slot.start <= timeNow) {
-      return toast.error("The time has passed to add this slot", {
-        richColors: true,
-        duration: 1500,
-      });
-    }
-    setSelectedSlots((prevState) => {
-      const isSelected = prevState.some(
-        (s) =>
-          s.start.getTime() === slot.start.getTime() &&
-          s.end.getTime() === slot.end.getTime()
-      );
-      if (isSelected) {
-        return prevState.filter(
-          (s) =>
-            s.start.getTime() !== slot.start.getTime() ||
-            s.end.getTime() !== slot.end.getTime()
-        );
-      } else {
-        return [...prevState, slot];
-      }
-    });
+    setSlots([
+      ...slots,
+      {
+        start: new Date(
+          !slots.length
+            ? selectedDate.setHours(9)
+            : slots[slots.length - 1].end.getTime() + 30 * 60 * 1000
+        ),
+        end: new Date(
+          !slots.length
+            ? selectedDate.setHours(10)
+            : slots[slots.length - 1].end.getTime() + 90 * 60 * 1000
+        ),
+      },
+    ]);
   };
 
   const handleSubmit = async () => {
-    if (!selectStartDate || selectedSlots.length === 0) {
+    if (!selectedDate || slots.length === 0) {
       return toast.error("Please select a date and at least one slot", {
         richColors: true,
         duration: 1500,
       });
     }
-    const response = await instance.get("/profile/isComplete/check");
-    if (!response.data.isComplete)
-      return toast.error(response.data.message, {
-        richColors: true,
-        duration: 1500,
-      });
-    const formattedSlots = selectedSlots.map((slot) => ({
+
+    const formattedSlots = slots.map((slot) => ({
       start: slot.start.toISOString(),
       end: slot.end.toISOString(),
     }));
+
     const data = {
-      date: selectStartDate.toISOString(),
+      date: selectedDate.toISOString(),
       slots: formattedSlots,
     };
+
     try {
       const response = await instance.post("/slots", data);
       if (response.data.success) {
-        setAvailableDates([...availableDates, selectStartDate]);
-        setSelectStartDate(null);
-        setSelectedSlots([]);
-        return toast.success("Sucessfully added Slots", {
+        setAvailableDates([...availableDates, selectedDate]);
+        setSelectedDate(null);
+        setSlots([]);
+        return toast.success("Successfully added Slots", {
           richColors: true,
           duration: 1500,
         });
       }
     } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data.message, {
-          richColors: true,
-          duration: 1500,
-        });
-      } else {
-        toast.error("Unknown error", {
-          richColors: true,
-          duration: 1500,
-        });
-      }
+      return toast.error("An error occurred", {
+        richColors: true,
+        duration: 1500,
+      });
     }
   };
 
   return (
-    <>
-      <div>
-        <div className="w-screen">
-          <div className="mx-auto grid max-w-screen-lg ">
-            <div>
-              <p className="mt-8 font-serif  text-xl font-bold text-gray-700">
-                Select Date
-              </p>
+    <div className="w-screen max-w-screen-lg mx-auto p-4 lg:flex lg:space-x-20">
+      <div className="w-full lg:w-2/3">
+        <p className="text-2xl font-bold text-gray-800 mb-4">
+          Select Date & Time
+        </p>
 
-              <div className="relative mt-4 w-56">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <svg
-                    aria-hidden="true"
-                    className="h-5 w-5 text-gray-500"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                </div>
-                <input
-                  type="date"
-                  className="block w-full rounded-lg border border-[#0e8e93] bg-[#96d2e6] p-2.5 pl-10 text-gray-900 font-medium outline-none ring-opacity-30 placeholder:text-emerald-800 focus:ring focus:ring-emerald-300 sm:text-sm"
-                  placeholder="Select date"
-                  value={
-                    selectStartDate
-                      ? selectStartDate.toISOString().split("T")[0]
-                      : ""
-                  }
-                  min={today}
-                  onChange={handleStartDateChange}
-                />
-              </div>
-            </div>
+        <button
+          className="px-6 py-2 bg-gradient-to-r bg-[#364f6b] text-white rounded-lg shadow hover:bg-[#556b84] transition-all duration-300"
+          onClick={() => setIsModalOpen(true)}
+        >
+          Existing Slots
+        </button>
 
-            <div>
-              <p className="mt-8 font-serif text-xl font-bold text-gray-700">
-                Select a time
-              </p>
-              <div className="mt-4 grid grid-cols-4 gap-2 lg:max-w-xl">
-                {timeSlots.map((slot, index) => (
-                  <button
-                    key={index}
-                    className={`rounded-lg px-4 border border-[#0e8e93] py-2 font-medium ${
-                      selectedSlots.some(
-                        (s) =>
-                          s.start.getTime() === slot.start.getTime() &&
-                          s.end.getTime() === slot.end.getTime()
-                      )
-                        ? "bg-[#378eac] text-gray-1000"
-                        : "bg-[#96d2e6] text-gray-900"
-                    } active:scale-95`}
-                    onClick={() => handleSlotClick(slot)}
-                  >
-                    {moment(slot.start).format("h:mm A")} -{" "}
-                    {moment(slot.end).format("h:mm A")}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <button
-              className="mt-8 w-56 rounded-lg   bg-[#378eac] px-1 py-2 text-md font-bold text-white transition hover:translate-y-1"
-              onClick={handleSubmit}
-            >
-              Create Slots
-            </button>
-          </div>
+        <div className="mt-6">
+          <input
+            type="date"
+            className="w-full p-3 border rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-400 border-gray-300 shadow-sm"
+            value={selectedDate ? selectedDate.toISOString().split("T")[0] : ""}
+            min={today}
+            onChange={handleStartDateChange}
+          />
         </div>
+
+        <div className="mt-8">
+          <p className="text-xl font-bold text-gray-700">Select Time Slots</p>
+          {slots.map((slot, index) => (
+            <div key={index} className="flex items-center mt-4 space-x-2">
+              <input
+                type="time"
+                className="p-2 border rounded-lg bg-gray-50 focus:bg-white shadow-md"
+                value={moment(slot.start).format("HH:mm")}
+                onChange={(e) => {
+                  const newStart = new Date(slot.start);
+                  newStart.setHours(
+                    Number(e.target.value.split(":")[0]),
+                    Number(e.target.value.split(":")[1])
+                  );
+
+                  const newEnd = new Date(slot.end); 
+                  if (newEnd <= newStart) {
+                    return toast.error("End time must be after the start time");
+                  }
+
+                  if (isOverlapping(newStart, newEnd, index)) {
+                    
+                    return toast.error(
+                      "Slot overlaps with another existing slot"
+                    );
+                  }
+                
+
+                  const newSlots = [...slots];
+                  newSlots[index] = { ...newSlots[index], start: newStart };
+                  setSlots(newSlots); 
+                }}
+              />
+
+              <span className="text-gray-500">to</span>
+
+              <input
+                type="time"
+                className="p-2 border rounded-lg bg-gray-50 focus:bg-white shadow-md"
+                value={moment(slot.end).format("HH:mm")}
+                onChange={(e) => {
+                  const newEnd = new Date(slot.end);
+                  newEnd.setHours(
+                    Number(e.target.value.split(":")[0]),
+                    Number(e.target.value.split(":")[1])
+                  );
+
+                  const newStart = new Date(slot.start); 
+                  if (newEnd <= newStart) {
+                    return toast.error("End time must be after the start time");
+                  }
+
+                  if (isOverlapping(newStart, newEnd, index)) {
+                    return toast.error(
+                      "Slot overlaps with another existing slot"
+                    );
+                  }
+                      const timeDifference =
+                        (newEnd.getTime() - newStart.getTime()) / (1000 * 60); 
+                      if (timeDifference < 30) {
+                        return toast.error(
+                          "Consultation time must be at least 30 minutes"
+                        );
+                      }
+
+                 
+
+                  const newSlots = [...slots];
+                  newSlots[index] = { ...newSlots[index], end: newEnd };
+                  setSlots(newSlots); 
+                }}
+              />
+              <button
+                className="ml-2 bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-400 transition-all shadow"
+                onClick={() => setSlots(slots.filter((_, i) => i !== index))}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+
+          <button
+            className="mt-4 bg-[#364f6b] text-white px-4 py-2 rounded-lg hover:bg-[#4a6079] transition-all shadow-lg"
+            onClick={handleAddSlot}
+          >
+            + Add Slot
+          </button>
+        </div>
+
+        <button
+          className="mt-8 w-full lg:w-56 bg-[#55a0b9] text-white px-4 py-2 rounded-md shadow-lg hover:bg-[#417e92] transition-all duration-300"
+          onClick={handleSubmit}
+        >
+          Create Slots
+        </button>
       </div>
-      <DoctorExistingSlots availableDates={availableDates} />
-    </>
+
+      <div className="mt-10 lg:mt-0 w-full lg:w-1/3">
+        <p className="text-xl font-bold text-gray-700 mb-4">
+          Selected Time Slots
+        </p>
+        <div className="space-y-3">
+          {slots.length > 0 ? (
+            slots.map((slot, index) => (
+              <div
+                key={index}
+                className="p-4 bg-gradient-to-r from-gray-100 to-gray-50 rounded-xl shadow-md flex justify-between items-center"
+              >
+                <p className="text-gray-600 text-lg font-medium">
+                  {moment(slot.start).format("hh:mm A")} -{" "}
+                  {moment(slot.end).format("hh:mm A")}
+                </p>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No slots selected yet.</p>
+          )}
+        </div>
+        {isModalOpen && (
+          <AddedSlots
+            availableDates={availableDates}
+            closeModal={() => setIsModalOpen(false)}
+          />
+        )}
+      </div>
+    </div>
   );
 };
-
 export default DoctorAddSlots;
