@@ -38,94 +38,72 @@ const DoctorSidebar = () => {
       {!isSidebarOpen && (
         <button
           onClick={toggleSidebar}
-          className="lg:hidden fixed top-4  right-4 z-50 p-4 bg-[#56aac6] text-white rounded-full shadow-lg"
+          className="lg:hidden fixed top-4 right-4 z-50 p-4 text-white rounded-full shadow-lg transition duration-300 bg-gradient-to-br from-[#56aac6] to-black hover:from-[#44a1b0] hover:to-gray-900"
         >
-          <span>☰</span>
+          <span className="block text-2xl font-semibold">☰</span>
         </button>
       )}
 
       <div
-        className={`fixed inset-0 top-0 left-0  lg:static lg:w-64 bg-[#56aac6] shadow-md transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-0 lg:static lg:w-64 bg-gradient-to-b from-[#56aac6] to-[#364f6b] shadow-lg transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
         style={{ zIndex: 50 }}
       >
-        <div className="flex relative items-center justify-center h-16 bg-[#56aac6]">
+        <div className="flex items-center justify-center h-16 bg-[#56aac6] shadow-md">
           <img
             src={logo}
             onClick={() => navigate("/doctor")}
             alt="logo"
-            className="w-44 rounded-lg shadow-xl"
+            className="w-44 rounded-lg cursor-pointer transition duration-300 hover:scale-105"
           />
           <span
             onClick={toggleSidebar}
-            className="text-white absolute lg:hidden top-5 right-5"
+            className="text-white absolute lg:hidden top-5 right-5 cursor-pointer"
           >
-            x
+            ✕
           </span>
         </div>
 
         <div className="flex flex-col flex-1 overflow-y-auto">
-          <nav className="flex-1 px-2 py-4 bg-[#56aac6]">
-            <span
-              onClick={() => navigate("/doctor")}
-              className={`flex cursor-pointer hover:rounded-md hover:text-white items-center px-4 py-2 gap-5 ${
-                isActive("/doctor")
-                  ? `text-white bg-gray-700 rounded-md`
-                  : `text-[#364f6b]`
-              } hover:font-bold`}
-            >
-              <FontAwesomeIcon icon={faChartPie} />
-              Dashboard
-            </span>
-            <span
-              onClick={() => navigate("/doctor/addSlot")}
-              className={`flex cursor-pointer hover:rounded-md hover:text-white items-center px-4 py-2 gap-5 ${
-                isActive("/doctor/addSlot")
-                  ? `text-white bg-gray-700 rounded-md`
-                  : `text-[#364f6b]`
-              } hover:font-bold`}
-            >
-              <FontAwesomeIcon icon={faPersonHalfDress} />
-              Slots
-            </span>
-            <span
-              onClick={() => navigate("/doctor/appointment")}
-              className={`flex cursor-pointer hover:rounded-md hover:text-white items-center px-4 py-2 gap-5 ${
-                isActive("/doctor/appointment") ||
-                isActive("/doctor/userProfile")
-                  ? `text-white bg-gray-700 rounded-md`
-                  : `text-[#364f6b]`
-              } hover:font-bold`}
-            >
-              <FontAwesomeIcon icon={faBookMedical} />
-              Appointments
-            </span>
-            <span
-              onClick={() => navigate("/doctor/profile")}
-              className={`flex cursor-pointer hover:rounded-md hover:text-white items-center px-4 py-2 gap-5 ${
-                isActive("/doctor/profile")
-                  ? `text-white bg-gray-700 rounded-md`
-                  : `text-[#364f6b]`
-              } hover:font-bold`}
-            >
-              <FontAwesomeIcon icon={faUserDoctor} />
-              Doctor Profile
-            </span>
-            <span
-              onClick={() => navigate("/doctor/wallet")}
-              className={`flex cursor-pointer hover:rounded-md hover:text-white items-center px-4 py-2 gap-5 ${
-                isActive("/doctor/wallet")
-                  ? `text-white bg-gray-700 rounded-md`
-                  : `text-[#364f6b]`
-              } hover:font-bold`}
-            >
-              <FontAwesomeIcon icon={faWallet} />
-              Wallet
-            </span>
+          <nav className="flex-1 px-4 py-6 space-y-2  ">
+            {[
+              { label: "Dashboard", path: "/doctor", icon: faChartPie },
+              {
+                label: "Slots",
+                path: "/doctor/addSlot",
+                icon: faPersonHalfDress,
+              },
+              {
+                label: "Appointments",
+                path: "/doctor/appointment",
+                additionalPaths: ["/doctor/userProfile"],
+                icon: faBookMedical,
+              },
+              {
+                label: "Doctor Profile",
+                path: "/doctor/profile",
+                icon: faUserDoctor,
+              },
+              { label: "Wallet", path: "/doctor/wallet", icon: faWallet },
+            ].map(({ label, path, icon, additionalPaths = [] }) => (
+              <span
+                key={label}
+                onClick={() => navigate(path)}
+                className={`flex items-center cursor-pointer px-4 py-3 text-white rounded-md transition duration-300 gap-4 text-lg font-semibold ${
+                  isActive(path) || additionalPaths.some(isActive)
+                    ? " bg-[#1b2838]"
+                    : " hover:bg-[#3c4e64] hover:text-white"
+                }`}
+              >
+                <FontAwesomeIcon icon={icon} />
+                {label}
+              </span>
+            ))}
+
             <span
               onClick={handleLogout}
-              className="flex cursor-pointer items-center hover:text-white px-4 py-2 gap-5 text-[#364f6b] hover:rounded-md hover:font-bold"
+              className="flex items-center cursor-pointer px-4 py-3 rounded-md transition duration-300 gap-4 text-lg font-semibold text-[#ff6666] hover:bg-[#512e2e] hover:text-white"
             >
               <FontAwesomeIcon icon={faArrowRightFromBracket} />
               Logout

@@ -151,7 +151,7 @@ const DoctorRoute = () => {
         <div className="fixed bottom-10 right-10 z-30">
           <button
             onClick={() => notificationHandler(true)}
-            className="relative focus:ring-4 focus:ring-offset-2 rounded-full p-5 bg-gradient-to-r from-[#56aac6] to-[#4b99b5] text-white shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="relative focus:ring-4 focus:ring-offset-2 rounded-full p-5 bg-gradient-to-b from-[#56aac6] to-[#364f6b] text-white shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
           >
             <FontAwesomeIcon icon={faBell} className="text-2xl" />
 

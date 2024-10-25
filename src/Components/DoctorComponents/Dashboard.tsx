@@ -92,9 +92,9 @@ const DoctorDash = () => {
           ? chartDataString?.map((item) => item.totalRevenue)
           : chartDataNumber?.map((item) => item.totalRevenue.toString()),
         backgroundColor: "rgba(68, 181, 215, 0.5)",
-        borderColor: "rgba(68, 181, 215, 1)",
+        borderColor: "rgba(86, 170, 198, 1)",
         borderWidth: 2,
-        pointBackgroundColor: "rgba(68, 181, 215, 1)",
+        pointBackgroundColor: "rgba(86, 170, 198, 1)",
         pointBorderColor: "#fff",
         pointBorderWidth: 2,
         pointRadius: 5,
@@ -116,7 +116,7 @@ const DoctorDash = () => {
           appointCountInfo?.cancellationsCount,
         ],
         borderColor: ["rgba(54, 79, 107, 1)"],
-        backgroundColor: ["rgba(68, 181, 215, 0.8)", "rgba(255, 99, 132, 0.8)"],
+        backgroundColor: ["rgba(86, 170, 198, 1)", "rgba(255, 102, 102, 1)"],
 
         borderRadius: 5,
       },
@@ -133,12 +133,13 @@ const DoctorDash = () => {
         width: "100%",
         height: "100%",
       }}
-      className="flex min-h-screen flex-col items-center justify-center  px-6 pt-20 pb-40  "
+      className="flex min-h-screen flex-col items-center justify-center px-6 pt-20 pb-40"
     >
       <DigitalClock />
+
       <select
         onChange={(e) => setSelectedPage(e.target.value)}
-        className="bg-gray-50 border  border-gray-300 mt-10  text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[150px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        className="bg-gray-200 border border-gray-300 mt-10 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[160px] p-2.5 shadow-lg dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
         <option value="Todays" selected>
           Todays
@@ -148,40 +149,38 @@ const DoctorDash = () => {
         <option value="Yearly">Yearly</option>
       </select>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-[1200px] mt-10">
-        {selectedPage === "Todays" && (
-          <div className="flex flex-col items-center justify-center p-10 rounded-lg h-[400px] bg-white shadow-md">
-            <h3 className="text-2xl text-gray-800 font-bold mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-[1200px] mt-10">
+        {selectedPage === "Todays" ? (
+          <div className="flex flex-col items-center justify-center p-8 rounded-lg h-[400px] bg-gradient-to-br from-blue-50 to-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
               {selectedPage} Revenue
             </h3>
-            <div className="flex items-center justify-center h-full w-full">
-              <GiReceiveMoney size={100} className="text-[#364f6bde] mr-4" />
-              <div className="flex flex-col justify-center items-start">
-                <h1 className="text-3xl border-l-4 border-[#56aac6] pl-2 font-extrabold text-[#364f6b] mb-2">
+            <div className="flex items-center space-x-6">
+              <GiReceiveMoney size={80} className="text-gray-800 opacity-80" />
+              <div className="text-left">
+                <h1 className="text-3xl font-bold text-gray-800 border-l-4 border-[#56aac6] pl-3">
                   {selectedPage} Revenue
                 </h1>
-                <p className="text-2xl border-2 px-4 rounded-lg border-[#364f6b] bg-slate-100 font-bold text-[#364f6b]">
+                <p className="text-2xl font-bold text-gray-700 bg-gray-50  px-4 py-2 mt-2 rounded-md ">
                   ₹{todaysRevenue || "0"}
                 </p>
               </div>
             </div>
           </div>
-        )}
-
-        {selectedPage !== "Todays" && (
-          <div className="flex flex-col items-center justify-center p-10  rounded-lg h-[400px] bg-white shadow-md">
-            <h3 className="text-2xl text-gray-800 font-bold mb-6">
+        ) : (
+          <div className="flex flex-col items-center justify-center p-8 rounded-lg h-[400px] bg-gradient-to-br from-blue-50 to-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
               {selectedPage} Revenue
             </h3>
-            <Line data={revenueChart} />
+            <Line data={revenueChart} className="w-full max-w-[90%]" />
           </div>
         )}
 
-        <div className="flex flex-col items-center justify-center p-10  rounded-lg h-[400px] bg-white shadow-md">
-          <h3 className="text-2xl text-gray-800 font-bold mb-6">
+        <div className="flex flex-col items-center justify-center p-8 rounded-lg h-[400px] bg-gradient-to-br from-blue-50 to-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">
             {selectedPage} Appointments & Cancellations
           </h3>
-          <Doughnut data={countChart} />
+          <Doughnut data={countChart} className="w-full max-w-[90%]" />
         </div>
       </div>
     </main>

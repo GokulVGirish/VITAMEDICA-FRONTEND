@@ -154,7 +154,7 @@ const DoctorAppointments = () => {
           </td>
           <td>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded w-20 text-center"
+              className="bg-[#364f6b]  hover:bg-[#4d6683]   text-white font-bold py-1 px-2 rounded w-20 text-center"
               onClick={() => navigate(`/doctor/userProfile/${appointment._id}`)}
             >
               View
@@ -180,7 +180,7 @@ const DoctorAppointments = () => {
                   onClick={() => setFilter("today")}
                   className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                     filter === "today"
-                      ? "bg-[#56aac6] text-white"
+                      ? "bg-gradient-to-b from-[#56aac6] to-[#364f6b] text-white"
                       : "bg-gray-300 text-gray-700"
                   } hover:bg-[#4993ac]`}
                 >
@@ -190,7 +190,7 @@ const DoctorAppointments = () => {
                   onClick={() => setFilter("upcomming")}
                   className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                     filter === "upcomming"
-                      ? "bg-[#56aac6] text-white"
+                      ? "bg-gradient-to-b from-[#56aac6] to-[#364f6b] text-white"
                       : "bg-gray-300 text-gray-700"
                   } hover:bg-[#4993ac]`}
                 >
@@ -200,7 +200,7 @@ const DoctorAppointments = () => {
                   onClick={() => setFilter("previous")}
                   className={`px-4 py-2 mr-2 rounded-lg transition-all ${
                     filter === "previous"
-                      ? "bg-[#56aac6] text-white"
+                      ? "bg-gradient-to-b from-[#56aac6] to-[#364f6b] text-white"
                       : "bg-gray-300 text-gray-700"
                   } hover:bg-[#4993ac]`}
                 >
@@ -214,7 +214,7 @@ const DoctorAppointments = () => {
             </div>
 
             <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
-              <thead className="bg-[#56aac6] text-white">
+              <thead className="bg-gradient-to-b from-[#56aac6] to-[#364f6b] text-white">
                 <tr>
                   <th className="px-6 py-3 border-b-2 border-gray-300 text-left text-xs font-semibold uppercase tracking-wider">
                     Date
@@ -262,7 +262,7 @@ const DoctorAppointments = () => {
             <button
               disabled={page === 1}
               onClick={handlePrevPage}
-              className="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-indigo-50"
+              className="inline-flex items-center border border-[#364f6b] px-3 py-1.5 rounded-md text-[#364f6b] hover:bg-indigo-50"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -280,14 +280,14 @@ const DoctorAppointments = () => {
               </svg>
               <span className="ml-1 font-bold text-lg">Back</span>
             </button>
-            <h1 className=" text-indigo-500 font-bold">
+            <h1 className=" text-[#364f6b] font-bold">
               {page} / {totalPages}
             </h1>
 
             <button
               onClick={handleNextPage}
               disabled={page === totalPages}
-              className="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-indigo-50"
+              className="inline-flex items-center border   border-[#364f6b] px-3 py-1.5 rounded-md text-[#364f6b] hover:bg-indigo-50"
             >
               <span className="mr-1 font-bold text-lg">Next</span>
               <svg

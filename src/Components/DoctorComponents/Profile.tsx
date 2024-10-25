@@ -207,7 +207,7 @@ const DoctorProfile = () => {
         <div className="mx-auto w-full  max-w-[550px] bg-gray-100">
           <div className="w-full relative flex justify-center pt-10 ">
             <img
-              className="h-40 w-40  rounded-full border-4 border-white dark:border-[#56aac6] mx-auto my-4"
+              className="h-40 w-40  rounded-full border-4 border-white  dark:border-[#56aac6] mx-auto my-4"
               src={
                 imageURL ||
                 "https://img.freepik.com/premium-vector/gray-color-user-icon-vector-illustration_276184-162.jpg"
@@ -459,7 +459,7 @@ const DoctorProfile = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="hover:shadow-form w-full rounded-md bg-[#05acb4] py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                className="hover:shadow-form w-full rounded-md bg-gradient-to-b from-[#56aac6] to-[#364f6b] py-3 px-8 text-center text-base font-semibold text-white outline-none"
               >
                 Update
               </button>

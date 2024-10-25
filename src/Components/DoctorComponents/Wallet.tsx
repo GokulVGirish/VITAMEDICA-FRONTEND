@@ -75,7 +75,7 @@ const DoctorWallet = () => {
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
                 <table className="min-w-full divide-y bg-[#56aac6]">
-                  <thead className="bg-[#56aac6]">
+                  <thead className="bg-gradient-to-b from-[#56aac6] to-[#364f6b]">
                     <tr>
                       <th
                         scope="col"
@@ -145,7 +145,7 @@ const DoctorWallet = () => {
           <button
             disabled={page === 1}
             onClick={handlePrevPage}
-            className="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-indigo-50"
+            className="inline-flex items-center border border-[#364f6b] px-3 py-1.5 rounded-md text-[#364f6b] hover:bg-indigo-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -163,14 +163,14 @@ const DoctorWallet = () => {
             </svg>
             <span className="ml-1 font-bold text-lg">Back</span>
           </button>
-          <h1 className=" text-indigo-500 font-bold">
+          <h1 className=" text-[#364f6b] font-bold">
             {page} / {totalPages}
           </h1>
 
           <button
             onClick={handleNextPage}
             disabled={page === totalPages}
-            className="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-indigo-50"
+            className="inline-flex items-center border border-[#364f6b] px-3 py-1.5 rounded-md text-[#364f6b] hover:bg-indigo-50"
           >
             <span className="mr-1 font-bold text-lg">Next</span>
             <svg

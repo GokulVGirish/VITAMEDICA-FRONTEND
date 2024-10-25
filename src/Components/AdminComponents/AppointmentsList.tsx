@@ -245,7 +245,7 @@ const AdminAppointmentListing = () => {
                           onClick={() =>
                             navigate(`/admin/appointments/${appointment._id}`)
                           }
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded w-20 text-center"
+                          className="bg-[#364f6b] hover:bg-[#4c6581] text-white font-bold py-1 px-2 rounded w-20 text-center"
                         >
                           View
                         </button>
@@ -272,7 +272,7 @@ const AdminAppointmentListing = () => {
           <button
             disabled={page === 1}
             onClick={handlePrevPage}
-            className="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-indigo-50"
+            className="inline-flex items-center border border-[#364f6b] px-3 py-1.5 rounded-md text-[#364f6b] hover:bg-[#364f6b]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -290,13 +290,13 @@ const AdminAppointmentListing = () => {
             </svg>
             <span className="ml-1 font-bold text-lg">Back</span>
           </button>
-          <h1 className="text-indigo-500 font-bold">
+          <h1 className="text-[#364f6b] font-bold">
             {page} / {Math.ceil(totalPages / 10)}
           </h1>
           <button
             onClick={handleNextPage}
             disabled={page === totalPages}
-            className="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-indigo-50"
+            className="inline-flex items-center border border-[#364f6b] px-3 py-1.5 rounded-md text-[#364f6b] hover:bg-[#364f6b]"
           >
             <span className="mr-1 font-bold text-lg">Next</span>
             <svg
