@@ -40,16 +40,7 @@ const VideoCall = () => {
     img: string;
   }>();
 
-  console.log(
-    "appointment videocall",
-    appointment,
-    "callerId",
-    callerId,
-    "personalId",
-    toPersonId,
-    "role",
-    role
-  );
+  
   const state = useLocation().state;
   const img = state.img;
 

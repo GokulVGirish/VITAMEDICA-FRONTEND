@@ -9,19 +9,19 @@ import { faUserDoctor } from "@fortawesome/free-solid-svg-icons";
 import { faPersonHalfDress } from "@fortawesome/free-solid-svg-icons/faPersonHalfDress";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
-import Cookies from "js-cookie";
+
 import { useAppDispatch } from "../../Redux/hoocks";
 import { clearDoctor } from "../../Redux/doctorSlice";
 import { useState } from "react";
+import instance from "../../Axios/doctorInstance";
 
 const DoctorSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  function handleLogout() {
-    Cookies.remove("accessToken");
-    Cookies.remove("refreshToken");
+  async function handleLogout() {
+  await instance.post(`/auth/logout`);
     navigate("/doctor/login");
     dispatch(clearDoctor());
   }

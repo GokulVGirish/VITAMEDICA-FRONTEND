@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import adminInstance from "../Axios/adminInstance";
-import Cookies from "js-cookie";
+
 import { AxiosError } from "axios";
 
 export const adminLogin = createAsyncThunk<
@@ -11,8 +11,6 @@ export const adminLogin = createAsyncThunk<
   try {
     const response = await adminInstance.post("/auth/login", data);
 
-    Cookies.set("adminAccessToken", response.data.adminAccessToken);
-    Cookies.set("adminRefreshToken", response.data.adminRefreshToken);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {

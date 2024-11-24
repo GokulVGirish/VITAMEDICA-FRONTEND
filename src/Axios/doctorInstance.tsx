@@ -1,5 +1,4 @@
 import axios from "axios";
-import Cookies from "js-cookie";
 import { toast } from "sonner";
 const apiUrl = import.meta.env.VITE_DOCTOR_API_URL;
 import { clearDoctor } from "../Redux/doctorSlice";
@@ -15,39 +14,27 @@ const instance = axios.create({
     "Content-Type": "application/json",
   },
 });
-instance.defaults.withCredentials = true;
+instance.defaults.withCredentials=true
 
-instance.interceptors.request.use(
-  (request) => {
-    const accessToken = Cookies.get("accessToken");
-    if (accessToken) {
-      request.headers.Authorization = `Bearer ${accessToken}`;
-    }
-
-    return request;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
 
 instance.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  async(error) => {
+    console.log("doctor",error)
     if (error.response && error.response.status === 401) {
       if (dispatchFunction) {
         dispatchFunction(clearDoctor());
       }
-      Cookies.remove("accessToken");
-      Cookies.remove("refreshToken");
+      await instance.post(`/auth/logout`)
+
+ 
     }
     if (
       error.response &&
       error.response.status === 401 &&
-      (error.response.data.message === "Sorry User Blocked" ||
-        error.response.data.message === "Un authorized access")
+      error.response.data.message === "Sorry User Blocked"
     ) {
       toast.error(error.response.data.message, {
         richColors: true,
@@ -56,9 +43,14 @@ instance.interceptors.response.use(
           return (window.location.href = "/doctor/login");
         },
       });
-    } else if (error.response && error.response.status === 401) {
-      return (window.location.href = "/doctor/login");
-    }
+    } else if (
+      (error.response &&
+        error.response.status === 401 &&
+        window.location.pathname == "/doctor/login") ||
+      window.location.pathname == "/doctor/signup"
+    ) {
+
+    } 
     return Promise.reject(error);
   }
 );

@@ -1,5 +1,4 @@
 import axios from "axios";
-import Cookies from "js-cookie";
 import { toast } from "sonner";
 const apiUrl = import.meta.env.VITE_USER_API_URL;
 import { clearUser } from "../Redux/userSlice";
@@ -16,28 +15,21 @@ const instance = axios.create({
     "Content-Type": "application/json",
   },
 });
-instance.defaults.withCredentials = true;
-instance.interceptors.request.use(
-  (request) => {
-    const accessToken = Cookies.get("accessToken");
 
-    if (accessToken) {
-      request.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return request;
-  },
-  (error) => Promise.reject(error)
-);
+instance.defaults.withCredentials=true
+
 
 instance.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async(error) => {
+    console.log(error)
+    
     if (error.response && error.response.status === 401) {
       if (dispatchFunction) {
         dispatchFunction(clearUser());
       }
-      Cookies.remove("accessToken");
-      Cookies.remove("refreshToken");
+     
+      await instance.post(`/auth/logout`)
     }
     if (
       error.response &&
@@ -51,7 +43,14 @@ instance.interceptors.response.use(
           return (window.location.href = "/login");
         },
       });
-    } else if (error.response && error.response.status === 401) {
+    } else if (
+      (error.response &&
+        error.response.status === 401 &&
+        window.location.pathname == "/login") ||
+      window.location.pathname == "/signup"
+    ) {
+      
+    }else{
       window.location.href = "/login";
     }
     return Promise.reject(error);

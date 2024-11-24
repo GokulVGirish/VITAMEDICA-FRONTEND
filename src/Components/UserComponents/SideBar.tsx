@@ -3,11 +3,13 @@ import { useNavigate,useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightFromBracket, faBars, faHeart, faHouseMedical, faTimes, faUser } from "@fortawesome/free-solid-svg-icons";
 import { faWallet } from '@fortawesome/free-solid-svg-icons';
-import Cookies from 'js-cookie';
+
 import { useContext, useState } from 'react';
 import { SocketContext } from '../../socketio/SocketIo';
 import { useAppDispatch } from '../../Redux/hoocks';
-import { clearDoctor } from '../../Redux/doctorSlice';
+
+import instance from '../../Axios/userInstance';
+import { clearUser } from '../../Redux/userSlice';
 
 
 
@@ -17,11 +19,10 @@ const UserProfileSideBar=()=>{
     const dispatch=useAppDispatch()
     const [sidebarOpen,setSidebarOpen]=useState(false)
     const socket=useContext(SocketContext)
-      function handleLogout() {
+      async function handleLogout () {
         socket?.emit("logout");
-        Cookies.remove("accessToken");
-        Cookies.remove("refreshToken");
-        dispatch(clearDoctor())
+         await instance.post(`/auth/logout`)
+        dispatch(clearUser())
 
         navigate("/login");
       }

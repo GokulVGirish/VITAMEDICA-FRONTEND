@@ -11,18 +11,17 @@ import { faPersonHalfDress } from "@fortawesome/free-solid-svg-icons/faPersonHal
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
-import Cookies from "js-cookie";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
+import adminInstance from "../../Axios/adminInstance";
 
 const AdminSideBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
-  const handleLogout = () => {
-    Cookies.remove("adminAccessToken");
-    Cookies.remove("adminRefreshToken");
+  const handleLogout =async () => {
+   await adminInstance.post(`/auth/logout`);
     navigate("/admin/login");
   };
   const isActive = (path: string) => {

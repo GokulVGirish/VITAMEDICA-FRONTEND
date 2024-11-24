@@ -1,4 +1,4 @@
-import Cookies from "js-cookie";
+
 import { ComponentType, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import userInstance from "../Axios/userInstance";
@@ -13,10 +13,9 @@ const withAuthentication = <P extends Object>(
 ) => {
   return (props: P) => {
     const navigate = useNavigate();
-    console.log('us',userType)
+  
    const axiosInstance= userType==="doctor"?doctorInstance:userType==="admin"?adminInstance:userInstance
-   const accessToken=Cookies.get("accessToken")
-   const adminAccessToken=Cookies.get("adminAccessToken")
+  
  
 
     useEffect(() => {
@@ -31,8 +30,9 @@ const withAuthentication = <P extends Object>(
 
        }
       };
+      verifyToken()
 
-      if(userType==="admin"?adminAccessToken:accessToken)verifyToken();
+      
     }, [navigate]);
 
     return <WrappedComponent {...props} />;

@@ -70,7 +70,7 @@ const DoctorsScrollX = () => {
                 <img src={logo} alt="none" className="mr-9" />
               </p>
               <div className="flex justify-around items-center">
-                <p
+                <div
                   onClick={() => navigate(`/doctorDetail/${doctor._id}`)}
                   className="text-sm text-gray-600 ml-2"
                 >
@@ -90,7 +90,7 @@ const DoctorsScrollX = () => {
                       </h4>
                     </span>
                   </div>
-                </p>
+                </div>
               </div>
             </div>
           </div>

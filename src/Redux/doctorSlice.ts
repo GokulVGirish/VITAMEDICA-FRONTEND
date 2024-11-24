@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import Cookies from "js-cookie";
 import instance from "../Axios/doctorInstance";
 import { AxiosError } from "axios";
 import { Socket } from "socket.io-client";
@@ -11,8 +10,7 @@ export const verifyOtpSigup = createAsyncThunk<
   try {
     const { otp, socket } = data;
     const response = await instance.post("/auth/signup/verify-otp", { otp });
-    Cookies.set("accessToken", response.data.accessToken);
-    Cookies.set("refreshToken", response.data.refreshToken);
+ 
     if (socket) {
       socket.emit("loggedin", response.data.docId);
       socket.emit("send_notification", {
@@ -46,12 +44,10 @@ export const doctorLogin = createAsyncThunk<
       password: data.password,
     });
 
-    Cookies.set("accessToken", response.data.accessToken);
-    Cookies.set("refreshToken", response.data.refreshToken);
     if (data.socket) {
       data.socket.emit("loggedin", response.data.docId);
     }
-
+    console.log(response)
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {

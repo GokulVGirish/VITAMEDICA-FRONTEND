@@ -5,6 +5,7 @@ import { useNavigate ,useLocation} from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../Redux/hoocks';
 import { clearErrorMessage,clearUser } from '../../Redux/userSlice';
 import { SocketContext } from '../../socketio/SocketIo';
+import instance from '../../Axios/userInstance';
 const Navbar=()=>{
    const [isOpen, setIsOpen] = useState(false);
    const {user}=useAppSelector((state)=>state.user)
@@ -18,10 +19,9 @@ const Navbar=()=>{
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     };
-    const handleLogout=()=>{
+    const handleLogout=async()=>{
         socket?.emit("logout");
-      Cookies.remove("accessToken")
-      Cookies.remove("refreshToken")
+        await instance.post(`/auth/logout`);
       dispatch(clearUser())
       dispatch(clearErrorMessage())
       navigate("/login")
