@@ -5,13 +5,13 @@
       "destination": "/index.html"
     }
   ],
-  "headers": [
+ "headers": [
     {
       "source": "/(.*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://checkout.razorpay.com https://vercel.live https://www.vitamedica.ix.tc; connect-src 'self' https://www.vitamedica.ix.tc; font-src 'self' data: https://fonts.googleapis.com https://www.vitamedica.ix.tc; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://www.vitamedica.ix.tc; object-src 'none'; frame-src 'self' https://www.vitamedica.ix.tc; media-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self';"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://checkout.razorpay.com https://vercel.live https://www.vitamedica.ix.tc; connect-src 'self' https://www.vitamedica.ix.tc wss://www.vitamedica.ix.tc https://checkout.razorpay.com https://vercel.live https://accounts.google.com; font-src 'self' data: https://fonts.googleapis.com https://www.vitamedica.ix.tc; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://www.vitamedica.ix.tc; object-src 'none'; frame-src 'self' https://www.vitamedica.ix.tc https://vercel.live https://checkout.razorpay.com; media-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self';"
         }
       ]
     }
