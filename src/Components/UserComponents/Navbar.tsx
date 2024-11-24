@@ -1,6 +1,5 @@
 import logo from '@/assets/logo2.png';
 import { useState,useEffect,useRef,useContext } from 'react';
-import Cookies from 'js-cookie';
 import { useNavigate ,useLocation} from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../Redux/hoocks';
 import { clearErrorMessage,clearUser } from '../../Redux/userSlice';
